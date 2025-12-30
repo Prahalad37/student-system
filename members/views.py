@@ -1,42 +1,21 @@
-from django.shortcuts import render
-from django.contrib import messages
-from django.db.models import Q
-from .models import Member
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from .models import Member
+from django.template import loader
+from django.db.models import Q
+from django.contrib import messages
+# Authentication imports
+from django.contrib.auth import authenticate, login, logout
 
-def add(request):
-  if request.method == 'POST':
-    messages.success(request, "Student successfully add ho gaya! 🎉")
-    return HttpResponseRedirect(reverse('index'))
-    # User ne form bhar ke submit kiya hai
-    first = request.POST['firstname']
-    last = request.POST['lastname']
-    
-    # Database mein naya member banaya
-    member = Member(firstname=first, lastname=last)
-    member.save()
-    
-    # Wapas list wale page par bhej diya
-    return HttpResponseRedirect(reverse('index'))
-    
-  else:
-    # User ko bas khali form dikhao
-    return render(request, 'add.html')
-
-# 1. Index View (List dikhane ke liye)
+# 1. Home Page (List + Search)
 def index(request):
-    # 1. User ne search box mein kya likha? Wo nikala
-    query = request.GET.get('q') 
-    
+    query = request.GET.get('q')
     if query:
-        # 2. Agar kuch search kiya hai, toh filter lagao
-        # icontains = Case insensitive search (matlab 'Anil', 'anil' sab chalega)
         mymembers = Member.objects.filter(
             Q(firstname__icontains=query) | Q(lastname__icontains=query)
         )
     else:
-        # 3. Agar kuch search nahi kiya, toh saare members dikhao (Purana tareeka)
         mymembers = Member.objects.all()
     
     context = {
@@ -44,48 +23,75 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
-# 2. Details View (Profile dikhane ke liye)
+# 2. Add Student
+def add(request):
+    if request.method == 'POST':
+        x = request.POST['first']
+        y = request.POST['last']
+        member = Member(firstname=x, lastname=y)
+        member.save()
+        messages.success(request, "Student successfully add ho gaya! 🎉")
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        return render(request, 'add.html')
+
+# 3. Delete Student
+def delete(request, id):
+    member = Member.objects.get(id=id)
+    member.delete()
+    messages.success(request, "Student delete kar diya gaya. 🗑️")
+    return HttpResponseRedirect(reverse('index'))
+
+# 4. Update/Edit Student
+def update(request, id):
+    mymember = Member.objects.get(id=id) # Database se student nikala
+    template = loader.get_template('update.html')
+    context = {
+        'mymember': mymember, # <-- Yahan 's' hata diya (Singular hona chahiye)
+    }
+    
+    if request.method == 'POST':
+        first = request.POST['first']
+        last = request.POST['last']
+        mymember.firstname = first
+        mymember.lastname = last
+        mymember.save()
+        messages.success(request, "Details update ho gayi hain! ✅")
+        return HttpResponseRedirect(reverse('index'))
+        
+    return HttpResponse(template.render(context, request))
+
+# 5. Details View (Optional, agar use kar rahe hain)
 def details(request, id):
     mymember = Member.objects.get(id=id)
+    template = loader.get_template('details.html')
     context = {
         'mymember': mymember,
     }
-    return render(request, 'details.html', context)
-def delete(request, id):
-  # Member ko dhundo
-  member = Member.objects.get(id=id)
-  # Delete karo
-  member.delete()
-  # Wapas home page par jao
-  messages.success(request, "Student delete kar diya gaya. 🗑️")
-  return HttpResponseRedirect(reverse('index'))
+    return HttpResponse(template.render(context, request))
 
-def update(request, id):
-  # ... (purana code) ...
-  if request.method == 'POST':
-    # ... (data save karne ke baad) ...
-    mymember.save()
-    
-    # Ye nayi line add karein 👇
-    messages.success(request, "Details update ho gayi hain! ✅")
-    return HttpResponseRedirect(reverse('index'))
-  
-  if request.method == 'POST':
-    # Naya data form se nikala
-    first = request.POST['firstname']
-    last = request.POST['lastname']
-    
-    # Member ka data change kiya
-    mymember.firstname = first
-    mymember.lastname = last
-    mymember.save()
-    
-    # Wapas list par bhej diya
-    return HttpResponseRedirect(reverse('index'))
-    
-  else:
-    # Form dikhaya (purane data ke saath)
-    context = {
-      'mymember': mymember,
-    }
-    return render(request, 'update.html', context)
+# --- LOGIN SYSTEM ---
+
+# 6. Login View
+def login_user(request):
+    if request.method == 'POST':
+        user_name = request.POST['username']
+        pass_word = request.POST['password']
+
+        user = authenticate(request, username=user_name, password=pass_word)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Welcome Back! Login Successful. 🔓")
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            messages.error(request, "Username ya Password galat hai! ❌")
+            return HttpResponseRedirect(reverse('login'))
+            
+    return render(request, 'login_user.html')
+
+# 7. Logout View
+def logout_user(request):
+    logout(request)
+    messages.success(request, "Aap Logout ho gaye hain. 👋")
+    return HttpResponseRedirect(reverse('login'))

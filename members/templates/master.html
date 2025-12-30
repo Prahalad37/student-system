@@ -9,6 +9,15 @@
     <nav class="navbar navbar-dark bg-primary mb-4">
         <div class="container">
             <a class="navbar-brand" href="/members/">🏫 Student System</a>
+        
+            <div class="float-end">
+                {% if user.is_authenticated %}
+                    <span class="text-white me-2">Hi, {{ user.username }}!</span>
+                    <a href="/members/logout/" class="btn btn-sm btn-light">Logout</a>
+                {% else %}
+                    <a href="/members/login/" class="btn btn-sm btn-outline-light">Login</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
