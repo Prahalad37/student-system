@@ -1,0 +1,26 @@
+{% extends "master.html" %}
+
+{% block title %}Update Member{% endblock %}
+
+{% block content %}
+<div class="card shadow p-4" style="max-width: 600px; margin: auto;">
+  <h3 class="mb-3">Edit Student Details ✏️</h3>
+  
+  <form method="post">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+      <label class="form-label">First Name</label>
+      <input name="firstname" value="{{ mymember.firstname }}" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Last Name</label>
+      <input name="lastname" value="{{ mymember.lastname }}" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-warning">Update</button>
+    <a href="/members/" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

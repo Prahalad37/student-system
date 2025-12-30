@@ -1,0 +1,18 @@
+{% extends "master.html" %}
+
+{% block title %}
+  Details of {{ mymember.firstname }}
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow" style="max-width: 500px; margin: auto;">
+        <div class="card-header bg-secondary text-white">
+            Student Profile 🎓
+        </div>
+        <div class="card-body">
+            <h3 class="card-title">{{ mymember.firstname }} {{ mymember.lastname }}</h3>
+            <p>ID: {{ mymember.id }}</p>
+            <a href="/members/" class="btn btn-primary">Back to List</a>
+        </div>
+    </div>
+{% endblock %}

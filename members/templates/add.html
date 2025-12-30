@@ -1,0 +1,26 @@
+{% extends "master.html" %}
+
+{% block title %}Add New Student{% endblock %}
+
+{% block content %}
+<div class="card shadow p-4" style="max-width: 600px; margin: auto;">
+  <h3 class="mb-3">Add New Student 📝</h3>
+  
+  <form action="" method="post">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+      <label class="form-label">First Name</label>
+      <input name="firstname" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Last Name</label>
+      <input name="lastname" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+    <a href="/members/" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}
