@@ -7,22 +7,30 @@
 {% block content %}
     <div class="card shadow p-4">
         
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Students List 📋</h3>
+        <div class="row align-items-center mb-4">
+            <div class="col-md-4">
+                <h3 class="m-0">Students List 📋</h3>
+            </div>
+
             {% if user.is_authenticated %}
-            <a href="{% url 'add' %}" class="btn btn-primary">+ Add New Student</a>
+            <div class="col-md-8">
+                <div class="row g-2 justify-content-end">
+                    <div class="col-auto">
+                        <a href="{% url 'add' %}" class="btn btn-primary">+ Add New</a>
+                    </div>
+                    <div class="col-auto">
+                        <form action="" method="GET" class="d-flex">
+                            <input type="text" name="query" class="form-control me-2" placeholder="Search name..." value="{{ request.GET.query }}">
+                            <button type="submit" class="btn btn-dark">Search 🔍</button>
+                            <a href="{% url 'index' %}" class="btn btn-outline-secondary ms-1">Reset</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
             {% endif %}
         </div>
         
         <hr>
-
-        <form method="get" class="mb-4">
-            <div class="input-group">
-                <input type="text" name="q" class="form-control" placeholder="Search student name..." value="{{ request.GET.q|default:'' }}">
-                <button class="btn btn-dark" type="submit">Search 🔍</button>
-                <a href="/members/" class="btn btn-outline-secondary">Clear</a>
-            </div>
-        </form>
 
         <table class="table table-hover">
             <thead class="table-dark">
@@ -35,7 +43,7 @@
             <tbody>
                 {% for x in mymembers %}
                 <tr>
-                    <td><a href="details/{{ x.id }}">{{ x.firstname }}</a></td>
+                    <td><a href="details/{{ x.id }}" class="text-decoration-none fw-bold">{{ x.firstname }}</a></td>
                     
                     <td>{{ x.lastname }}</td>
                     
@@ -44,13 +52,16 @@
                            <a href="{% url 'update' x.id %}" class="btn btn-warning btn-sm">Edit ✏️</a>
                            <a href="{% url 'delete' x.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Kya aap sach mein delete karna chahte hain? ⚠️');">Delete 🗑️</a>
                         {% else %}
-                            <span class="text-muted">Login to Edit</span>
+                            <span class="badge bg-secondary">Login to Edit</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" class="text-center text-muted">No students found.</td>
+                    <td colspan="3" class="text-center text-muted py-4">
+                        <h5>No students found matching your search. 🤷‍♂️</h5>
+                        <a href="{% url 'index' %}" class="btn btn-sm btn-outline-primary mt-2">Show All</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

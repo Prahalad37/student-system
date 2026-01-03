@@ -1,3 +1,4 @@
+from django.db.models import Q  # <--- Ye line top par add karein
 from django.shortcuts import render, redirect
 from .forms import MemberForm
 from django.http import HttpResponse, HttpResponseRedirect
@@ -11,19 +12,24 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 # 1. Home Page (List + Search)
+@login_required
 def index(request):
-    query = request.GET.get('q')
+    query = request.GET.get('query') # Search box se text nikalo
+    
     if query:
+        # Agar user ne kuch search kiya hai (Firstname YA Lastname mein dhundo)
         mymembers = Member.objects.filter(
             Q(firstname__icontains=query) | Q(lastname__icontains=query)
-        )
+        ).values()
     else:
-        mymembers = Member.objects.all()
-    
+        # Agar kuch search nahi kiya, toh sab dikhao
+        mymembers = Member.objects.all().values()
+
+    template = loader.get_template('index.html')
     context = {
         'mymembers': mymembers,
     }
-    return render(request, 'index.html', context)
+    return HttpResponse(template.render(context, request))
 
 # 2. Add Student
 @login_required
