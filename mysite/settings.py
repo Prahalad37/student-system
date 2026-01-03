@@ -118,3 +118,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Redirect to this URL if a user tries to access a protected page without logging in
 LOGIN_URL = 'login'
+# settings.py ke end mein add karo
+CSRF_TRUSTED_ORIGINS = ['https://prahaladpal.pythonanywhere.com']
