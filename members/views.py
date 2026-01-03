@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .forms import MemberForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Member
@@ -7,6 +8,7 @@ from django.db.models import Q
 from django.contrib import messages
 # Authentication imports
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 # 1. Home Page (List + Search)
 def index(request):
@@ -24,18 +26,25 @@ def index(request):
     return render(request, 'index.html', context)
 
 # 2. Add Student
+@login_required
 def add(request):
+    # Agar user Form bhar ke 'Submit' dabata hai (POST request)
     if request.method == 'POST':
-        x = request.POST['first']
-        y = request.POST['last']
-        member = Member(firstname=x, lastname=y)
-        member.save()
-        messages.success(request, "Student successfully add ho gaya! 🎉")
-        return HttpResponseRedirect(reverse('index'))
+        form = MemberForm(request.POST) # Form mein data bhara
+        if form.is_valid():             # Check kiya ki data sahi hai ya nahi
+            form.save()                 # Database mein save kiya
+            messages.success(request, "Student successfully add ho gaya! 🎉")
+            return HttpResponseRedirect(reverse('index'))
+    
+    # Agar user pehli baar page khol raha hai (GET request)
     else:
-        return render(request, 'add.html')
+        form = MemberForm() # Khali form dikhao
+
+    # HTML ko form bhejo
+    return render(request, 'add.html', {'form': form})
 
 # 3. Delete Student
+@login_required
 def delete(request, id):
     member = Member.objects.get(id=id)
     member.delete()
@@ -43,6 +52,7 @@ def delete(request, id):
     return HttpResponseRedirect(reverse('index'))
 
 # 4. Update/Edit Student
+@login_required
 def update(request, id):
     mymember = Member.objects.get(id=id) # Database se student nikala
     template = loader.get_template('update.html')

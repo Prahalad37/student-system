@@ -1,26 +1,18 @@
 {% extends "master.html" %}
 
-{% block title %}Add New Student{% endblock %}
+{% block title %}Add Student{% endblock %}
 
 {% block content %}
-<div class="card shadow p-4" style="max-width: 600px; margin: auto;">
-  <h3 class="mb-3">Add New Student 📝</h3>
-  
-  <form action="" method="post">
-    {% csrf_token %}
-    
-    <div class="mb-3">
-      <label class="form-label">First Name</label>
-      <input name="firstname" class="form-control" required>
-    </div>
+<div class="card shadow p-4" style="max-width: 500px; margin: 20px auto;">
+    <h3 class="text-center mb-4">Add New Student 🎓</h3>
 
-    <div class="mb-3">
-      <label class="form-label">Last Name</label>
-      <input name="lastname" class="form-control" required>
-    </div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
 
-    <button type="submit" class="btn btn-success">Submit</button>
-    <a href="/members/" class="btn btn-secondary">Cancel</a>
-  </form>
+        <button type="submit" class="btn btn-success w-100 mt-3">Submit Data</button>
+        <a href="{% url 'index' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    </form>
 </div>
 {% endblock %}
