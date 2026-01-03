@@ -54,22 +54,20 @@ def delete(request, id):
 # 4. Update/Edit Student
 @login_required
 def update(request, id):
-    mymember = Member.objects.get(id=id) # Database se student nikala
-    template = loader.get_template('update.html')
-    context = {
-        'mymember': mymember, # <-- Yahan 's' hata diya (Singular hona chahiye)
-    }
+    mymember = Member.objects.get(id=id)
     
     if request.method == 'POST':
-        first = request.POST['first']
-        last = request.POST['last']
-        mymember.firstname = first
-        mymember.lastname = last
-        mymember.save()
-        messages.success(request, "Details update ho gayi hain! ✅")
-        return HttpResponseRedirect(reverse('index'))
-        
-    return HttpResponse(template.render(context, request))
+        # 'instance=mymember' ka matlab hai: purana data form mein bhar do
+        form = MemberForm(request.POST, instance=mymember)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Record update ho gaya! ✏️")
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        # Jab page khule, toh purana data dikhao
+        form = MemberForm(instance=mymember)
+
+    return render(request, 'update.html', {'form': form})
 
 # 5. Details View (Optional, agar use kar rahe hain)
 def details(request, id):
