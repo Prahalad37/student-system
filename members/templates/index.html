@@ -32,9 +32,9 @@
         
         <hr>
 
-        <table class="table table-hover">
-            <thead class="table-dark">
+        <table class="table table-hover align-middle"> <thead class="table-dark">
                 <tr>
+                    <th>Profile</th> 
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Action</th>
@@ -43,6 +43,15 @@
             <tbody>
                 {% for x in mymembers %}
                 <tr>
+                    <td style="text-align: center; vertical-align: middle;">
+                        {% if x.profile_pic %}
+                            <img src="{{ x.profile_pic.url }}" alt="Profile" 
+                                style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
+                        {% else %}
+                            <span class="text-muted" style="font-size: 20px;">👤</span>
+                        {% endif %}
+                    </td>
+
                     <td><a href="details/{{ x.id }}" class="text-decoration-none fw-bold">{{ x.firstname }}</a></td>
                     
                     <td>{{ x.lastname }}</td>
@@ -58,7 +67,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" class="text-center text-muted py-4">
+                    <td colspan="4" class="text-center text-muted py-4">
                         <h5>No students found matching your search. 🤷‍♂️</h5>
                         <a href="{% url 'index' %}" class="btn btn-sm btn-outline-primary mt-2">Show All</a>
                     </td>
