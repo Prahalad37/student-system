@@ -1,42 +1,272 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>{% block title %}My Django App{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Student System{% endblock %}</title>
+
+    <link href="{% static 'assets/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="{% static 'assets/css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+<style>
+    /* 1. TYPOGRAPHY & BODY */
+    body {
+        font-family: 'Poppins', sans-serif !important;
+        background-color: #f3f4f6;
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%);
+        background-attachment: fixed;
+        color: #1f2937;
+    }
+
+    /* 2. SIDEBAR: Modern & Sharp */
+    #accordionSidebar {
+        background: #ffffff !important;
+        border-right: none;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+        margin: 0;
+        border-radius: 0;
+        height: 100vh;
+        z-index: 100;
+        position: fixed;
+        top: 0;
+        padding-top: 20px;
+    }
+
+    /* Sidebar Links */
+    .sidebar .nav-item .nav-link {
+        color: #6b7280 !important;
+        font-weight: 500;
+        margin: 5px 15px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar .nav-item .nav-link:hover, .sidebar .nav-item.active .nav-link {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        transform: translateX(5px);
+    }
+    
+    .sidebar .nav-item .nav-link i {
+        color: inherit !important;
+    }
+
+    .sidebar-brand-text {
+        color: #059669;
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+    }
+
+    /* Fix Main Content Margin because sidebar is fixed */
+    #content-wrapper {
+        margin-left: 224px;
+        background: transparent;
+    }
+    @media (max-width: 768px) {
+        #content-wrapper { margin-left: 0; }
+        /* Mobile par sidebar hide karne ke bajaye toggler use karenge */
+    }
+
+    /* 3. CARDS */
+    .card {
+        background: #ffffff;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+        overflow: hidden;
+    }
+    .card:hover { transform: translateY(-5px); }
+    
+    .card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 4px;
+        background: linear-gradient(90deg, #10b981, #3b82f6);
+        opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover::after { opacity: 1; }
+
+    /* 4. BUTTONS */
+    .btn-primary {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        transition: all 0.3s;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+    }
+
+    /* 5. TABLE */
+    .table-responsive { padding: 0 5px; }
+    .table td {
+        background: #ffffff;
+        border-bottom: 10px solid #f3f4f6 !important;
+        vertical-align: middle;
+        padding: 1.2rem 1rem;
+    }
+    .table tr td:first-child { border-top-left-radius: 15px; border-bottom-left-radius: 15px; }
+    .table tr td:last-child { border-top-right-radius: 15px; border-bottom-right-radius: 15px; }
+    
+    .table thead th {
+        border: none;
+        color: #9ca3af;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding-bottom: 15px;
+    }
+
+    /* 6. EXTRAS */
+    .badge-soft-success {
+        background-color: #d1fae5;
+        color: #065f46;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+</style>
 </head>
-<body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-primary mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">🏫 Student System</a>
-        
-            <div class="float-end">
-                {% if user.is_authenticated %}
-                    <span class="text-white me-2">Hi, {{ user.username }}!</span>
-                    <a href="{% url 'logout' %}" class="btn btn-sm btn-light">Logout</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-sm btn-outline-light">Login</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
+<body id="page-top">
 
-    <div class="container">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div id="wrapper">
+
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-light accordion" id="accordionSidebar">
+
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-graduation-cap"></i>
                 </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+                <div class="sidebar-brand-text mx-3">Student ERP</div>
+            </a>
 
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
+            <hr class="sidebar-divider my-0">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'index' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">
+                Management
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/add">
+                    <i class="fas fa-fw fa-user-plus"></i>
+                    <span>Add Student</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>View All Students</span></a>
+            </li>
+
+            <hr class="sidebar-divider my-0">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'library' %}">
+                    <i class="fas fa-fw fa-book-reader"></i>
+                    <span>Library & Notes</span></a>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <div id="content">
+
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <ul class="navbar-nav ml-auto">
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    {% if user.is_authenticated %}
+                                        {{ user.username }}
+                                    {% else %}
+                                        Guest
+                                    {% endif %}
+                                </span>
+                                <img class="img-profile rounded-circle"
+                                    src="{% static 'assets/img/undraw_profile.svg' %}">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="container-fluid">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            
+            </div>
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Student System 2025</span>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+        </div>
+    
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <script src="{% static 'assets/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'assets/js/sb-admin-2.min.js' %}"></script>
+
 </body>
 </html>

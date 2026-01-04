@@ -1,0 +1,63 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Digital Library{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-4 mt-3">
+    <div>
+        <h1 class="h2 mb-1 text-gray-800" style="font-weight: 700;">Digital Library 📚</h1>
+        <p class="text-muted mb-0">Access notes, videos, and assignments.</p>
+    </div>
+    <a href="/admin/members/studymaterial/add/" target="_blank" class="btn btn-primary shadow-sm">
+        <i class="fas fa-cloud-upload-alt mr-2"></i> Upload Material
+    </a>
+</div>
+
+<div class="row">
+    {% for item in materials %}
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card h-100 border-0 shadow-sm" style="transition: transform 0.3s; border-radius: 20px; overflow: hidden;">
+            
+            <div style="height: 6px; background: {% if item.subject == 'Maths' %}#3b82f6{% elif item.subject == 'Physics' %}#8b5cf6{% elif item.subject == 'Chemistry' %}#ef4444{% else %}#10b981{% endif %};"></div>
+            
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge badge-light text-uppercase font-weight-bold p-2" style="background: #f3f4f6; color: #4b5563; border-radius: 8px;">
+                        {{ item.subject }}
+                    </span>
+                    <span class="small text-muted font-weight-bold">Class {{ item.class_name }}</span>
+                </div>
+
+                <h5 class="font-weight-bold text-gray-800 mb-2">{{ item.title }}</h5>
+                <p class="small text-muted mb-4">Uploaded on {{ item.created_at|date:"M d, Y" }}</p>
+
+                <div class="d-flex mt-auto">
+                    {% if item.video_link %}
+                    <a href="{{ item.video_link }}" target="_blank" class="btn btn-danger btn-sm flex-fill mr-2" style="border-radius: 10px;">
+                        <i class="fab fa-youtube mr-1"></i> Watch
+                    </a>
+                    {% endif %}
+
+                    {% if item.pdf_file %}
+                    <a href="{{ item.pdf_file.url }}" target="_blank" class="btn btn-info btn-sm flex-fill" style="border-radius: 10px;">
+                        <i class="fas fa-file-pdf mr-1"></i> Notes
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <div class="mb-3">
+            <i class="fas fa-folder-open fa-4x text-gray-300"></i>
+        </div>
+        <h5 class="text-gray-500">Library is Empty</h5>
+        <p class="text-muted">Start uploading study materials from the admin panel.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

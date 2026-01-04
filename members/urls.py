@@ -1,15 +1,14 @@
 from django.urls import path
-from . import views
+from . import views  # Ye 'members' folder ke andar hai, isliye yahan views mil jayega
 
 urlpatterns = [
-    # --- Main Student Operations (CRUD) ---
     path('', views.index, name='index'),
     path('add/', views.add, name='add'),
-    path('details/<int:id>/', views.details, name='details'),
-    path('update/<int:id>/', views.update, name='update'),
-    path('delete/<int:id>/', views.delete, name='delete'),
-
-    # --- Authentication (Login/Logout) ---
-    path('login/', views.login_user, name='login'),
-    path('logout/', views.logout_user, name='logout'),
+    path('add/addrecord/', views.addrecord, name='addrecord'),
+    path('delete/<int:id>', views.delete, name='delete'),
+    path('update/<int:id>', views.update, name='update'),
+    path('update/updaterecord/<int:id>', views.updaterecord, name='updaterecord'),
+    
+    # Library ka rasta
+    path('library/', views.library, name='library'),
 ]

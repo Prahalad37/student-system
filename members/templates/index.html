@@ -1,79 +1,151 @@
 {% extends "master.html" %}
+{% load static %}
 
-{% block title %}
-  All Members
-{% endblock %}
+{% block title %}Smart Dashboard{% endblock %}
 
 {% block content %}
-    <div class="card shadow p-4">
-        
-        <div class="row align-items-center mb-4">
-            <div class="col-md-4">
-                <h3 class="m-0">Students List 📋</h3>
-            </div>
 
-            {% if user.is_authenticated %}
-            <div class="col-md-8">
-                <div class="row g-2 justify-content-end">
-                    <div class="col-auto">
-                        <a href="{% url 'add' %}" class="btn btn-primary">+ Add New</a>
+<div class="d-flex align-items-center justify-content-between mb-5 mt-3">
+    <div>
+        <h1 class="h2 mb-1 text-gray-800" style="font-weight: 700;">Overview</h1>
+        <p class="text-muted mb-0" style="font-size: 0.95rem;">Here is what's happening in your institute today.</p>
+    </div>
+    <a href="/add" class="btn btn-primary">
+        <i class="fas fa-plus fa-sm text-white mr-2"></i> Add Student
+    </a>
+</div>
+
+<div class="row mb-5">
+    
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card h-100 py-4 px-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-muted text-uppercase mb-2">Total Students</div>
+                    <div class="h2 mb-0 font-weight-bold" style="background: linear-gradient(to right, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        {{ mymembers|length }}
                     </div>
-                    <div class="col-auto">
-                        <form action="" method="GET" class="d-flex">
-                            <input type="text" name="query" class="form-control me-2" placeholder="Search name..." value="{{ request.GET.query }}">
-                            <button type="submit" class="btn btn-dark">Search 🔍</button>
-                            <a href="{% url 'index' %}" class="btn btn-outline-secondary ms-1">Reset</a>
-                        </form>
-                    </div>
+                    <p class="text-success small mt-2 mb-0 font-weight-bold">
+                        <i class="fas fa-arrow-up"></i> 12% increase
+                    </p>
+                </div>
+                <div style="width: 70px; height: 70px; border-radius: 50%; border: 6px solid #f3f4f6; border-top: 6px solid #10b981; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-users text-gray-400"></i>
                 </div>
             </div>
-            {% endif %}
         </div>
-        
-        <hr>
-
-        <table class="table table-hover align-middle"> <thead class="table-dark">
-                <tr>
-                    <th>Profile</th> 
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for x in mymembers %}
-                <tr>
-                    <td style="text-align: center; vertical-align: middle;">
-                        {% if x.profile_pic %}
-                            <img src="{{ x.profile_pic.url }}" alt="Profile" 
-                                style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
-                        {% else %}
-                            <span class="text-muted" style="font-size: 20px;">👤</span>
-                        {% endif %}
-                    </td>
-
-                    <td><a href="details/{{ x.id }}" class="text-decoration-none fw-bold">{{ x.firstname }}</a></td>
-                    
-                    <td>{{ x.lastname }}</td>
-                    
-                    <td>
-                        {% if user.is_authenticated %}
-                           <a href="{% url 'update' x.id %}" class="btn btn-warning btn-sm">Edit ✏️</a>
-                           <a href="{% url 'delete' x.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Kya aap sach mein delete karna chahte hain? ⚠️');">Delete 🗑️</a>
-                        {% else %}
-                            <span class="badge bg-secondary">Login to Edit</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="text-center text-muted py-4">
-                        <h5>No students found matching your search. 🤷‍♂️</h5>
-                        <a href="{% url 'index' %}" class="btn btn-sm btn-outline-primary mt-2">Show All</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card h-100 py-4 px-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-muted text-uppercase mb-2">Total Revenue</div>
+                    <div class="h2 mb-0 font-weight-bold" style="background: linear-gradient(to right, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        ₹ 4.5L
+                    </div>
+                    <p class="text-success small mt-2 mb-0 font-weight-bold">
+                        <i class="fas fa-arrow-up"></i> 5% this month
+                    </p>
+                </div>
+                <div style="width: 70px; height: 70px; border-radius: 50%; border: 6px solid #f3f4f6; border-top: 6px solid #3b82f6; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-wallet text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card h-100 py-4 px-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-muted text-uppercase mb-2">Attendance</div>
+                    <div class="h2 mb-0 font-weight-bold" style="background: linear-gradient(to right, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        98%
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">
+                        Avg daily attendance
+                    </p>
+                </div>
+                <div style="width: 70px; height: 70px; border-radius: 50%; border: 6px solid #f3f4f6; border-top: 6px solid #8b5cf6; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-check-circle text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="d-flex align-items-center justify-content-between mb-3 px-2">
+            <h5 class="m-0 font-weight-bold text-gray-800">Recent Enrollments</h5>
+            <div class="dropdown">
+                <button class="btn btn-light btn-sm shadow-sm font-weight-bold" style="border-radius: 10px; color: #6b7280;">
+                    <i class="fas fa-filter mr-1"></i> Filter
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-borderless" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="pl-4">Student Name</th>
+                        <th>Class / Batch</th>
+                        <th>Status</th>
+                        <th>Fee Status</th>
+                        <th class="text-right pr-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in mymembers %}
+                    <tr class="shadow-sm">
+                        <td class="pl-4">
+                            <div class="d-flex align-items-center">
+                                {% if x.profile_pic %}
+                                <img src="{{ x.profile_pic.url }}" class="rounded-circle shadow-sm mr-3" width="45" height="45" style="object-fit: cover;">
+                                {% else %}
+                                <div class="rounded-circle bg-light text-success d-flex align-items-center justify-content-center mr-3 font-weight-bold" style="width: 45px; height: 45px; font-size: 1.1rem;">
+                                    {{ x.firstname|slice:":1" }}
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <div class="font-weight-bold text-dark" style="font-size: 0.95rem;">{{ x.firstname }} {{ x.lastname }}</div>
+                                    <div class="small text-muted" style="font-size: 0.8rem;">ID: #STU-{{ x.id }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="text-dark font-weight-500">
+                            Class 12 - PCM
+                        </td>
+
+                        <td>
+                            <span class="badge badge-soft-success">
+                                <i class="fas fa-circle" style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> Active
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="text-success font-weight-bold" style="font-size: 0.9rem;">Paid</span>
+                            <div class="small text-muted">Via UPI</div>
+                        </td>
+
+                        <td class="text-right pr-4">
+                            <a href="update/{{ x.id }}" class="btn btn-light btn-sm text-primary shadow-sm mx-1" style="border-radius: 8px; width: 35px; height: 35px; padding: 0; line-height: 35px;">
+                                <i class="fas fa-pen" style="font-size: 0.8rem;"></i>
+                            </a>
+                            <a href="delete/{{ x.id }}" class="btn btn-light btn-sm text-danger shadow-sm mx-1" style="border-radius: 8px; width: 35px; height: 35px; padding: 0; line-height: 35px;" onclick="return confirm('Delete record?')">
+                                <i class="fas fa-trash" style="font-size: 0.8rem;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr><td style="padding: 0; border: none; height: 0;"></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

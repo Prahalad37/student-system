@@ -1,122 +1,49 @@
-from django.shortcuts import render, redirect
-from django.db.models import Q
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template import loader
+from django.urls import reverse
+from django.shortcuts import render
+from .models import Member, StudyMaterial  # Dono models import hone chahiye
 
-from .models import Member
-from .forms import MemberForm
-
-# --- MAIN VIEWS ---
-
-@login_required
 def index(request):
-    """
-    Home page view.
-    Displays a list of students and handles search functionality.
-    """
-    query = request.GET.get('query')  # Get search term from URL
-    
-    if query:
-        # Search by Firstname OR Lastname (Case-insensitive)
-        mymembers = Member.objects.filter(
-            Q(firstname__icontains=query) | Q(lastname__icontains=query)
-        )
-    else:
-        # Fetch all records if no search query
-        mymembers = Member.objects.all()
+  mymembers = Member.objects.all().values()
+  template = loader.get_template('index.html')
+  return HttpResponse(template.render({'mymembers': mymembers, 'request': request}, request))
 
-    context = {
-        'mymembers': mymembers,
-    }
-    return render(request, 'index.html', context)
-
-
-@login_required
 def add(request):
-    """
-    View to add a new student.
-    Handles file upload for profile pictures.
-    """
-    if request.method == 'POST':
-        # IMPORTANT: request.FILES is required to handle image uploads
-        form = MemberForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Student added successfully! ✅")
-            return redirect('index')
-    else:
-        form = MemberForm()
-        
-    return render(request, 'add.html', {'form': form})
+  template = loader.get_template('add.html')
+  return HttpResponse(template.render({}, request))
 
+def addrecord(request):
+  x = request.POST['first']
+  y = request.POST['last']
+  member = Member(firstname=x, lastname=y)
+  member.save()
+  return HttpResponseRedirect(reverse('index'))
 
-@login_required
-def update(request, id):
-    """
-    View to update an existing student's details.
-    """
-    member = Member.objects.get(id=id)
-    
-    if request.method == 'POST':
-        # Pass 'instance' to update the specific record instead of creating a new one
-        form = MemberForm(request.POST, request.FILES, instance=member)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Student details updated! ✏️")
-            return redirect('index')
-    else:
-        form = MemberForm(instance=member)
-        
-    return render(request, 'update.html', {'form': form, 'member': member})
-
-
-@login_required
 def delete(request, id):
-    """
-    View to delete a student record.
-    """
-    member = Member.objects.get(id=id)
-    member.delete()
-    messages.success(request, "Student deleted successfully. 🗑️")
-    return redirect('index')
+  member = Member.objects.get(id=id)
+  member.delete()
+  return HttpResponseRedirect(reverse('index'))
 
+def update(request, id):
+  mymember = Member.objects.get(id=id)
+  template = loader.get_template('update.html')
+  context = {
+    'mymember': mymymember,
+  }
+  return HttpResponse(template.render(context, request))
 
-def details(request, id):
-    """
-    View to show detailed information of a single student.
-    """
-    mymember = Member.objects.get(id=id)
-    return render(request, 'details.html', {'mymember': mymember})
+def updaterecord(request, id):
+  first = request.POST['first']
+  last = request.POST['last']
+  member = Member.objects.get(id=id)
+  member.firstname = first
+  member.lastname = last
+  member.save()
+  return HttpResponseRedirect(reverse('index'))
 
-
-# --- AUTHENTICATION SYSTEM ---
-
-def login_user(request):
-    """
-    Handles user login.
-    """
-    if request.method == 'POST':
-        user_name = request.POST['username']
-        pass_word = request.POST['password']
-
-        user = authenticate(request, username=user_name, password=pass_word)
-
-        if user is not None:
-            login(request, user)
-            messages.success(request, "Welcome Back! Login Successful. 🔓")
-            return redirect('index')
-        else:
-            messages.error(request, "Invalid Username or Password! ❌")
-            return redirect('login')
-            
-    return render(request, 'login_user.html')
-
-
-def logout_user(request):
-    """
-    Handles user logout.
-    """
-    logout(request)
-    messages.success(request, "You have been logged out. 👋")
-    return redirect('login')
+# --- NEW LIBRARY VIEW ---
+def library(request):
+    # Saare materials lao, latest pehle
+    materials = StudyMaterial.objects.all().order_by('-created_at')
+    return render(request, 'library.html', {'materials': materials})
