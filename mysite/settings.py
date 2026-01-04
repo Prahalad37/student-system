@@ -104,8 +104,12 @@ USE_TZ = True
 
 # --- STATIC & MEDIA FILES ---
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+import os  # Agar upar import nahi hai toh ye line zaroori hai
+
+# --- STATIC FILES (CSS, JavaScript, Images) ---
+# Ye wo files hain jo website ke design ke liye hoti hain
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files (User uploaded content)
 MEDIA_URL = '/media/'
