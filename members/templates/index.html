@@ -21,7 +21,7 @@
         <div class="card h-100 py-4 px-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="text-xs font-weight-bold text-muted text-uppercase mb-2">Total Students</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
                     <div class="h2 mb-0 font-weight-bold" style="background: linear-gradient(to right, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                         {{ mymembers|length }}
                     </div>
@@ -40,7 +40,7 @@
         <div class="card h-100 py-4 px-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="text-xs font-weight-bold text-muted text-uppercase mb-2">Total Revenue</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">₹ {{ total_revenue }}</div>
                     <div class="h2 mb-0 font-weight-bold" style="background: linear-gradient(to right, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                         ₹ 4.5L
                     </div>
@@ -60,9 +60,17 @@
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
                     <div class="text-xs font-weight-bold text-muted text-uppercase mb-2">Attendance</div>
-                    <div class="h2 mb-0 font-weight-bold" style="background: linear-gradient(to right, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                        98%
-                    </div>
+                    <div class="row no-gutters align-items-center">
+                <div class="col-auto">
+        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ attendance_percent }}%</div>
+    </div>
+    <div class="col">
+        <div class="progress progress-sm mr-2">
+            <div class="progress-bar bg-info" role="progressbar" 
+                 style="width: {{ attendance_percent }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+</div>
                     <p class="text-muted small mt-2 mb-0">
                         Avg daily attendance
                     </p>
@@ -87,62 +95,65 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-borderless" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th class="pl-4">Student Name</th>
-                        <th>Class / Batch</th>
-                        <th>Status</th>
-                        <th>Fee Status</th>
-                        <th class="text-right pr-4">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for x in mymembers %}
-                    <tr class="shadow-sm">
-                        <td class="pl-4">
-                            <div class="d-flex align-items-center">
-                                {% if x.profile_pic %}
-                                <img src="{{ x.profile_pic.url }}" class="rounded-circle shadow-sm mr-3" width="45" height="45" style="object-fit: cover;">
-                                {% else %}
-                                <div class="rounded-circle bg-light text-success d-flex align-items-center justify-content-center mr-3 font-weight-bold" style="width: 45px; height: 45px; font-size: 1.1rem;">
-                                    {{ x.firstname|slice:":1" }}
-                                </div>
-                                {% endif %}
-                                <div>
-                                    <div class="font-weight-bold text-dark" style="font-size: 0.95rem;">{{ x.firstname }} {{ x.lastname }}</div>
-                                    <div class="small text-muted" style="font-size: 0.8rem;">ID: #STU-{{ x.id }}</div>
-                                </div>
+            <div class="table-responsive">
+    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+        <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th>Student Name</th>
+                <th>Class / Batch</th>
+                <th>Fees Info 💰</th> <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for x in mymembers %}
+            <tr>
+                <td>#{{ x.id }}</td>
+                
+                <td>
+                    <div class="d-flex align-items-center">
+                        {% if x.profile_pic %}
+                            <img src="/media/{{ x.profile_pic }}" alt="Student" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" class="mr-2">
+                        
+                        {% else %}
+                            <div class="mr-2 d-flex justify-content-center align-items-center bg-light text-primary" style="width: 40px; height: 40px; border-radius: 50%;">
+                                <i class="fas fa-user"></i>
                             </div>
-                        </td>
+                        {% endif %}
+                        
+                        <span class="font-weight-bold">{{ x.firstname }} {{ x.lastname }}</span>
+                    </div>
+                </td>
 
-                        <td class="text-dark font-weight-500">
-                            Class 12 - PCM
-                        </td>
+                <td>Class 12 - PCM</td>
 
-                        <td>
-                            <span class="badge badge-soft-success">
-                                <i class="fas fa-circle" style="font-size: 6px; vertical-align: middle; margin-right: 4px;"></i> Active
-                            </span>
-                        </td>
+                <td>
+                    {% if x.fee_total == 0 %}
+                        <span class="badge badge-secondary">Data Not Updated</span>
+                    {% else %}
+                        <div style="font-size: 0.9rem;">
+                            <strong>Total:</strong> ₹{{ x.fee_total }}<br>
+                           <strong class="text-danger">Due: ₹{{ x.due_amount }}</strong>
+                        </div>
+                    {% endif %}
+                </td>
 
-                        <td>
-                            <span class="text-success font-weight-bold" style="font-size: 0.9rem;">Paid</span>
-                            <div class="small text-muted">Via UPI</div>
-                        </td>
+                <td><span class="badge badge-success">Active</span></td>
 
-                        <td class="text-right pr-4">
-                            <a href="update/{{ x.id }}" class="btn btn-light btn-sm text-primary shadow-sm mx-1" style="border-radius: 8px; width: 35px; height: 35px; padding: 0; line-height: 35px;">
-                                <i class="fas fa-pen" style="font-size: 0.8rem;"></i>
-                            </a>
-                            <a href="delete/{{ x.id }}" class="btn btn-light btn-sm text-danger shadow-sm mx-1" style="border-radius: 8px; width: 35px; height: 35px; padding: 0; line-height: 35px;" onclick="return confirm('Delete record?')">
-                                <i class="fas fa-trash" style="font-size: 0.8rem;"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr><td style="padding: 0; border: none; height: 0;"></td></tr>
-                    {% endfor %}
-                </tbody>
+                <td>
+                    <a href="update/{{ x.id }}" class="btn btn-primary btn-circle btn-sm">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                    <a href="delete/{{ x.id }}" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Are you sure?');">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
             </table>
         </div>
     </div>

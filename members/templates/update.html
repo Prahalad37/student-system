@@ -3,15 +3,66 @@
 {% block title %}Update Student{% endblock %}
 
 {% block content %}
-<div class="card shadow p-4" style="max-width: 500px; margin: 20px auto;">
-    <h3 class="text-center mb-4">Edit Student ✏️</h3>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Edit Student ✏️</h6>
+            </div>
+            <div class="card-body">
+                
+                <form action="/updaterecord/{{ mymember.id }}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label>First Name:</label>
+                        <input name="first" value="{{ mymember.firstname }}" class="form-control" required>
+                    </div>
 
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    
-    {{ form.as_p }}
-    
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+                    <div class="form-group">
+                        <label>Last Name:</label>
+                        <input name="last" value="{{ mymember.lastname }}" class="form-control" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-primary font-weight-bold">Total Fees:</label>
+                                <input type="number" name="fee_total" value="{{ mymember.fee_total }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-success font-weight-bold">Paid Amount:</label>
+                                <input type="number" name="fee_paid" value="{{ mymember.fee_paid }}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label>Current Photo:</label><br>
+                        {% if mymember.profile_pic %}
+                            <img src="/media/{{ mymember.profile_pic }}" width="60" style="border-radius:50%;">
+                        {% else %}
+                            <span>No Image</span>
+                        {% endif %}
+                        <br><br>
+                        <label class="font-weight-bold">Upload New Photo (Optional):</label>
+                        <input type="file" name="file" class="form-control-file border p-2 rounded">
+                    </div>
+
+                    <hr>
+
+                    <button type="submit" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50"><i class="fas fa-save"></i></span>
+                        <span class="text">Update Changes</span>
+                    </button>
+                    
+                    <a href="/" class="btn btn-secondary">Cancel</a>
+
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

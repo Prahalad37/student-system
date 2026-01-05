@@ -194,7 +194,26 @@
                     <i class="fas fa-fw fa-book-reader"></i>
                     <span>Library & Notes</span></a>
             </li>
+           <hr class="sidebar-divider">
 
+<div class="sidebar-heading">
+    Daily Tasks
+</div>
+
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAttendance"
+        aria-expanded="true" aria-controls="collapseAttendance">
+        <i class="fas fa-fw fa-calendar-check"></i>
+        <span>Attendance</span>
+    </a>
+    <div id="collapseAttendance" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Actions:</h6>
+            <a class="collapse-item" href="/attendance/">Mark Today's Attendance</a>
+            <a class="collapse-item" href="/attendance_records/">View History</a>
+        </div>
+    </div>
+</li> 
             <hr class="sidebar-divider d-none d-md-block">
 
             <div class="text-center d-none d-md-inline">
@@ -267,6 +286,9 @@
     <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'assets/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
     <script src="{% static 'assets/js/sb-admin-2.min.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
 
 </body>
 </html>

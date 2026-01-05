@@ -1,12 +1,12 @@
 from django.contrib import admin
-from .models import Member, StudyMaterial  # StudyMaterial ko import karo
+from .models import Member, StudyMaterial, Attendance
 
-class MemberAdmin(admin.ModelAdmin):
-    list_display = ("firstname", "lastname", "phone", "joined_date")
+# Attendance ko Admin panel me acche se dikhane ke liye setting
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ('student', 'date', 'status') # Columns dikhenge
+    list_filter = ('date', 'status')             # Filter karne ka option aayega
 
-class StudyMaterialAdmin(admin.ModelAdmin):
-    list_display = ("title", "subject", "class_name", "created_at")
-    list_filter = ("subject", "class_name") # Side mein filter aayega
-
-admin.site.register(Member, MemberAdmin)
-admin.site.register(StudyMaterial, StudyMaterialAdmin) # Ise register karo
+# Models ko register karo
+admin.site.register(Member)
+admin.site.register(StudyMaterial)
+admin.site.register(Attendance, AttendanceAdmin) # <-- Ye line zaroori hai

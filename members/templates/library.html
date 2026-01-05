@@ -15,12 +15,23 @@
     </a>
 </div>
 
-<div class="row">
+<div class="card mb-4 shadow-sm border-0">
+    <div class="card-body p-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-gray-400"></i></span>
+            </div>
+            <input type="text" id="librarySearch" class="form-control border-0 bg-light small" placeholder="Search for Subjects, Topics or Class..." aria-label="Search">
+        </div>
+    </div>
+</div>
+
+<div class="row" id="libraryItems">
     {% for item in materials %}
-    <div class="col-xl-4 col-md-6 mb-4">
+    <div class="col-xl-4 col-md-6 mb-4 library-card">
         <div class="card h-100 border-0 shadow-sm" style="transition: transform 0.3s; border-radius: 20px; overflow: hidden;">
             
-            <div style="height: 6px; background: {% if item.subject == 'Maths' %}#3b82f6{% elif item.subject == 'Physics' %}#8b5cf6{% elif item.subject == 'Chemistry' %}#ef4444{% else %}#10b981{% endif %};"></div>
+           <div style="height: 6px; background: {% if item.subject|lower == 'maths' %}#3b82f6{% elif item.subject|lower == 'physics' %}#8b5cf6{% elif item.subject|lower == 'chemistry' %}#ef4444{% else %}#10b981{% endif %};"></div>
             
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
@@ -60,4 +71,22 @@
     {% endfor %}
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('librarySearch').addEventListener('keyup', function() {
+        let searchQuery = this.value.toLowerCase();
+        let cards = document.getElementsByClassName('library-card');
+
+        for (let i = 0; i < cards.length; i++) {
+            let cardContent = cards[i].innerText.toLowerCase();
+            if (cardContent.includes(searchQuery)) {
+                cards[i].style.display = "block"; // Dikhao
+            } else {
+                cards[i].style.display = "none";  // Chhupao
+            }
+        }
+    });
+</script>
 {% endblock %}
