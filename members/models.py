@@ -60,3 +60,48 @@ class Attendance(models.Model):
     
     def __str__(self):
         return f"{self.student.firstname} - {self.date} - {self.status}"
+    
+    # --- EXAM & RESULTS MODEL ---
+class ExamScore(models.Model):
+    student = models.ForeignKey(Member, on_delete=models.CASCADE)
+    exam_name = models.CharField(max_length=100, default="Mid-Term Exam") # e.g. Final, Unit Test
+    
+    # Subjects
+    maths = models.IntegerField(default=0)
+    physics = models.IntegerField(default=0)
+    chemistry = models.IntegerField(default=0)
+    english = models.IntegerField(default=0)
+    computer = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Automatic Total & Percentage Calculation
+    @property
+    def total_marks(self):
+        return self.maths + self.physics + self.chemistry + self.english + self.computer
+
+    @property
+    def percentage(self):
+        # Total 5 subjects hain, so max marks 500 maankar chal rahe hain
+        return (self.total_marks / 500) * 100
+
+    def __str__(self):
+        return f"{self.student.firstname} - {self.exam_name}"
+    
+    # --- NOTICE BOARD MODEL ---
+class Notice(models.Model):
+    title = models.CharField(max_length=200) # e.g. "Diwali Holidays"
+    message = models.TextField() # e.g. "School will remain closed from..."
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    
+# --- EXPENSE MANAGER MODEL ---
+class Expense(models.Model):
+    description = models.CharField(max_length=200) # e.g. "Teacher Salary"
+    amount = models.IntegerField() # e.g. 5000
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.description} - ₹{self.amount}"

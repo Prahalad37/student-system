@@ -1,0 +1,134 @@
+{% extends "master.html" %}
+
+{% block title %}{{ student.firstname }}'s Profile{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">👤 Student Profile</h1>
+    <a href="{% url 'index' %}" class="btn btn-secondary btn-sm shadow-sm">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<div class="row">
+
+    <div class="col-xl-4 col-lg-5">
+        
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                {% if student.profile_pic %}
+                    <img class="img-profile rounded-circle mb-3 shadow" src="/media/{{ student.profile_pic }}" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
+                {% else %}
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 150px; height: 150px;">
+                        <i class="fas fa-user fa-5x text-gray-300"></i>
+                    </div>
+                {% endif %}
+                
+                <h4 class="font-weight-bold text-dark">{{ student.firstname }} {{ student.lastname }}</h4>
+                <p class="text-muted mb-1">Class 12 - PCM</p>
+                <div class="badge badge-primary px-3 py-2">ID: #{{ student.id }}</div>
+
+                <hr>
+                
+                <div class="text-left mt-4">
+                    <h6 class="font-weight-bold text-uppercase text-gray-600 text-xs">Fees Overview</h6>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Fees:</span>
+                        <span class="font-weight-bold">₹{{ student.fee_total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Paid:</span>
+                        <span class="text-success font-weight-bold">₹{{ student.fee_paid }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Due Amount:</span>
+                        {% if student.due_amount > 0 %}
+                            <span class="text-danger font-weight-bold bg-danger-light px-2 rounded">₹{{ student.due_amount }}</span>
+                        {% else %}
+                            <span class="text-success font-weight-bold">Clear ✅</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <hr>
+                <a href="{% url 'id_card' student.id %}" target="_blank" class="btn btn-warning btn-block mb-2 text-white">
+                    <i class="fas fa-id-card"></i> Generate ID Card
+                </a>
+                <a href="{% url 'receipt_pdf' student.id %}" target="_blank" class="btn btn-info btn-block mb-2">
+                    <i class="fas fa-file-invoice"></i> Download Receipt
+                </a>
+                <a href="/update/{{ student.id }}" class="btn btn-primary btn-block">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8 col-lg-7">
+        
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">📊 Attendance Performance</h6>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3">
+                        <h2 class="display-4 font-weight-bold text-dark mb-0">{{ attendance_percent }}%</h2>
+                        <p class="text-muted">Overall Attendance</p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="progress mb-2" style="height: 20px;">
+                            <div class="progress-bar {% if attendance_percent >= 75 %}bg-success{% elif attendance_percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" style="width: {{ attendance_percent }}%">
+                            </div>
+                        </div>
+                        <small class="text-muted">Present: <b>{{ present_days }}</b> days out of <b>{{ total_days }}</b> working days.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-white">
+                <h6 class="m-0 font-weight-bold text-info">📝 Exam History</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Exam Name</th>
+                                <th>Date</th>
+                                <th>Total Marks</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exam in exams %}
+                            <tr>
+                                <td class="font-weight-bold">{{ exam.exam_name }}</td>
+                                <td>{{ exam.created_at|date:"d M Y" }}</td>
+                                <td>{{ exam.total_marks }} / 500</td>
+                                <td>
+                                    <span class="badge {% if exam.percentage >= 60 %}badge-success{% else %}badge-warning{% endif %}">
+                                        {{ exam.percentage|floatformat:1 }}%
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center p-4 text-muted">No exams given yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

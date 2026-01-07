@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ID Card - {{ student.firstname }}</title>
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        /* ID Card Size (Standard Credit Card Size) */
+        .id-card {
+            width: 350px;
+            height: 520px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        /* Top Header Design */
+        .header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            height: 130px;
+            color: white;
+            padding-top: 20px;
+            border-bottom-left-radius: 50% 20px;
+            border-bottom-right-radius: 50% 20px;
+        }
+
+        .school-name {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tagline {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        /* Student Photo */
+        .photo-container {
+            margin-top: -60px;
+        }
+        
+        .student-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Details */
+        .details {
+            padding: 10px 20px;
+        }
+
+        .name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #333;
+            margin: 10px 0 5px 0;
+        }
+
+        .role {
+            color: #4e73df;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-top: 10px;
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .info-table td {
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #888;
+            width: 80px;
+        }
+
+        /* Footer / Barcode */
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: #f8f9fc;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .id-no {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 3px;
+        }
+
+        /* Print Button (Hide while printing) */
+        .print-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #4e73df;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        @media print {
+            body { background: white; height: auto; }
+            .print-btn { display: none; }
+            .id-card { box-shadow: none; border: 1px solid #000; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print ID Card</button>
+
+    <div class="id-card">
+        <div class="header">
+            <div class="school-name">Student ERP School</div>
+            <div class="tagline">Excellence Since 2025</div>
+        </div>
+
+        <div class="photo-container">
+            {% if student.profile_pic %}
+                <img src="/media/{{ student.profile_pic }}" class="student-img">
+            {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ student.firstname }}&background=random" class="student-img">
+            {% endif %}
+        </div>
+
+        <div class="details">
+            <div class="name">{{ student.firstname }} {{ student.lastname }}</div>
+            <div class="role">Student</div>
+
+            <table class="info-table">
+                <tr>
+                    <td class="info-label">ID No:</td>
+                    <td><b>{{ student.id }}</b></td>
+                </tr>
+                <tr>
+                    <td class="info-label">Class:</td>
+                    <td>XII - PCM</td>
+                </tr>
+                <tr>
+                    <td class="info-label">DOB:</td>
+                    <td>01 Jan 2008</td> </tr>
+                <tr>
+                    <td class="info-label">Phone:</td>
+                    <td>+91 98765 43210</td>
+                </tr>
+                <tr>
+                    <td class="info-label">Valid:</td>
+                    <td>2025 - 2026</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="footer">
+            <div class="id-no">STU-{{ student.id }}-2026</div>
+            <small style="font-size: 10px; color: #aaa;">Principal Signature</small>
+        </div>
+    </div>
+
+</body>
+</html>

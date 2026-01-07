@@ -1,0 +1,72 @@
+{% extends "master.html" %}
+
+{% block title %}Report Cards{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">📊 Exam Results</h1>
+    <a href="{% url 'add_marks' %}" class="btn btn-primary shadow-sm">
+        <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Add New Marks
+    </a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Student Name</th>
+                        <th>Exam</th>
+                        <th>Marks Breakdown</th>
+                        <th>Total</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in scores %}
+                    <tr>
+                        <td>{{ x.created_at|date:"d M Y" }}</td>
+                        <td class="font-weight-bold text-dark">{{ x.student.firstname }} {{ x.student.lastname }}</td>
+                        <td><span class="badge badge-info">{{ x.exam_name }}</span></td>
+                        
+                        <td style="font-size: 0.9rem;">
+                            <span title="Maths">📐 {{ x.maths }}</span> | 
+                            <span title="Physics">⚛️ {{ x.physics }}</span> | 
+                            <span title="Chemistry">🧪 {{ x.chemistry }}</span> | 
+                            <span title="English">📖 {{ x.english }}</span> | 
+                            <span title="Comp">💻 {{ x.computer }}</span>
+                        </td>
+
+                        <td class="font-weight-bold">{{ x.total_marks }} / 500</td>
+
+                        <td style="width: 20%;">
+                            <div class="d-flex align-items-center">
+                                <span class="mr-2 font-weight-bold">{{ x.percentage|floatformat:1 }}%</span>
+                                <div class="progress progress-sm w-100">
+                                    <div class="progress-bar 
+                                        {% if x.percentage >= 80 %}bg-success
+                                        {% elif x.percentage >= 60 %}bg-info
+                                        {% elif x.percentage >= 33 %}bg-warning
+                                        {% else %}bg-danger{% endif %}" 
+                                        role="progressbar" 
+                                        style="width: {{ x.percentage }}%">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted p-5">No exam records found yet. Click 'Add New Marks' to start!</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -124,3 +124,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 # settings.py ke end mein add karo
 CSRF_TRUSTED_ORIGINS = ['https://prahaladpal.pythonanywhere.com']
+
+# --- LOGIN SETTINGS ---
+LOGIN_URL = 'login'              # Agar login nahi hai to yahan bhejo
+LOGIN_REDIRECT_URL = 'index'     # Login hone ke baad Dashboard par bhejo
+LOGOUT_REDIRECT_URL = 'login'    # Logout hone ke baad Login page par bhejo

@@ -1,76 +1,125 @@
 {% extends "master.html" %}
 
-{% block title %}Daily Attendance{% endblock %}
+{% block title %}Mark Attendance{% endblock %}
 
 {% block content %}
-<div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary">Mark Attendance 📅</h6>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 bg-white p-4 shadow-sm rounded-lg">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold">Daily Attendance 📅</h1>
+            <p class="mb-0 text-muted">Select date and mark status.</p>
+        </div>
         
-        {% if message %}
-        <span class="badge badge-success p-2">{{ message }}</span>
-        {% endif %}
-    </div>
-    
-    <div class="card-body">
-        <form method="POST">
-            {% csrf_token %}
+        <div class="d-flex align-items-center mt-3 mt-md-0">
+            <input type="date" name="date" class="form-control mr-3 shadow-sm" style="width: 180px;" value="{% now 'Y-m-d' %}" required>
             
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label font-weight-bold">Select Date:</label>
-                <div class="col-sm-4">
-                    <input type="date" name="attendance_date" value="{{ today }}" class="form-control" required>
+            <button type="button" class="btn btn-success shadow-sm px-4" onclick="markAllPresent()">
+                <i class="fas fa-check-double mr-2"></i> All Present
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for x in mymembers %}
+        <div class="col-xl-3 col-md-4 col-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 attendance-card" id="card-{{ x.id }}">
+                <div class="card-body text-center p-3">
+                    
+                    <div class="mb-3 position-relative d-inline-block">
+                        {% if x.profile_pic %}
+                            <img src="/media/{{ x.profile_pic }}" class="rounded-circle shadow-sm" width="80" height="80" style="object-fit: cover; border: 3px solid #fff;">
+                        {% else %}
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto shadow-sm" style="width: 80px; height: 80px;">
+                                <span class="h2 text-gray-400 m-0">{{ x.firstname|slice:":1" }}</span>
+                            </div>
+                        {% endif %}
+                        <span id="dot-{{ x.id }}" class="position-absolute bg-secondary border border-white rounded-circle" 
+                              style="width: 15px; height: 15px; bottom: 5px; right: 5px;"></span>
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark mb-1 text-truncate">{{ x.firstname }} {{ x.lastname }}</h6>
+                    <small class="text-muted d-block mb-3">ID: #{{ x.id }}</small>
+
+                    <div class="btn-group btn-group-sm w-100 shadow-sm" role="group">
+                        <input type="radio" class="btn-check" name="status_{{ x.id }}" id="present-{{ x.id }}" value="Present" autocomplete="off" onchange="updateCardStyle({{ x.id }}, 'present')">
+                        <label class="btn btn-outline-success" for="present-{{ x.id }}">P</label>
+
+                        <input type="radio" class="btn-check" name="status_{{ x.id }}" id="absent-{{ x.id }}" value="Absent" autocomplete="off" onchange="updateCardStyle({{ x.id }}, 'absent')">
+                        <label class="btn btn-outline-danger" for="absent-{{ x.id }}">A</label>
+                    </div>
+
                 </div>
             </div>
-
-            <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th>Student Name</th>
-                            <th class="text-center">Present</th>
-                            <th class="text-center">Absent</th>
-                            <th class="text-center">Leave</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for x in students %}
-                        <tr>
-                            <td class="font-weight-bold text-gray-800">
-                                {{ x.firstname }} {{ x.lastname }}
-                            </td>
-                            
-                            <td class="text-center">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="p_{{x.id}}" name="status_{{x.id}}" value="Present" class="custom-control-input" checked>
-                                    <label class="custom-control-label text-success font-weight-bold" for="p_{{x.id}}">P</label>
-                                </div>
-                            </td>
-                            
-                            <td class="text-center">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="a_{{x.id}}" name="status_{{x.id}}" value="Absent" class="custom-control-input">
-                                    <label class="custom-control-label text-danger font-weight-bold" for="a_{{x.id}}">A</label>
-                                </div>
-                            </td>
-
-                            <td class="text-center">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="l_{{x.id}}" name="status_{{x.id}}" value="Leave" class="custom-control-input">
-                                    <label class="custom-control-label text-warning font-weight-bold" for="l_{{x.id}}">L</label>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg btn-block mt-3">
-                <i class="fas fa-save mr-2"></i> Save Attendance
-            </button>
-
-        </form>
+        </div>
+        {% endfor %}
     </div>
-</div>
+
+    <button type="submit" class="btn btn-primary btn-lg shadow-lg rounded-pill px-5 py-3" 
+            style="position: fixed; bottom: 30px; right: 30px; z-index: 999; animation: bounce 2s infinite;">
+        <i class="fas fa-save mr-2"></i> Submit Attendance
+    </button>
+
+</form>
+
+<style>
+    /* Card Styles */
+    .attendance-card { transition: all 0.3s ease; border-top: 4px solid transparent; }
+    
+    /* Green Style for Present */
+    .card-present { 
+        border-top-color: #1cc88a !important; 
+        background-color: #f0fdf4 !important;
+        transform: translateY(-5px);
+    }
+    
+    /* Red Style for Absent */
+    .card-absent { 
+        border-top-color: #e74a3b !important; 
+        background-color: #fef2f2 !important;
+    }
+
+    /* Bounce Animation for Save Button */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-10px);}
+        60% {transform: translateY(-5px);}
+    }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 1. Function to Update Card Visuals
+    function updateCardStyle(id, status) {
+        var card = document.getElementById('card-' + id);
+        var dot = document.getElementById('dot-' + id);
+        
+        // Reset Classes
+        card.classList.remove('card-present', 'card-absent');
+        dot.classList.remove('bg-success', 'bg-danger', 'bg-secondary');
+
+        if (status === 'present') {
+            card.classList.add('card-present');
+            dot.classList.add('bg-success');
+        } else if (status === 'absent') {
+            card.classList.add('card-absent');
+            dot.classList.add('bg-danger');
+        }
+    }
+
+    // 2. Mark All Present Logic
+    function markAllPresent() {
+        // Find all "Present" radio buttons
+        var inputs = document.querySelectorAll('input[value="Present"]');
+        inputs.forEach(function(input) {
+            input.checked = true;
+            // Trigger the change event manually to update styles
+            input.dispatchEvent(new Event('change'));
+        });
+    }
+</script>
 {% endblock %}

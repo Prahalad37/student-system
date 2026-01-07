@@ -3,75 +3,77 @@
 {% block title %}Attendance History{% endblock %}
 
 {% block content %}
-<link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.css"/>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-white">
         <h6 class="m-0 font-weight-bold text-primary">Attendance Register 📋</h6>
-        <a href="/attendance/" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Mark New Attendance
+        <a href="/attendance/" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+            <i class="fas fa-plus"></i> Mark New
         </a>
     </div>
     
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
-                <thead class="thead-light">
+                <thead class="bg-light text-dark">
                     <tr>
-                        <th>Date</th>
-                        <th>Student Name</th> <th>Class</th>
-                        <th>Fees Info 💰</th> <th>Status</th>
+                        <th style="width: 15%;">Date</th>
+                        <th style="width: 30%;">Student Name</th>
+                        <th>Fees Status 💰</th>
+                        <th>Attendance</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for x in records %}
                     <tr>
-                        <td>{{ x.date|date:"Y-m-d" }}</td> 
+                        <td>{{ x.date|date:"d M Y" }}</td> 
                         
                         <td class="font-weight-bold">
-                            <a href="#" class="text-dark text-decoration-none student-popover"
+                            <a href="#" class="text-dark text-decoration-none"
                                data-toggle="popover" 
-                               data-trigger="hover" 
-                               data-html="true"
-                               title="👤 Student Profile"
+                               title="{{ x.student.firstname }}'s Profile"
                                data-content="
                                    <div class='text-center'>
                                        {% if x.student.profile_pic %}
-                                           <img src='/media/{{ x.student.profile_pic }}' class='rounded-circle mb-2' width='70' height='70' style='object-fit:cover; border: 2px solid #ddd;'>
+                                           <img src='/media/{{ x.student.profile_pic }}' class='rounded-circle mb-2 shadow-sm' width='70' height='70' style='object-fit:cover;'>
                                        {% else %}
-                                           <div class='mb-2 text-gray-400'><i class='fas fa-user-circle fa-4x'></i></div>
+                                            <i class='fas fa-user-circle fa-4x text-gray-300 mb-2'></i>
                                        {% endif %}
-                                       
-                                       <h6 class='font-weight-bold text-primary mb-1'>{{ x.student.firstname }} {{ x.student.lastname }}</h6>
+                                       <h6 class='font-weight-bold text-primary'>{{ x.student.firstname }} {{ x.student.lastname }}</h6>
                                        <p class='small text-muted mb-2'>Class 12 - PCM</p>
-                                       
                                        {% if x.student.due_amount > 0 %}
                                            <span class='badge badge-danger'>Due: ₹{{ x.student.due_amount }}</span>
                                        {% else %}
-                                           <span class='badge badge-success'>Fees Clear ✅</span>
+                                           <span class='badge badge-success'>Fees Paid ✅</span>
                                        {% endif %}
                                    </div>
                                ">
+                               <img src="{% if x.student.profile_pic %}/media/{{ x.student.profile_pic }}{% else %}https://ui-avatars.com/api/?name={{ x.student.firstname }}{% endif %}" 
+                                    class="rounded-circle mr-2" width="30" height="30">
                                {{ x.student.firstname }} {{ x.student.lastname }}
                             </a>
                         </td>
 
-                        <td>Class 12 - PCM</td> <td>
-                            {% if x.student.fee_total == 0 %}
-                                <span class="badge badge-secondary">Data Not Updated</span>
+                        <td>
+                            {% if x.student.due_amount > 0 %}
+                                <span class="text-danger font-weight-bold" style="font-size: 0.9rem;">
+                                    <i class="fas fa-exclamation-circle"></i> ₹{{ x.student.due_amount }} Due
+                                </span>
                             {% else %}
-                                <small class="text-primary font-weight-bold">Total: ₹{{ x.student.fee_total }}</small><br>
-                                <small class="text-danger font-weight-bold">Due: ₹{{ x.student.due_amount }}</small>
+                                <span class="text-success font-weight-bold" style="font-size: 0.9rem;">
+                                    <i class="fas fa-check-circle"></i> Clear
+                                </span>
                             {% endif %}
                         </td>
 
                         <td class="text-center">
                             {% if x.status == 'Present' %}
-                                <span class="badge badge-success px-2 py-1">Present</span>
+                                <span class="badge badge-success px-3 py-2 rounded-pill">Present</span>
                             {% elif x.status == 'Absent' %}
-                                <span class="badge badge-danger px-2 py-1">Absent</span>
+                                <span class="badge badge-danger px-3 py-2 rounded-pill">Absent</span>
                             {% else %}
-                                <span class="badge badge-warning px-2 py-1">Leave</span>
+                                <span class="badge badge-warning px-3 py-2 rounded-pill">Leave</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -84,26 +86,30 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        // Table Initialize karo
+    $(document).ready(function() {
+        // 1. Initialize DataTable
         var table = $('#dataTable').DataTable({
-            "order": [[ 0, "desc" ]], // Latest date upar
-            "pageLength": 10,
-            "language": {
-                "search": "🔍 Search Record:"
-            },
-            // IMPORTANT: Jab page change ho (Next/Prev), tab bhi Popover activate karo
+            "order": [[ 0, "desc" ]], 
+            "language": { "search": "🔍 Filter Records:" },
             "drawCallback": function() {
-                $('[data-toggle="popover"]').popover();
+                // Page change hone par Popover dobara initialize karo
+                $('[data-toggle="popover"]').popover({
+                    trigger: 'hover',
+                    html: true,
+                    placement: 'right'
+                });
             }
         });
 
-        // Pehli baar load hone par activate karo
-        $('[data-toggle="popover"]').popover();
+        // 2. Initialize Popover (First Time)
+        $('[data-toggle="popover"]').popover({
+            trigger: 'hover',
+            html: true,
+            placement: 'right'
+        });
     });
 </script>
 {% endblock %}

@@ -1,0 +1,76 @@
+{% extends "master.html" %}
+
+{% block title %}Enter Exam Marks{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-primary text-white">
+                <h6 class="m-0 font-weight-bold">📝 Enter Student Marks</h6>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label class="font-weight-bold">Select Student</label>
+                            <select name="student_id" class="form-control" required>
+                                <option value="" disabled selected>-- Choose Student --</option>
+                                {% for x in students %}
+                                    <option value="{{ x.id }}">{{ x.firstname }} {{ x.lastname }} (ID: #{{ x.id }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold">Exam Name</label>
+                            <select name="exam_name" class="form-control">
+                                <option value="Mid-Term">Mid-Term Exam</option>
+                                <option value="Finals">Final Exam</option>
+                                <option value="Unit Test 1">Unit Test 1</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h6 class="text-muted mb-3">Subject Marks (Out of 100)</h6>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Mathematics 📐</label>
+                            <input type="number" name="maths" class="form-control" max="100" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Physics ⚛️</label>
+                            <input type="number" name="physics" class="form-control" max="100" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Chemistry 🧪</label>
+                            <input type="number" name="chemistry" class="form-control" max="100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>English 📖</label>
+                            <input type="number" name="english" class="form-control" max="100" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Computer Science 💻</label>
+                            <input type="number" name="computer" class="form-control" max="100" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-block mt-3 shadow">
+                        <i class="fas fa-save"></i> Save & Generate Report
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
