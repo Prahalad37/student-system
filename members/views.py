@@ -7,18 +7,20 @@ from .models import Member, StudyMaterial, Attendance # Dono models import hone 
 from datetime import date
 from .models import Member, Attendance  # Attendance zaroor import karo
 def index(request):
-    mymembers = Member.objects.all().values()
+    # ✅ CORRECT CHANGE: .values() hata diya taaki ye 'Objects' rahein
+    mymembers = Member.objects.all()
     
-    # 1. Total Students
-    total_students = Member.objects.all().count()
+    # 1. Total Students Count
+    total_students = Member.objects.count()
     
-    # 2. Total Revenue
+    # 2. Total Revenue Logic
     revenue_data = Member.objects.aggregate(Sum('fee_paid'))
     total_revenue = revenue_data['fee_paid__sum']
+    
     if total_revenue is None:
         total_revenue = 0
 
-    # 3. ATTENDANCE PERCENTAGE LOGIC 📊
+    # 3. Attendance Percentage Logic
     total_records = Attendance.objects.count()
     present_records = Attendance.objects.filter(status='Present').count()
     
@@ -31,7 +33,7 @@ def index(request):
         'mymembers': mymembers,
         'total_students': total_students,
         'total_revenue': total_revenue,
-        'attendance_percent': attendance_percent, # Template ko bhejo
+        'attendance_percent': attendance_percent,
     }
     return render(request, 'index.html', context)
 
