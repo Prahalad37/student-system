@@ -1,5 +1,6 @@
 """
 Django settings for mysite project.
+UPDATED FOR: Prahlad Academy ERP v2.0
 """
 
 import os
@@ -15,9 +16,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-od3$^1(250-5m5t#ep^kr&%ch%tt$do6j3@tfn@#xers2(ppkh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Development ke liye True rakho, Live server par False karna
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'prahalad.pythonanywhere.com', 'prahaladpal.pythonanywhere.com']
 
 
 # --- APPLICATION DEFINITION ---
@@ -66,8 +68,6 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
 # --- DATABASE ---
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -77,25 +77,15 @@ DATABASES = {
 
 
 # --- PASSWORD VALIDATION ---
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 
 # --- INTERNATIONALIZATION ---
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -104,28 +94,29 @@ USE_TZ = True
 
 # --- STATIC & MEDIA FILES ---
 
-import os  # Agar upar import nahi hai toh ye line zaroori hai
-
-# --- STATIC FILES (CSS, JavaScript, Images) ---
-# Ye wo files hain jo website ke design ke liye hoti hain
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+
+# Ye batata hai ki naya SB Admin Template kahan rakha hai
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# Jab live server par 'collectstatic' chalate hain, tab files yahan jati hain
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files (User uploaded content)
+# Media files (Student Photos etc.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# --- AUTHENTICATION SETTINGS ---
+# --- AUTHENTICATION & LOGIN ---
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Redirect to this URL if a user tries to access a protected page without logging in
-LOGIN_URL = 'login'
-# settings.py ke end mein add karo
-CSRF_TRUSTED_ORIGINS = ['https://prahaladpal.pythonanywhere.com']
-
-# --- LOGIN SETTINGS ---
 LOGIN_URL = 'login'              # Agar login nahi hai to yahan bhejo
 LOGIN_REDIRECT_URL = 'index'     # Login hone ke baad Dashboard par bhejo
 LOGOUT_REDIRECT_URL = 'login'    # Logout hone ke baad Login page par bhejo
+
+# Trust settings for PythonAnywhere
+CSRF_TRUSTED_ORIGINS = ['https://prahalad.pythonanywhere.com', 'https://prahaladpal.pythonanywhere.com']

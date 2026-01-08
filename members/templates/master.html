@@ -6,251 +6,148 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Student Management System ERP">
-    <meta name="author" content="Prahalad">
+    <title>Prahlad Academy - Premium ERP</title>
 
-    <title>{% block title %}Prahlad Academy ERP{% endblock %}</title>
-
-    <link href="{% static 'assets/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link href="{% static 'assets/css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
     <style>
-        /* 1. TYPOGRAPHY & BODY */
-        body {
-            font-family: 'Poppins', sans-serif !important;
-            background-color: #f3f4f6;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%);
-            background-attachment: fixed;
-            color: #1f2937;
+        /* --- 1. PREMIUM SIDEBAR (Electric Look) --- */
+        .bg-gradient-primary {
+            /* Modern Diagonal Gradient */
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%) !important;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.2);
         }
 
-        /* 2. SIDEBAR STYLING */
-        #accordionSidebar {
-            background: #ffffff !important;
-            border-right: none;
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
-            z-index: 100;
+        /* Sidebar Brand (Logo Text) */
+        .sidebar-brand-text {
+            color: #ffffff !important;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .sidebar .nav-item .nav-link {
-            color: #6b7280 !important;
-            font-weight: 500;
-            margin: 5px 15px;
-            border-radius: 12px;
+        /* --- 2. SIDEBAR LINKS (Bright & Glowing) --- */
+        .sidebar-dark .nav-item .nav-link {
+            color: #ffffff !important; /* Pure White */
+            opacity: 0.95;            /* No Dullness */
+            font-weight: 600;
             transition: all 0.3s ease;
         }
+
+        /* Hover Effect on Links */
+        .sidebar-dark .nav-item .nav-link:hover {
+            color: #fbbf24 !important; /* Golden Yellow Glow */
+            transform: translateX(5px); /* Slide Right */
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
         
-        /* Active & Hover States */
-        .sidebar .nav-item .nav-link:hover, 
-        .sidebar .nav-item.active .nav-link {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        /* Icons Brightness */
+        .sidebar-dark .nav-item .nav-link i {
             color: #ffffff !important;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            transform: translateX(5px);
+            opacity: 1 !important;
         }
+
+        /* --- 3. SOLID COLOR CARDS (Google Pay Style) --- */
+        /* Blue Card (Students) */
+        .border-left-primary { background: linear-gradient(45deg, #4e73df, #224abe); border: none !important; }
         
-        .sidebar .nav-item .nav-link i {
-            color: inherit !important;
+        /* Green Card (Revenue) */
+        .border-left-success { background: linear-gradient(45deg, #1cc88a, #13855c); border: none !important; }
+        
+        /* Red Card (Expense) */
+        .border-left-danger { background: linear-gradient(45deg, #e74a3b, #be2617); border: none !important; }
+        
+        /* Cyan Card (Profit) */
+        .border-left-info { background: linear-gradient(45deg, #36b9cc, #258391); border: none !important; }
+
+        /* Card Text Color Fix (Make everything White inside colored cards) */
+        .border-left-primary *, .border-left-success *, 
+        .border-left-danger *, .border-left-info * {
+            color: white !important;
         }
 
-        .sidebar-brand-text {
-            color: #059669;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-            font-weight: 700;
-        }
-
-        /* 3. BUTTONS */
-        .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border: none;
-            border-radius: 50px;
-            padding: 8px 20px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            transition: all 0.3s;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            transform: scale(1.05);
-        }
-
-        /* 4. CARDS & TABLES */
+        /* --- 4. ANIMATIONS & UI POLISH --- */
+        body { background-color: #f3f4f6; font-family: 'Nunito', sans-serif; }
+        
         .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s !important; /* Smooth Animation */
         }
-        
-        .table thead th {
-            border-top: none;
-            color: #6b7280;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            font-weight: 600;
+
+        /* 🔥 HOVER EFFECT (Jump Animation) 🔥 */
+        .card:hover {
+            transform: translateY(-8px) !important; /* Upar Uthega */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important; /* Gehri Shadow */
+            cursor: pointer;
+        }
+
+        /* Notice Board Header Clean */
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
         }
     </style>
-    
-    {% block extra_css %}{% endblock %}
+
 </head>
 
 <body id="page-top">
 
     <div id="wrapper">
 
-        <ul class="navbar-nav bg-white sidebar sidebar-light accordion shadow-sm" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-graduation-cap text-success" style="font-size: 2rem;"></i>
+                    <i class="fas fa-graduation-cap"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Prahlad Academy 🎓</div>
+                <div class="sidebar-brand-text mx-3">Prahlad Academy</div>
             </a>
 
             <hr class="sidebar-divider my-0">
 
-            <li class="nav-item {% if request.path == '/' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'index' %}">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
 
             <hr class="sidebar-divider">
 
-            <div class="sidebar-heading">
-                Management
-            </div>
-
-            <li class="nav-item {% if '/add' in request.path %}active{% endif %}">
-                <a class="nav-link" href="/add">
-                    <i class="fas fa-fw fa-user-plus"></i>
-                    <span>Add Student</span></a>
-            </li>
-
-            <li class="nav-item {% if 'import_students' in request.path %}active{% endif %}">
-                <a class="nav-link" href="{% url 'import_students' %}">
-                    <i class="fas fa-fw fa-file-upload"></i>
-                    <span>Bulk Upload</span>
-                </a>
-            </li>
-
-            <li class="nav-item {% if '/all' in request.path %}active{% endif %}">
-                <a class="nav-link" href="{% url 'index' %}">
+            <li class="nav-item">
+                <a class="nav-link" href="/members/">
                     <i class="fas fa-fw fa-users"></i>
-                    <span>View All Students</span></a>
+                    <span>Students</span></a>
             </li>
-
-            <hr class="sidebar-divider my-0">
             
-            <li class="nav-item {% if '/library' in request.path %}active{% endif %}">
-                <a class="nav-link" href="{% url 'library' %}">
-                    <i class="fas fa-fw fa-book-reader"></i>
-                    <span>Library & Notes</span></a>
+            <li class="nav-item">
+                <a class="nav-link" href="/members/add/">
+                    <i class="fas fa-fw fa-user-plus"></i>
+                    <span>Admission</span></a>
             </li>
-
-            <hr class="sidebar-divider">
-
-            <div class="sidebar-heading">
-                Daily Tasks
-            </div>
-
-            <li class="nav-item {% if '/attendance' in request.path %}active{% endif %}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAttendance"
-                    aria-expanded="true" aria-controls="collapseAttendance">
-                    <i class="fas fa-fw fa-calendar-check"></i>
-                    <span>Attendance</span>
-                </a>
-                <div id="collapseAttendance" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded shadow-sm">
-                        <h6 class="collapse-header">Actions:</h6>
-                        <a class="collapse-item" href="/attendance/">Mark Today's Attendance</a>
-                        <a class="collapse-item" href="/attendance_records/">View History</a>
-                    </div>
-                </div>
-            </li> 
-
-            <hr class="sidebar-divider">
-
-            <div class="sidebar-heading">
-                Academics & Accounts
-            </div>
-
-            <li class="nav-item {% if 'report_card' in request.path or 'add_marks' in request.path %}active{% endif %}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseExams"
-                    aria-expanded="true" aria-controls="collapseExams">
-                    <i class="fas fa-fw fa-scroll"></i>
-                    <span>Exams & Results</span>
-                </a>
-                <div id="collapseExams" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded shadow-sm">
-                        <h6 class="collapse-header">Actions:</h6>
-                        <a class="collapse-item" href="{% url 'add_marks' %}">➕ Enter Marks</a>
-                        <a class="collapse-item" href="{% url 'report_card' %}">📊 View Results</a>
-                    </div>
-                </div>
-            </li>
-
-            <li class="nav-item {% if 'add_expense' in request.path %}active{% endif %}">
-                <a class="nav-link" href="{% url 'add_expense' %}">
-                    <i class="fas fa-fw fa-minus-circle"></i>
-                    <span>Add Expense</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
 
         </ul>
         <div id="content-wrapper" class="d-flex flex-column">
 
             <div id="content">
 
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow-sm">
-
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars text-success"></i>
+                        <i class="fa fa-bars"></i>
                     </button>
 
                     <ul class="navbar-nav ml-auto">
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small font-weight-bold">
-                                    {% if user.is_authenticated %}
-                                        Hello, {{ user.username }} 👋
-                                    {% else %}
-                                        Guest User
-                                    {% endif %}
-                                </span>
-                                <img class="img-profile rounded-circle"
-                                    src="{% static 'assets/img/undraw_profile.svg' %}">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                                <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}">
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'logout' %}">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
                         </li>
-
                     </ul>
-
                 </nav>
                 <div class="container-fluid">
                     {% block content %}
@@ -260,24 +157,17 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Prahlad Academy 2026 | Built with ❤️ by Django</span>
+                        <span>Copyright &copy; Prahlad Academy 2025</span>
                     </div>
                 </div>
             </footer>
-            </div>
+
         </div>
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <script src="{% static 'assets/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
-    <script src="{% static 'assets/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-
-    <script src="{% static 'assets/js/sb-admin-2.min.js' %}"></script>
-
-    {% block scripts %}{% endblock %}
+        </div>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 
 </body>
 </html>
