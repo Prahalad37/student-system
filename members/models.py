@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # ==========================================
 # 1. SCHOOL & ACADEMIC MODULE (SaaS Core)
@@ -15,9 +18,7 @@ class School(models.Model):
         return self.name
 
 class AcademicYear(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-    
     name = models.CharField(max_length=50, help_text="e.g. 2023-2024")
     start_date = models.DateField()
     end_date = models.DateField()
@@ -27,14 +28,11 @@ class AcademicYear(models.Model):
         return self.name
 
 class ClassRoom(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-    
     name = models.CharField(max_length=50, help_text="e.g. Class 10")
     section = models.CharField(max_length=10, default='A')
 
     class Meta:
-        # Note: We will update unique_together to include 'school' in Step C
         unique_together = ('name', 'section') 
         verbose_name = "Class Room"
         verbose_name_plural = "Class Rooms"
@@ -47,41 +45,26 @@ class ClassRoom(models.Model):
 # ==========================================
 
 class Member(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
-    # --- Official Info ---
-    admission_no = models.CharField(max_length=50, null=True, blank=True) # Removed unique=True temporarily for SaaS migration
+    admission_no = models.CharField(max_length=50, null=True, blank=True)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
     father_name = models.CharField(max_length=255, null=True, blank=True)
     mobile_number = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
-    
-    # --- Academic Link ---
     student_class = models.ForeignKey(ClassRoom, on_delete=models.SET_NULL, null=True, blank=True)
     roll_number = models.CharField(max_length=20, null=True, blank=True)
-    
-    # --- Personal Info ---
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], default='Male')
     dob = models.DateField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     joined_date = models.DateField(auto_now_add=True, null=True)
     profile_pic = models.ImageField(null=True, blank=True, upload_to="student_images/")
-
-    # --- Medical Details ---
     blood_group = models.CharField(max_length=5, choices=[('A+', 'A+'), ('B+', 'B+'), ('O+', 'O+'), ('AB+', 'AB+'), ('A-', 'A-'), ('B-', 'B-'), ('O-', 'O-'), ('AB-', 'AB-')], null=True, blank=True)
     medical_conditions = models.TextField(null=True, blank=True, help_text="Any allergies or conditions")
-
-    # --- Transport Details ---
     transport_mode = models.CharField(max_length=20, choices=[('School Bus', 'School Bus'), ('Private', 'Private'), ('Self', 'Self')], default='Self')
     route_name = models.CharField(max_length=100, null=True, blank=True, help_text="If School Bus")
-    
-    # --- House & Subjects ---
     house_team = models.CharField(max_length=20, choices=[('Red', 'Red'), ('Blue', 'Blue'), ('Green', 'Green'), ('Yellow', 'Yellow')], null=True, blank=True)
     preferred_stream = models.CharField(max_length=50, choices=[('General', 'General'), ('Science (PCM)', 'Science (PCM)'), ('Science (PCB)', 'Science (PCB)'), ('Commerce', 'Commerce'), ('Arts', 'Arts')], default='General')
-
-    # --- Fee Info ---
     fee_total = models.IntegerField(default=0)
     fee_paid = models.IntegerField(default=0)
 
@@ -101,9 +84,7 @@ class Member(models.Model):
 # ==========================================
 
 class Parent(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='parents')
     relation = models.CharField(max_length=50, choices=[('Father', 'Father'), ('Mother', 'Mother'), ('Guardian', 'Guardian')])
     name = models.CharField(max_length=100)
@@ -118,10 +99,8 @@ class Parent(models.Model):
 # ==========================================
 
 class TransportRoute(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
-    route_name = models.CharField(max_length=100) # e.g. Route 1 - City Center
+    route_name = models.CharField(max_length=100)
     vehicle_number = models.CharField(max_length=50)
     driver_name = models.CharField(max_length=100)
     driver_phone = models.CharField(max_length=20)
@@ -130,9 +109,7 @@ class TransportRoute(models.Model):
         return self.route_name
 
 class StudentTransport(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.OneToOneField(Member, on_delete=models.CASCADE)
     route = models.ForeignKey(TransportRoute, on_delete=models.SET_NULL, null=True)
     pickup_point = models.CharField(max_length=100)
@@ -146,9 +123,7 @@ class StudentTransport(models.Model):
 # ==========================================
 
 class HostelRoom(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     room_number = models.CharField(max_length=20)
     capacity = models.IntegerField(default=2)
     type = models.CharField(max_length=20, choices=[('AC', 'AC'), ('Non-AC', 'Non-AC')], default='Non-AC')
@@ -158,9 +133,7 @@ class HostelRoom(models.Model):
         return f"Room {self.room_number} ({self.type})"
 
 class StudentHostel(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.OneToOneField(Member, on_delete=models.CASCADE)
     room = models.ForeignKey(HostelRoom, on_delete=models.SET_NULL, null=True)
     join_date = models.DateField(default=timezone.now)
@@ -173,11 +146,9 @@ class StudentHostel(models.Model):
 # ==========================================
 
 class StudentDocument(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.ForeignKey(Member, on_delete=models.CASCADE)
-    document_name = models.CharField(max_length=100) # e.g. "Aadhaar Card"
+    document_name = models.CharField(max_length=100)
     file = models.FileField(upload_to='student_docs/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
@@ -185,10 +156,8 @@ class StudentDocument(models.Model):
         return f"{self.document_name} - {self.student.firstname}"
 
 class Scholarship(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
-    name = models.CharField(max_length=100) # e.g. "Merit Scholarship"
+    name = models.CharField(max_length=100)
     discount_amount = models.IntegerField()
     description = models.TextField(null=True, blank=True)
 
@@ -196,9 +165,7 @@ class Scholarship(models.Model):
         return self.name
 
 class StudentScholarship(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.ForeignKey(Member, on_delete=models.CASCADE)
     scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
     awarded_date = models.DateField(default=timezone.now)
@@ -208,9 +175,7 @@ class StudentScholarship(models.Model):
 # ==========================================
 
 class Attendance(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.ForeignKey(Member, on_delete=models.CASCADE)
     date = models.DateField()
     status = models.CharField(max_length=10, choices=[('Present', 'Present'), ('Absent', 'Absent'), ('Leave', 'Leave')])
@@ -219,9 +184,7 @@ class Attendance(models.Model):
         unique_together = ('student', 'date')
 
 class ExamScore(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.ForeignKey(Member, on_delete=models.CASCADE)
     exam_name = models.CharField(max_length=100, default="Mid-Term")
     maths = models.IntegerField(default=0)
@@ -231,25 +194,19 @@ class ExamScore(models.Model):
     computer = models.IntegerField(default=0)
 
 class Notice(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     title = models.CharField(max_length=200)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Expense(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     description = models.CharField(max_length=200)
     amount = models.IntegerField()
     date = models.DateField(auto_now_add=True)
 
 class StudyMaterial(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     title = models.CharField(max_length=255)
     subject = models.CharField(max_length=50)
     class_name = models.CharField(max_length=10)
@@ -258,16 +215,36 @@ class StudyMaterial(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 # ==========================================
-# 8. PAYMENT GATEWAY (New for SaaS)
+# 8. PAYMENT GATEWAY
 # ==========================================
 
 class Payment(models.Model):
-    # ✅ Multi-Tenant Link
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
-
     student = models.ForeignKey(Member, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    order_id = models.CharField(max_length=100) # From Razorpay
+    order_id = models.CharField(max_length=100)
     payment_id = models.CharField(max_length=100, blank=True)
-    status = models.CharField(max_length=20, default='Pending') # Success/Failed
+    status = models.CharField(max_length=20, default='Pending')
     timestamp = models.DateTimeField(auto_now_add=True)
+
+# ==========================================
+# 9. USER PROFILE & SAAS SECURITY (Phase 3 Block 1)
+# ==========================================
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.CharField(max_length=20, choices=[('Admin', 'Admin'), ('Teacher', 'Teacher'), ('Staff', 'Staff')], default='Staff')
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.school.name if self.school else 'No School'}"
+
+# Signal: Automatically create a UserProfile when a User is created
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.userprofile.save()
