@@ -1,79 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Fee Receipt - {{ student.firstname }}</title>
     <style>
-        body { font-family: Helvetica, sans-serif; color: #333; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #4e73df; padding-bottom: 10px; }
-        .school-name { font-size: 24px; font-weight: bold; color: #4e73df; }
-        .details-box { width: 100%; margin-bottom: 20px; }
-        .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .table th, .table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        .table th { background-color: #f8f9fc; }
-        .total-row { font-weight: bold; background-color: #eaecf4; }
-        .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #888; }
-        .stamp { text-align: right; margin-top: 40px; }
+        @page {
+            size: A4;
+            margin: 0.5cm; /* Margin kam kiya taaki 1 page mein aaye */
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        /* --- CONTAINER --- */
+        .receipt-container {
+            border: 1px solid #999; /* Patli border */
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* --- HEADER --- */
+        .header-table { width: 100%; border-bottom: 1px solid #ccc; margin-bottom: 5px; padding-bottom: 5px; }
+        .school-name { font-size: 18pt; font-weight: bold; color: #1a237e; margin: 0; }
+        .school-details { font-size: 8pt; color: #555; }
+        .receipt-tag { 
+            background: #eee; border: 1px solid #ccc; padding: 4px 10px; 
+            font-size: 9pt; font-weight: bold; display: inline-block;
+        }
+
+        /* --- INFO GRID --- */
+        .info-table { width: 100%; margin-bottom: 10px; font-size: 9pt; }
+        .info-table td { padding: 3px 0; }
+        .label { font-weight: bold; color: #666; font-size: 8pt; text-transform: uppercase; }
+        .value { font-weight: bold; color: #000; }
+
+        /* --- FEE TABLE (Thin Lines) --- */
+        .fee-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .fee-table th {
+            background-color: #f4f4f4; border: 1px solid #ccc;
+            padding: 6px; text-align: left; font-size: 8pt;
+        }
+        .fee-table td {
+            border: 1px solid #ccc; /* Patli line */
+            padding: 6px; font-size: 9pt;
+        }
+        .amount { text-align: right; }
+
+        /* --- FOOTER --- */
+        .footer-table { width: 100%; margin-top: 10px; }
+        .sign-area { border-top: 1px dashed #999; width: 80%; margin: 0 auto; text-align: center; padding-top: 5px; font-size: 8pt; }
+
+        /* --- CUT LINE --- */
+        .cut-line {
+            border-top: 1px dashed #999;
+            margin: 15px 0;
+            text-align: center;
+            height: 10px;
+        }
+        .cut-icon { background: #fff; padding: 0 10px; position: relative; top: -10px; color: #777; font-size: 9pt; }
+
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="school-name">STUDENT ERP SYSTEM</div>
-        <div>Excellence in Education</div>
-        <div>123, Knowledge Park, New Delhi</div>
-    </div>
-
-    <div class="details-box">
-        <strong>Receipt No:</strong> {{ receipt_no }}<br>
-        <strong>Date:</strong> {{ date }}
-    </div>
-
-    <table class="details-box">
-        <tr>
-            <td><strong>Student Name:</strong> {{ student.firstname }} {{ student.lastname }}</td>
-            <td><strong>Student ID:</strong> #{{ student.id }}</td>
-        </tr>
-        <tr>
-            <td><strong>Class:</strong> 12 - PCM</td>
-            <td><strong>Session:</strong> 2025-2026</td>
-        </tr>
-    </table>
-
-    <table class="table">
-        <thead>
+    <div class="receipt-container">
+        
+        <table class="header-table">
             <tr>
-                <th>Description</th>
-                <th style="text-align: right;">Amount (₹)</th>
+                <td>
+                    <div class="school-name">PRAHLAD ACADEMY</div>
+                    <div class="school-details">New Delhi, India | +91 98765 43210</div>
+                </td>
+                <td style="text-align: right;">
+                    <div class="receipt-tag">STUDENT COPY</div>
+                    <div style="font-size: 8pt; margin-top: 4px;">Date: {% now "d-M-Y" %}</div>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Total Course Fee</td>
-                <td style="text-align: right;">{{ student.fee_total }}</td>
-            </tr>
-            <tr>
-                <td>Previously Paid</td>
-                <td style="text-align: right;">0.00</td>
-            </tr>
-            <tr class="total-row">
-                <td>Amount Paid Now (Total Paid)</td>
-                <td style="text-align: right;">{{ student.fee_paid }}</td>
-            </tr>
-        </tbody>
-    </table>
+        </table>
 
-    <div style="margin-top: 15px; text-align: right;">
-        <strong>Balance Due:</strong> <span style="color: red;">₹{{ student.due_amount }}</span>
+        <table class="info-table">
+            <tr>
+                <td width="33%"><span class="label">Receipt No:</span> <br> <span class="value">#{{ student.id }}0{{ student.roll_number }}</span></td>
+                <td width="33%"><span class="label">Name:</span> <br> <span class="value">{{ student.firstname }} {{ student.lastname }}</span></td>
+                <td width="33%"><span class="label">Class/Sec:</span> <br> <span class="value">{{ student.student_class }} ({{ student.student_class.section }})</span></td>
+            </tr>
+        </table>
+
+        <table class="fee-table">
+            <thead>
+                <tr>
+                    <th width="70%">Description</th>
+                    <th width="30%" class="amount">Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Tuition & Annual Fees</td>
+                    <td class="amount">{{ student.fee_total }}</td>
+                </tr>
+                <tr>
+                    <td><b>Less: Amount Paid</b></td>
+                    <td class="amount" style="font-weight: bold; color: green;">(-) {{ student.fee_paid }}</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="text-align: right; font-weight: bold;">Balance Due:</td>
+                    <td class="amount" style="font-weight: bold; color: #d32f2f;">₹{{ student.fee_total|add:"-student.fee_paid" }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="footer-table">
+            <tr>
+                <td width="70%" style="font-size: 8pt; color: #777;">* Computer Generated Receipt.</td>
+                <td width="30%">
+                    <div class="sign-area">Authorized Signatory</div>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <div class="stamp">
-        <br><br>
-        _______________________<br>
-        Authorized Signature
-    </div>
+    <div class="cut-line"><span class="cut-icon">✂️ Cut Here</span></div>
 
-    <div class="footer">
-        This is a computer-generated receipt. No signature required.<br>
-        Generated on {{ date }} via Student ERP.
+    <div class="receipt-container">
+        
+        <table class="header-table">
+            <tr>
+                <td>
+                    <div class="school-name" style="font-size: 16pt;">PRAHLAD ACADEMY</div>
+                    <div class="school-details">Office Record</div>
+                </td>
+                <td style="text-align: right;">
+                    <div class="receipt-tag">OFFICE COPY</div>
+                </td>
+            </tr>
+        </table>
+
+        <table class="info-table">
+            <tr>
+                <td width="33%"><span class="label">Receipt No:</span> <br> <span class="value">#{{ student.id }}0{{ student.roll_number }}</span></td>
+                <td width="33%"><span class="label">Name:</span> <br> <span class="value">{{ student.firstname }} {{ student.lastname }}</span></td>
+                <td width="33%"><span class="label">Date:</span> <br> <span class="value">{% now "d-M-Y" %}</span></td>
+            </tr>
+        </table>
+
+        <table class="fee-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="amount">Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total Fees</td>
+                    <td class="amount">{{ student.fee_total }}</td>
+                </tr>
+                <tr>
+                    <td><b>Paid Today</b></td>
+                    <td class="amount" style="font-weight: bold;">{{ student.fee_paid }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="footer-table">
+            <tr>
+                <td width="70%" style="font-size: 8pt;">Mode: Cash / Online</td>
+                <td width="30%">
+                    <div class="sign-area">Receiver's Sign</div>
+                </td>
+            </tr>
+        </table>
     </div>
 
 </body>

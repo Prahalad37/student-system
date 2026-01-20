@@ -4,12 +4,12 @@
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard Overview</h1>
-    <p class="mb-4 d-sm-none">Here is what's happening today.</p> <div class="mt-2 mt-sm-0">
-        <a href="#" class="d-block d-sm-inline-block btn btn-success shadow-sm mb-2 mb-sm-0 mr-sm-2">
+    <div class="mt-2 mt-sm-0">
+        <a href="{% url 'export_excel' %}" class="d-block d-sm-inline-block btn btn-success shadow-sm mb-2 mb-sm-0 mr-sm-2">
             <i class="fas fa-file-excel fa-sm text-white-50"></i> Export Excel
         </a>
-        <a href="/members/add/" class="d-block d-sm-inline-block btn btn-primary shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i> Add Student
+        <a href="{% url 'add' %}" class="d-block d-sm-inline-block btn btn-primary shadow-sm">
+            <i class="fas fa-user-plus fa-sm text-white-50"></i> Add Student
         </a>
     </div>
 </div>
@@ -22,7 +22,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-uppercase mb-1">Total Students</div>
-                        <div class="h5 mb-0 font-weight-bold">{{ total_students }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -38,7 +38,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-uppercase mb-1">Total Revenue</div>
-                        <div class="h5 mb-0 font-weight-bold">₹{{ total_revenue }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-success">₹{{ total_revenue }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
@@ -54,7 +54,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-uppercase mb-1">Total Expenses</div>
-                        <div class="h5 mb-0 font-weight-bold">₹500</div>
+                        <div class="h5 mb-0 font-weight-bold text-danger">₹{{ total_expense }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-file-invoice-dollar fa-2x text-gray-300"></i>
@@ -70,7 +70,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-uppercase mb-1">Net Profit</div>
-                        <div class="h5 mb-0 font-weight-bold">₹{{ total_revenue|add:"-500" }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-info">₹{{ net_profit }}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-chart-line fa-2x text-gray-300"></i>
@@ -86,21 +86,34 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">📢 Notice Board & Announcements</h6>
-                <a href="#" class="btn btn-sm btn-warning shadow-sm"><i class="fas fa-plus"></i> Post Notice</a>
+                <button type="button" class="btn btn-sm btn-warning shadow-sm" data-toggle="modal" data-target="#noticeModal">
+                    <i class="fas fa-plus"></i> Post Notice
+                </button>
             </div>
             <div class="card-body">
-                <div class="alert alert-warning border-left-warning" role="alert">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <span><i class="fas fa-bullhorn mr-2"></i> <strong>Sunday</strong> - aj to sunday hai</span>
-                        <small class="text-muted">1 day ago <i class="fas fa-trash text-danger ml-2" style="cursor:pointer;"></i></small>
+                {% if notices %}
+                    {% for notice in notices %}
+                    <div class="alert alert-warning border-left-warning fade show" role="alert">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span>
+                                <i class="fas fa-bullhorn mr-2"></i> 
+                                <strong>{{ notice.title }}</strong> - {{ notice.message }}
+                            </span>
+                            <small class="text-muted">
+                                {{ notice.created_at|timesince }} ago 
+                                <a href="{% url 'delete_notice' notice.id %}" onclick="return confirm('Delete this notice?')" class="ml-2 text-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </small>
+                        </div>
                     </div>
-                </div>
-                <div class="alert alert-warning border-left-warning" role="alert">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <span><i class="fas fa-bullhorn mr-2"></i> <strong>DIWALI</strong> - Happy Diwali</span>
-                        <small class="text-muted">1 day ago <i class="fas fa-trash text-danger ml-2" style="cursor:pointer;"></i></small>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-3 text-muted">
+                        <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                        <p>No new announcements yet.</p>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -112,34 +125,71 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
+            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                <thead class="thead-light">
                     <tr>
                         <th>ID</th>
                         <th>Student Name</th>
-                        <th>Class / Batch</th>
-                        <th>Status</th>
+                        <th>Class / Section</th>
+                        <th>Father's Name</th>
+                        <th>Fee Paid</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for student in members %}
-                    <tr>
-                        <td>#{{ student.id }}</td>
-                        <td>
-                             <div class="d-flex align-items-center">
-                                <div class="btn-circle btn-sm btn-primary mr-2">{{ student.firstname|slice:":1" }}</div>
-                                <div>{{ student.firstname }} {{ student.lastname }}</div>
-                            </div>
-                        </td>
-                        <td>Class 12 - PCM</td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>
-                            <a href="update/{{ student.id }}" class="btn btn-primary btn-circle btn-sm"><i class="fas fa-pen"></i></a>
-                            <a href="delete/{{ student.id }}" class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                    {% if mymembers %}
+                        {% for x in mymembers %}
+                        <tr>
+                            <td>#{{ x.id }}</td>
+                            
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if x.profile_pic %}
+                                        <img src="{{ x.profile_pic.url }}" class="rounded-circle mr-2 border" width="30" height="30" style="object-fit: cover;">
+                                    {% else %}
+                                        <div class="btn-circle btn-sm btn-primary mr-2 font-weight-bold">
+                                            {{ x.firstname|slice:":1" }}
+                                        </div>
+                                    {% endif %}
+                                    <span class="font-weight-bold text-dark">{{ x.firstname }} {{ x.lastname }}</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                {% if x.student_class %}
+                                    <span class="badge badge-primary px-2 py-1">{{ x.student_class }}</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">Unassigned</span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ x.father_name|default:"-" }}</td>
+
+                            <td>
+                                <span class="text-success font-weight-bold">₹{{ x.fee_paid }}</span>
+                            </td>
+
+                            <td>
+                                <a href="{% url 'update' x.id %}" class="btn btn-warning btn-circle btn-sm" title="Edit">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <a href="{% url 'delete' x.id %}" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Are you sure you want to delete {{ x.firstname }}?')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <a href="{% url 'student_profile' x.id %}" class="btn btn-info btn-circle btn-sm" title="View Profile">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png" width="100" alt="No Data"><br>
+                                No students found. <a href="{% url 'add' %}">Add your first student!</a>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
@@ -147,5 +197,35 @@
 </div>
 
 <div class="mb-5 pb-5"></div>
+
+<div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold">📢 Post New Notice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'add_notice' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Holiday Alert" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" class="form-control" rows="3" placeholder="Write details here..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Post Notice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

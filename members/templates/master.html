@@ -10,18 +10,15 @@
 
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
     <style>
         /* --- 1. PREMIUM SIDEBAR (Electric Look) --- */
         .bg-gradient-primary {
-            /* Modern Diagonal Gradient */
             background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%) !important;
             box-shadow: 4px 0 20px rgba(0,0,0,0.2);
         }
 
-        /* Sidebar Brand (Logo Text) */
         .sidebar-brand-text {
             color: #ffffff !important;
             font-weight: 800;
@@ -29,70 +26,57 @@
             text-shadow: 0px 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* --- 2. SIDEBAR LINKS (Bright & Glowing) --- */
+        /* --- 2. SIDEBAR LINKS --- */
         .sidebar-dark .nav-item .nav-link {
-            color: #ffffff !important; /* Pure White */
-            opacity: 0.95;            /* No Dullness */
+            color: #ffffff !important;
+            opacity: 0.95;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        /* Hover Effect on Links */
         .sidebar-dark .nav-item .nav-link:hover {
-            color: #fbbf24 !important; /* Golden Yellow Glow */
-            transform: translateX(5px); /* Slide Right */
+            color: #fbbf24 !important;
+            transform: translateX(5px);
             background-color: rgba(255,255,255,0.1);
             border-radius: 10px;
         }
         
-        /* Icons Brightness */
         .sidebar-dark .nav-item .nav-link i {
             color: #ffffff !important;
             opacity: 1 !important;
         }
 
-        /* --- 3. SOLID COLOR CARDS (Google Pay Style) --- */
-        /* Blue Card (Students) */
+        /* --- 3. SOLID COLOR CARDS --- */
         .border-left-primary { background: linear-gradient(45deg, #4e73df, #224abe); border: none !important; }
-        
-        /* Green Card (Revenue) */
         .border-left-success { background: linear-gradient(45deg, #1cc88a, #13855c); border: none !important; }
-        
-        /* Red Card (Expense) */
         .border-left-danger { background: linear-gradient(45deg, #e74a3b, #be2617); border: none !important; }
-        
-        /* Cyan Card (Profit) */
         .border-left-info { background: linear-gradient(45deg, #36b9cc, #258391); border: none !important; }
 
-        /* Card Text Color Fix (Make everything White inside colored cards) */
         .border-left-primary *, .border-left-success *, 
         .border-left-danger *, .border-left-info * {
             color: white !important;
         }
 
-        /* --- 4. ANIMATIONS & UI POLISH --- */
+        /* --- 4. ANIMATIONS & UI --- */
         body { background-color: #f3f4f6; font-family: 'Nunito', sans-serif; }
         
         .card {
             border-radius: 16px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s !important; /* Smooth Animation */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s !important;
         }
 
-        /* 🔥 HOVER EFFECT (Jump Animation) 🔥 */
         .card:hover {
-            transform: translateY(-8px) !important; /* Upar Uthega */
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important; /* Gehri Shadow */
+            transform: translateY(-8px) !important;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;
             cursor: pointer;
         }
 
-        /* Notice Board Header Clean */
         .card-header {
             background-color: white;
             border-bottom: 1px solid #f0f0f0;
         }
     </style>
-
 </head>
 
 <body id="page-top">
@@ -111,23 +95,65 @@
             <hr class="sidebar-divider my-0">
 
             <li class="nav-item active">
-                <a class="nav-link" href="/">
+                <a class="nav-link" href="{% url 'index' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
 
             <hr class="sidebar-divider">
+            <div class="sidebar-heading">Management</div>
 
             <li class="nav-item">
-                <a class="nav-link" href="/members/">
+                <a class="nav-link" href="{% url 'all_students' %}">
                     <i class="fas fa-fw fa-users"></i>
-                    <span>Students</span></a>
+                    <span>Students Directory</span></a>
             </li>
             
             <li class="nav-item">
-                <a class="nav-link" href="/members/add/">
+                <a class="nav-link" href="{% url 'add' %}">
                     <i class="fas fa-fw fa-user-plus"></i>
-                    <span>Admission</span></a>
+                    <span>New Admission</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'import_students' %}">
+                    <i class="fas fa-fw fa-file-import"></i>
+                    <span>Bulk Import</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'export_excel' %}">
+                    <i class="fas fa-fw fa-download"></i>
+                    <span>Export Data</span></a>
+            </li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Academics</div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'attendance_records' %}">
+                    <i class="fas fa-fw fa-calendar-check"></i>
+                    <span>Attendance</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'library' %}">
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>Library</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'report_card' %}">
+                    <i class="fas fa-fw fa-poll"></i>
+                    <span>Exam Results</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Finance</div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'add_expense' %}">
+                    <i class="fas fa-fw fa-wallet"></i>
+                    <span>Expenses</span></a>
             </li>
 
         </ul>
@@ -153,7 +179,7 @@
                     {% block content %}
                     {% endblock %}
                 </div>
-                </div>
+            </div>
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
@@ -161,9 +187,12 @@
                     </div>
                 </div>
             </footer>
+        </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
 
-        </div>
-        </div>
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>

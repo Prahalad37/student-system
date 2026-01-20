@@ -1,64 +1,184 @@
 {% extends "master.html" %}
 
-{% block title %}Add New Student{% endblock %}
+{% block title %}New Admission{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Add New Student 🎓</h6>
+    <div class="col-xl-10 col-lg-12 col-md-12">
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-header py-3 bg-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-user-graduate mr-2"></i>New Student Admission
+                </h6>
+                <a href="{% url 'index' %}" class="btn btn-sm btn-light text-primary font-weight-bold">
+                    <i class="fas fa-times mr-1"></i> Cancel
+                </a>
             </div>
-            <div class="card-body">
-                
-                <form action="addrecord/" method="post" enctype="multipart/form-data">
+            
+            <div class="card-body p-4">
+                <form action="{% url 'addrecord' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    
-                    <div class="form-group">
-                        <label class="font-weight-bold">First Name:</label>
-                        <input name="first" class="form-control" placeholder="Enter first name" required>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="font-weight-bold">Last Name:</label>
-                        <input name="last" class="form-control" placeholder="Enter last name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="font-weight-bold">Profile Picture 📸:</label>
-                        <input type="file" name="file" class="form-control-file border p-2 rounded">
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="font-weight-bold text-primary">Total Fees (₹):</label>
-                                <input type="number" name="fee_total" class="form-control" value="20000" required>
-                            </div>
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-id-card mr-1"></i> Official Info
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Admin No <span class="text-danger">*</span></label>
+                            <input type="text" name="admission_no" class="form-control form-control-sm" placeholder="A-001" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="font-weight-bold text-success">Paid Amount (₹):</label>
-                                <input type="number" name="fee_paid" class="form-control" value="0" required>
-                            </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Join Date</label>
+                            <input type="date" name="joined_date" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Roll No</label>
+                            <input type="text" name="roll_number" class="form-control form-control-sm" placeholder="e.g. 25">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Gender <span class="text-danger">*</span></label>
+                            <select name="gender" class="form-control form-control-sm" required>
+                                <option value="" selected disabled>Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
                     </div>
 
-                    <hr>
+                    <hr class="mt-0 mb-3 border-light">
 
-                    <button type="submit" class="btn btn-success btn-icon-split">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-check"></i>
-                        </span>
-                        <span class="text">Submit Data</span>
-                    </button>
-                    
-                    <a href="/" class="btn btn-secondary btn-icon-split">
-                        <span class="text">Cancel</span>
-                    </a>
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-user mr-1"></i> Personal Details
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">First Name <span class="text-danger">*</span></label>
+                            <input type="text" name="first" class="form-control form-control-sm" placeholder="First Name" required>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Last Name <span class="text-danger">*</span></label>
+                            <input type="text" name="last" class="form-control form-control-sm" placeholder="Last Name" required>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">DOB</label>
+                            <input type="date" name="dob" class="form-control form-control-sm">
+                        </div>
+                        
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Father's Name</label>
+                            <input type="text" name="father_name" class="form-control form-control-sm" placeholder="Father Name">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Mobile</label>
+                            <input type="tel" name="mobile_number" class="form-control form-control-sm" placeholder="10-digit Mobile">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <label class="small font-weight-bold">Email</label>
+                            <input type="email" name="email" class="form-control form-control-sm" placeholder="student@email.com">
+                        </div>
+                        
+                        <div class="form-group col-12">
+                            <label class="small font-weight-bold">Address</label>
+                            <input type="text" name="address" class="form-control form-control-sm" placeholder="Full Residential Address">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-book-reader mr-1"></i> Academics
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Class <span class="text-danger">*</span></label>
+                            <input type="text" name="student_class" class="form-control form-control-sm" placeholder="e.g. 10" required>
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Section</label>
+                            <input type="text" name="section" class="form-control form-control-sm" placeholder="e.g. A">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Stream</label>
+                            <select name="preferred_stream" class="form-control form-control-sm">
+                                <option value="General">General</option>
+                                <option value="Science (PCM)">Science (PCM)</option>
+                                <option value="Science (PCB)">Science (PCB)</option>
+                                <option value="Commerce">Commerce</option>
+                                <option value="Arts">Arts</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">House</label>
+                            <select name="house_team" class="form-control form-control-sm">
+                                <option value="">None</option>
+                                <option value="Red">🔴 Red</option>
+                                <option value="Blue">🔵 Blue</option>
+                                <option value="Green">🟢 Green</option>
+                                <option value="Yellow">🟡 Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-bus mr-1"></i> Transport & Medical
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-6 col-md-2">
+                            <label class="small font-weight-bold">Blood Group</label>
+                            <select name="blood_group" class="form-control form-control-sm">
+                                <option value="">-</option>
+                                <option value="A+">A+</option>
+                                <option value="B+">B+</option>
+                                <option value="O+">O+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Mode</label>
+                            <select name="transport_mode" class="form-control form-control-sm">
+                                <option value="Self">Self</option>
+                                <option value="School Bus">School Bus</option>
+                                <option value="Private">Private</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-md-7">
+                            <label class="small font-weight-bold">Route / Medical Note</label>
+                            <input type="text" name="route_name" class="form-control form-control-sm" placeholder="Bus Route or Medical Condition">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <div class="form-row align-items-end">
+                        <div class="form-group col-6 col-md-4">
+                            <label class="small font-weight-bold text-success">Total Fee (₹)</label>
+                            <input type="number" name="fee_total" class="form-control form-control-sm font-weight-bold" value="25000">
+                        </div>
+                        <div class="form-group col-6 col-md-4">
+                            <label class="small font-weight-bold text-primary">Paid Now (₹)</label>
+                            <input type="number" name="fee_paid" class="form-control form-control-sm font-weight-bold" value="0">
+                        </div>
+                        <div class="form-group col-12 col-md-4">
+                            <label class="small font-weight-bold">Photo</label>
+                            <div class="custom-file">
+                                <input type="file" name="file" class="custom-file-input" id="customFile">
+                                <label class="custom-file-label col-form-label-sm" for="customFile">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-right mt-3">
+                        <button type="submit" class="btn btn-primary shadow-sm px-4 font-weight-bold">
+                            <i class="fas fa-save mr-2"></i> Save Admission
+                        </button>
+                    </div>
 
                 </form>
-                </div>
+            </div>
         </div>
     </div>
 </div>

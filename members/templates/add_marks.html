@@ -3,74 +3,126 @@
 {% block title %}Enter Exam Marks{% endblock %}
 
 {% block content %}
-
 <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-primary text-white">
-                <h6 class="m-0 font-weight-bold">📝 Enter Student Marks</h6>
+    <div class="col-xl-8 col-lg-10">
+        <div class="card shadow mb-4 border-0">
+            <div class="card-header py-3 bg-primary text-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold">
+                    <i class="fas fa-edit mr-2"></i>Upload Exam Marks
+                </h6>
+                <a href="{% url 'report_card' %}" class="btn btn-sm btn-light text-primary font-weight-bold shadow-sm">
+                    <i class="fas fa-list mr-1"></i> View All Results
+                </a>
             </div>
-            <div class="card-body">
-                <form method="post">
+
+            <div class="card-body p-5">
+                <form action="" method="post">
                     {% csrf_token %}
 
-                    <div class="form-row">
-                        <div class="form-group col-md-8">
-                            <label class="font-weight-bold">Select Student</label>
-                            <select name="student_id" class="form-control" required>
-                                <option value="" disabled selected>-- Choose Student --</option>
-                                {% for x in students %}
-                                    <option value="{{ x.id }}">{{ x.firstname }} {{ x.lastname }} (ID: #{{ x.id }})</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label class="font-weight-bold">Exam Name</label>
-                            <select name="exam_name" class="form-control">
-                                <option value="Mid-Term">Mid-Term Exam</option>
-                                <option value="Finals">Final Exam</option>
-                                <option value="Unit Test 1">Unit Test 1</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <hr>
-                    <h6 class="text-muted mb-3">Subject Marks (Out of 100)</h6>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label>Mathematics 📐</label>
-                            <input type="number" name="maths" class="form-control" max="100" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label>Physics ⚛️</label>
-                            <input type="number" name="physics" class="form-control" max="100" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label>Chemistry 🧪</label>
-                            <input type="number" name="chemistry" class="form-control" max="100" required>
+                    <div class="p-4 rounded mb-4" style="background-color: #f8f9fa; border: 1px solid #e3e6f0;">
+                        <div class="row">
+                            <div class="col-md-7 mb-3 mb-md-0">
+                                <label class="small font-weight-bold text-dark text-uppercase">Select Student</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-right-0"><i class="fas fa-user-graduate text-primary"></i></span>
+                                    </div>
+                                    <select name="student_id" class="form-control bg-white border-left-0 text-dark" required>
+                                        <option value="" selected disabled>Choose a student...</option>
+                                        {% for student in students %}
+                                            <option value="{{ student.id }}">
+                                                {{ student.firstname }} {{ student.lastname }} (Class: {{ student.student_class|default:"N/A" }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="small font-weight-bold text-dark text-uppercase">Exam Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-right-0"><i class="fas fa-tag text-primary"></i></span>
+                                    </div>
+                                    <select name="exam_name" class="form-control bg-white border-left-0 text-dark">
+                                        <option value="Unit Test 1">Unit Test 1</option>
+                                        <option value="Mid-Term">Mid-Term Exam</option>
+                                        <option value="Unit Test 2">Unit Test 2</option>
+                                        <option value="Final Exam">Final Exam</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>English 📖</label>
-                            <input type="number" name="english" class="form-control" max="100" required>
+                    <h6 class="font-weight-bold text-primary mb-3">
+                        <i class="fas fa-pen-alt mr-2"></i>Enter Subject Marks <span class="small text-muted">(Out of 100)</span>
+                    </h6>
+                    <hr class="mt-0 mb-4">
+
+                    <div class="row">
+                        <div class="col-md-4 col-6 mb-4">
+                            <label class="small font-weight-bold text-dark">Mathematics</label>
+                            <div class="input-group shadow-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white text-secondary"><i class="fas fa-calculator"></i></span>
+                                </div>
+                                <input type="number" name="maths" class="form-control text-dark font-weight-bold" placeholder="00" min="0" max="100" required>
+                            </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label>Computer Science 💻</label>
-                            <input type="number" name="computer" class="form-control" max="100" required>
+                        
+                        <div class="col-md-4 col-6 mb-4">
+                            <label class="small font-weight-bold text-dark">Physics</label>
+                            <div class="input-group shadow-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white text-secondary"><i class="fas fa-atom"></i></span>
+                                </div>
+                                <input type="number" name="physics" class="form-control text-dark font-weight-bold" placeholder="00" min="0" max="100" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-6 mb-4">
+                            <label class="small font-weight-bold text-dark">Chemistry</label>
+                            <div class="input-group shadow-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white text-secondary"><i class="fas fa-flask"></i></span>
+                                </div>
+                                <input type="number" name="chemistry" class="form-control text-dark font-weight-bold" placeholder="00" min="0" max="100" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-6 mb-4">
+                            <label class="small font-weight-bold text-dark">English</label>
+                            <div class="input-group shadow-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white text-secondary"><i class="fas fa-language"></i></span>
+                                </div>
+                                <input type="number" name="english" class="form-control text-dark font-weight-bold" placeholder="00" min="0" max="100" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-6 mb-4">
+                            <label class="small font-weight-bold text-dark">Computer Science</label>
+                            <div class="input-group shadow-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white text-secondary"><i class="fas fa-laptop-code"></i></span>
+                                </div>
+                                <input type="number" name="computer" class="form-control text-dark font-weight-bold" placeholder="00" min="0" max="100" required>
+                            </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-success btn-block mt-3 shadow">
-                        <i class="fas fa-save"></i> Save & Generate Report
-                    </button>
+                    <div class="text-right mt-3">
+                        <button type="reset" class="btn btn-secondary shadow-sm mr-2 px-3">
+                            <i class="fas fa-undo mr-1"></i> Reset
+                        </button>
+                        <button type="submit" class="btn btn-success shadow px-4 font-weight-bold">
+                            <i class="fas fa-save mr-2"></i> Save Result
+                        </button>
+                    </div>
+
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

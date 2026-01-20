@@ -1,66 +1,84 @@
 {% extends "master.html" %}
 
-{% block title %}Report Cards{% endblock %}
+{% block title %}Exam Results{% endblock %}
 
 {% block content %}
 
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">📊 Exam Results</h1>
-    <a href="{% url 'add_marks' %}" class="btn btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Add New Marks
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-trophy text-warning mr-2"></i>Exam Results Directory
+    </h1>
+    <a href="{% url 'add_marks' %}" class="btn btn-primary btn-sm shadow-sm">
+        <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Upload New Marks
     </a>
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-body">
+    <div class="card-header py-3 bg-white border-bottom-primary d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">All Student Marks</h6>
+        <div class="small text-muted">Latest results shown first</div>
+    </div>
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                <thead class="thead-light">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="bg-light text-dark">
                     <tr>
-                        <th>Date</th>
-                        <th>Student Name</th>
-                        <th>Exam</th>
-                        <th>Marks Breakdown</th>
-                        <th>Total</th>
-                        <th>Result</th>
+                        <th class="pl-4">Student Name</th>
+                        <th>Exam Name</th>
+                        <th class="text-center">Mat</th>
+                        <th class="text-center">Phy</th>
+                        <th class="text-center">Che</th>
+                        <th class="text-center">Eng</th>
+                        <th class="text-center">Com</th>
+                        <th class="text-center bg-gray-100 border-left">Total</th>
+                        <th class="text-center">Result</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for x in scores %}
+                    {% for score in scores %}
                     <tr>
-                        <td>{{ x.created_at|date:"d M Y" }}</td>
-                        <td class="font-weight-bold text-dark">{{ x.student.firstname }} {{ x.student.lastname }}</td>
-                        <td><span class="badge badge-info">{{ x.exam_name }}</span></td>
+                        <td class="pl-4">
+                            <div class="font-weight-bold text-dark">{{ score.student.firstname }} {{ score.student.lastname }}</div>
+                            <small class="text-muted">Class: {{ score.student.student_class|default:"-" }}</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-info px-2">{{ score.exam_name }}</span>
+                        </td>
                         
-                        <td style="font-size: 0.9rem;">
-                            <span title="Maths">📐 {{ x.maths }}</span> | 
-                            <span title="Physics">⚛️ {{ x.physics }}</span> | 
-                            <span title="Chemistry">🧪 {{ x.chemistry }}</span> | 
-                            <span title="English">📖 {{ x.english }}</span> | 
-                            <span title="Comp">💻 {{ x.computer }}</span>
+                        <td class="text-center">{{ score.maths }}</td>
+                        <td class="text-center">{{ score.physics }}</td>
+                        <td class="text-center">{{ score.chemistry }}</td>
+                        <td class="text-center">{{ score.english }}</td>
+                        <td class="text-center">{{ score.computer }}</td>
+                        
+                        <td class="text-center font-weight-bold bg-gray-100 border-left text-primary">
+                            {{ score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer }}
+                            <span class="small text-muted">/500</span>
                         </td>
 
-                        <td class="font-weight-bold">{{ x.total_marks }} / 500</td>
+                        <td class="text-center">
+                            {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
+                                {% if total >= 165 %}
+                                    <span class="badge badge-success">PASS</span>
+                                {% else %}
+                                    <span class="badge badge-danger">FAIL</span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
 
-                        <td style="width: 20%;">
-                            <div class="d-flex align-items-center">
-                                <span class="mr-2 font-weight-bold">{{ x.percentage|floatformat:1 }}%</span>
-                                <div class="progress progress-sm w-100">
-                                    <div class="progress-bar 
-                                        {% if x.percentage >= 80 %}bg-success
-                                        {% elif x.percentage >= 60 %}bg-info
-                                        {% elif x.percentage >= 33 %}bg-warning
-                                        {% else %}bg-danger{% endif %}" 
-                                        role="progressbar" 
-                                        style="width: {{ x.percentage }}%">
-                                    </div>
-                                </div>
-                            </div>
+                        <td class="text-center">
+                            <a href="{% url 'marksheet_pdf' score.id %}" target="_blank" class="btn btn-sm btn-circle btn-light border text-dark" title="Print Marksheet">
+                                <i class="fas fa-print"></i>
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center text-muted p-5">No exam records found yet. Click 'Add New Marks' to start!</td>
+                        <td colspan="10" class="text-center py-5 text-muted">
+                            <i class="fas fa-folder-open fa-3x mb-3 text-gray-300"></i><br>
+                            No exam results uploaded yet.
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

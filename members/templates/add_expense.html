@@ -1,23 +1,89 @@
 {% extends "master.html" %}
-{% block title %}Add New Expense{% endblock %}
+
+{% block title %}Expense Manager{% endblock %}
+
 {% block content %}
-<div class="card shadow mb-4 col-md-6 mx-auto">
-    <div class="card-header py-3 bg-danger text-white">
-        <h6 class="m-0 font-weight-bold">📉 Add New Expense</h6>
-    </div>
-    <div class="card-body">
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label>Description (Kharche ka naam)</label>
-                <input type="text" name="description" class="form-control" placeholder="e.g. Electricity Bill, Chalks" required>
+
+<div class="row">
+    
+    <div class="col-xl-4 col-lg-5 mb-4">
+        <div class="card shadow border-0">
+            <div class="card-header py-3 bg-danger text-white">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-money-bill-wave mr-2"></i>Add New Expense</h6>
             </div>
-            <div class="form-group">
-                <label>Amount (₹)</label>
-                <input type="number" name="amount" class="form-control" placeholder="500" required>
+            <div class="card-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="small font-weight-bold text-secondary">Description / Reason</label>
+                        <input type="text" name="description" class="form-control" placeholder="e.g. Teacher Salary (Jan), Electricity Bill" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="small font-weight-bold text-secondary">Amount (INR)</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-light font-weight-bold">₹</span>
+                            </div>
+                            <input type="number" name="amount" class="form-control" placeholder="0.00" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger btn-block font-weight-bold shadow-sm mt-4">
+                        <i class="fas fa-plus-circle mr-2"></i> Record Expense
+                    </button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-danger btn-block">Add Expense</button>
-        </form>
+        </div>
     </div>
+
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-danger">Expense History</h6>
+                <span class="badge badge-danger badge-counter px-2 py-1">Total: {{ expenses.count }}</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th width="10%">#</th>
+                                <th width="50%">Description</th>
+                                <th width="20%">Date</th>
+                                <th width="20%" class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                            <tr>
+                                <td class="text-muted small align-middle">{{ forloop.counter }}</td>
+                                <td class="align-middle">
+                                    <span class="font-weight-bold text-dark">{{ expense.description }}</span>
+                                </td>
+                                <td class="align-middle text-muted small">
+                                    <i class="far fa-calendar-alt mr-1"></i> {{ expense.created_at|default:"Today" }}
+                                </td>
+                                <td class="align-middle text-right font-weight-bold text-danger">
+                                    - ₹{{ expense.amount }}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/no-transaction-7359561-6024629.png" width="150" style="opacity: 0.5;">
+                                    <p class="text-muted mt-2">No expenses recorded yet.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
 {% endblock %}

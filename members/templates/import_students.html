@@ -1,37 +1,100 @@
 {% extends "master.html" %}
 
-{% block title %}Bulk Upload Students{% endblock %}
+{% block title %}Bulk Import Students{% endblock %}
 
 {% block content %}
 
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-success text-white">
-                <h6 class="m-0 font-weight-bold">📂 Upload Student Excel File</h6>
+
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow border-0 h-100">
+            <div class="card-header py-3 bg-gradient-primary text-white">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-info-circle mr-2"></i>Instructions</h6>
             </div>
             <div class="card-body">
-                <p class="text-muted">
-                    Excel file should have 4 columns in order:<br>
-                    <b>First Name | Last Name | Total Fees | Paid Fees</b>
-                </p>
-                <hr>
+                <p class="small text-muted mb-3">Create an Excel file (.xlsx) with columns in this exact order:</p>
                 
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    
-                    <div class="form-group">
-                        <label>Select Excel File (.xlsx)</label>
-                        <input type="file" name="excel_file" class="form-control-file" required accept=".xlsx">
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm text-center small" style="font-size: 0.8rem;">
+                        <thead style="background-color: #e3e6f0;">
+                            <tr>
+                                <th>A</th> <th>B</th> <th>C</th> <th>D</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="font-weight-bold text-primary">
+                                <td>First Name</td> <td>Last Name</td> <td>Class</td> <td>Section</td>
+                            </tr>
+                        </tbody>
+                        <thead style="background-color: #e3e6f0;">
+                            <tr>
+                                <th>E</th> <th>F</th> <th>G</th> <th>H</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="font-weight-bold text-primary">
+                                <td>Roll No</td> <td>Mobile</td> <td>Total Fee</td> <td>Paid Fee</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <button type="submit" class="btn btn-success btn-block mt-4">
-                        <i class="fas fa-upload"></i> Upload & Import
-                    </button>
-                </form>
+                <div class="alert alert-primary small mt-3 mb-0" style="background-color: #f0f4ff; border-color: #4e73df; color: #2e59d9;">
+                    <i class="fas fa-exclamation-circle mr-1"></i>
+                    <strong>Note:</strong> Row 1 must be Headers. Data starts from Row 2.
+                </div>
             </div>
         </div>
     </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow border-0 h-100">
+            <div class="card-header py-3 bg-gray-900 text-white">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-file-excel mr-2"></i>Upload Student Data</h6>
+            </div>
+            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
+                
+                <div class="mb-4 text-primary">
+                    <i class="fas fa-file-csv fa-6x"></i>
+                </div>
+                
+                <h5 class="text-gray-900 font-weight-bold mb-1">Select Excel File</h5>
+                <p class="text-muted small mb-4">Supported format: .xlsx</p>
+                
+                <form action="" method="post" enctype="multipart/form-data" style="width: 100%;">
+                    {% csrf_token %}
+                    
+                    <div class="form-group mb-4">
+                        <div class="custom-file text-left">
+                            <input type="file" name="excel_file" class="custom-file-input" id="excelFile" accept=".xlsx" required>
+                            <label class="custom-file-label text-truncate" for="excelFile">Choose file...</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block font-weight-bold shadow-sm py-2">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i> Import Data Now
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.getElementById('excelFile');
+        
+        fileInput.addEventListener('change', function(event) {
+            if (this.files && this.files.length > 0) {
+                const fileName = this.files[0].name;
+                const label = this.nextElementSibling;
+                label.innerText = fileName;
+                label.classList.add("selected");
+            }
+        });
+    });
+</script>
 
 {% endblock %}

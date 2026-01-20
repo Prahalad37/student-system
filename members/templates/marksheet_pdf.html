@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Card</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 11pt;
+            color: #333;
+        }
+
+        /* --- Main Border & Layout --- */
+        .container {
+            border: 3px double #2c3e50;
+            padding: 20px;
+            /* Height remove kar di taaki content stretch na ho */
+        }
+
+        /* --- Header --- */
+        .header { text-align: center; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; margin-bottom: 20px; }
+        .school-name { font-size: 24pt; font-weight: bold; color: #1a237e; text-transform: uppercase; }
+        .school-info { font-size: 10pt; color: #555; margin-top: 5px; }
+        .report-title { 
+            font-size: 16pt; font-weight: bold; text-decoration: underline; 
+            margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- Student Info Grid --- */
+        .info-table { width: 100%; margin-bottom: 25px; }
+        .info-table td { padding: 6px; vertical-align: bottom; }
+        .label { font-weight: bold; color: #555; width: 15%; }
+        .value { font-weight: bold; color: #000; border-bottom: 1px dotted #888; width: 35%; }
+
+        /* --- Marks Table (The Fix) --- */
+        .marks-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .marks-table th {
+            background-color: #1a237e; color: #fff;
+            padding: 8px; border: 1px solid #000;
+            font-size: 10pt; font-weight: bold;
+        }
+        .marks-table td {
+            padding: 10px; border: 1px solid #000;
+            text-align: center; font-size: 11pt;
+        }
+        .sub-name { text-align: left; padding-left: 10px; font-weight: bold; }
+
+        /* --- Result Section --- */
+        .result-box {
+            border: 1px solid #000; background-color: #f8f9fa; 
+            padding: 10px; margin-top: 20px; text-align: center;
+        }
+        
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+
+        /* --- Footer --- */
+        .footer { margin-top: 50px; width: 100%; }
+        .sign-box { text-align: center; width: 33%; font-size: 10pt; font-weight: bold; }
+        .sign-line { border-top: 1px solid #333; width: 80%; margin: 0 auto 5px auto; height: 1px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="school-name">Prahlad Academy</div>
+        <div class="school-info">Excellence in Education | Session: 2025-2026</div>
+        <div class="school-info">New Delhi, India | Ph: +91 98765 43210</div>
+        <div class="report-title">Statement of Marks</div>
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <td class="label">Name:</td>
+            <td class="value">{{ student.firstname }} {{ student.lastname }}</td>
+            <td class="label">Roll No:</td>
+            <td class="value">{{ student.roll_number|default:"-" }}</td>
+        </tr>
+        <tr>
+            <td class="label">Father Name:</td>
+            <td class="value">{{ student.father_name|default:"-" }}</td>
+            <td class="label">Class:</td>
+            <td class="value">{{ student.student_class|default:"-" }}</td>
+        </tr>
+        <tr>
+            <td class="label">Exam:</td>
+            <td class="value">{{ score.exam_name }}</td>
+            <td class="label">Date:</td>
+            <td class="value">{% now "d-M-Y" %}</td>
+        </tr>
+    </table>
+
+    <table class="marks-table">
+        <thead>
+            <tr>
+                <th width="40%" align="left" style="padding-left:10px;">SUBJECT</th>
+                <th width="20%">MAX MARKS</th>
+                <th width="20%">PASS MARKS</th>
+                <th width="20%">OBTAINED</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="sub-name">Mathematics</td>
+                <td>100</td>
+                <td>33</td>
+                <td>{{ score.maths }}</td>
+            </tr>
+            <tr>
+                <td class="sub-name">Physics</td>
+                <td>100</td>
+                <td>33</td>
+                <td>{{ score.physics }}</td>
+            </tr>
+            <tr>
+                <td class="sub-name">Chemistry</td>
+                <td>100</td>
+                <td>33</td>
+                <td>{{ score.chemistry }}</td>
+            </tr>
+            <tr>
+                <td class="sub-name">English</td>
+                <td>100</td>
+                <td>33</td>
+                <td>{{ score.english }}</td>
+            </tr>
+            <tr>
+                <td class="sub-name">Computer Science</td>
+                <td>100</td>
+                <td>33</td>
+                <td>{{ score.computer }}</td>
+            </tr>
+            <tr style="background-color: #eee; font-weight: bold;">
+                <td class="sub-name">GRAND TOTAL</td>
+                <td>500</td>
+                <td>165</td>
+                <td>{{ total_obtained }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="result-box">
+        <table width="100%">
+            <tr>
+                <td width="33%">Percentage: <b>{{ percentage }}%</b></td>
+                <td width="33%">Result: <span class="{% if result_status == 'PASS' %}pass{% else %}fail{% endif %}">{{ result_status }}</span></td>
+                <td width="33%">Attendance: <b>{{ attendance_percent|default:"Good" }}</b></td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top: 20px; font-size: 10pt;">
+        <b>Remarks:</b> __________________________________________________________________
+    </div>
+
+    <table class="footer">
+        <tr>
+            <td class="sign-box"><div class="sign-line"></div>Class Teacher</td>
+            <td class="sign-box"><div class="sign-line"></div>Exam Controller</td>
+            <td class="sign-box"><div class="sign-line"></div>Principal</td>
+        </tr>
+    </table>
+
+</div>
+
+</body>
+</html>

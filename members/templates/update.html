@@ -4,61 +4,185 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Edit Student ✏️</h6>
+    <div class="col-xl-10 col-lg-12 col-md-12">
+        <div class="card shadow-sm mb-4 border-0">
+            
+            <div class="card-header py-3 bg-white d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-warning">
+                    <i class="fas fa-edit mr-2"></i>Update Student Details
+                </h6>
+                <a href="{% url 'index' %}" class="btn btn-sm btn-light text-secondary font-weight-bold">
+                    <i class="fas fa-times mr-1"></i> Cancel
+                </a>
             </div>
-            <div class="card-body">
-                
-                <form action="/updaterecord/{{ mymember.id }}" method="post" enctype="multipart/form-data">
+            
+            <div class="card-body p-4">
+                <form action="{% url 'updaterecord' mymember.id %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    
-                    <div class="form-group">
-                        <label>First Name:</label>
-                        <input name="first" value="{{ mymember.firstname }}" class="form-control" required>
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-id-card mr-1"></i> Official Info
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Admin No</label>
+                            <input type="text" name="admission_no" class="form-control form-control-sm" value="{{ mymember.admission_no|default:'' }}">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Join Date</label>
+                            <input type="date" name="joined_date" class="form-control form-control-sm" value="{{ mymember.joined_date|date:'Y-m-d' }}">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Roll No</label>
+                            <input type="text" name="roll_number" class="form-control form-control-sm" value="{{ mymember.roll_number|default:'' }}">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Gender</label>
+                            <select name="gender" class="form-control form-control-sm">
+                                <option value="Male" {% if mymember.gender == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if mymember.gender == 'Female' %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if mymember.gender == 'Other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Last Name:</label>
-                        <input name="last" value="{{ mymember.lastname }}" class="form-control" required>
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-user mr-1"></i> Personal Details
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">First Name</label>
+                            <input type="text" name="first" class="form-control form-control-sm" value="{{ mymember.firstname }}" required>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Last Name</label>
+                            <input type="text" name="last" class="form-control form-control-sm" value="{{ mymember.lastname }}" required>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">DOB</label>
+                            <input type="date" name="dob" class="form-control form-control-sm" value="{{ mymember.dob|date:'Y-m-d' }}">
+                        </div>
+                        
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Father's Name</label>
+                            <input type="text" name="father_name" class="form-control form-control-sm" value="{{ mymember.father_name|default:'' }}">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Mobile</label>
+                            <input type="tel" name="mobile_number" class="form-control form-control-sm" value="{{ mymember.mobile_number|default:'' }}">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <label class="small font-weight-bold">Email</label>
+                            <input type="email" name="email" class="form-control form-control-sm" value="{{ mymember.email|default:'' }}">
+                        </div>
+                        
+                        <div class="form-group col-12">
+                            <label class="small font-weight-bold">Address</label>
+                            <input type="text" name="address" class="form-control form-control-sm" value="{{ mymember.address|default:'' }}">
+                        </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="text-primary font-weight-bold">Total Fees:</label>
-                                <input type="number" name="fee_total" value="{{ mymember.fee_total }}" class="form-control">
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-book-reader mr-1"></i> Academics
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Class</label>
+                            <input type="text" name="student_class" class="form-control form-control-sm" 
+                                   value="{% if mymember.student_class %}{{ mymember.student_class.name }}{% endif %}">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Section</label>
+                            <input type="text" name="section" class="form-control form-control-sm" 
+                                   value="{% if mymember.student_class %}{{ mymember.student_class.section }}{% endif %}">
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Stream</label>
+                            <select name="preferred_stream" class="form-control form-control-sm">
+                                <option value="General" {% if mymember.preferred_stream == 'General' %}selected{% endif %}>General</option>
+                                <option value="Science (PCM)" {% if mymember.preferred_stream == 'Science (PCM)' %}selected{% endif %}>Science (PCM)</option>
+                                <option value="Science (PCB)" {% if mymember.preferred_stream == 'Science (PCB)' %}selected{% endif %}>Science (PCB)</option>
+                                <option value="Commerce" {% if mymember.preferred_stream == 'Commerce' %}selected{% endif %}>Commerce</option>
+                                <option value="Arts" {% if mymember.preferred_stream == 'Arts' %}selected{% endif %}>Arts</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">House</label>
+                            <select name="house_team" class="form-control form-control-sm">
+                                <option value="">None</option>
+                                <option value="Red" {% if mymember.house_team == 'Red' %}selected{% endif %}>🔴 Red</option>
+                                <option value="Blue" {% if mymember.house_team == 'Blue' %}selected{% endif %}>🔵 Blue</option>
+                                <option value="Green" {% if mymember.house_team == 'Green' %}selected{% endif %}>🟢 Green</option>
+                                <option value="Yellow" {% if mymember.house_team == 'Yellow' %}selected{% endif %}>🟡 Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-bus mr-1"></i> Transport & Medical
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-6 col-md-2">
+                            <label class="small font-weight-bold">Blood Group</label>
+                            <select name="blood_group" class="form-control form-control-sm">
+                                <option value="">-</option>
+                                <option value="A+" {% if mymember.blood_group == 'A+' %}selected{% endif %}>A+</option>
+                                <option value="B+" {% if mymember.blood_group == 'B+' %}selected{% endif %}>B+</option>
+                                <option value="O+" {% if mymember.blood_group == 'O+' %}selected{% endif %}>O+</option>
+                                <option value="AB+" {% if mymember.blood_group == 'AB+' %}selected{% endif %}>AB+</option>
+                                <option value="O-" {% if mymember.blood_group == 'O-' %}selected{% endif %}>O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-6 col-md-3">
+                            <label class="small font-weight-bold">Mode</label>
+                            <select name="transport_mode" class="form-control form-control-sm">
+                                <option value="Self" {% if mymember.transport_mode == 'Self' %}selected{% endif %}>Self</option>
+                                <option value="School Bus" {% if mymember.transport_mode == 'School Bus' %}selected{% endif %}>School Bus</option>
+                                <option value="Private" {% if mymember.transport_mode == 'Private' %}selected{% endif %}>Private</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-md-7">
+                            <label class="small font-weight-bold">Route / Medical Note</label>
+                            <input type="text" name="route_name" class="form-control form-control-sm" value="{{ mymember.route_name|default:'' }}">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <div class="form-row align-items-end">
+                        <div class="form-group col-6 col-md-4">
+                            <label class="small font-weight-bold text-success">Total Fee (₹)</label>
+                            <input type="number" name="fee_total" class="form-control form-control-sm font-weight-bold" value="{{ mymember.fee_total }}">
+                        </div>
+                        <div class="form-group col-6 col-md-4">
+                            <label class="small font-weight-bold text-primary">Paid (₹)</label>
+                            <input type="number" name="fee_paid" class="form-control form-control-sm font-weight-bold" value="{{ mymember.fee_paid }}">
+                        </div>
+                        <div class="form-group col-12 col-md-4">
+                            <label class="small font-weight-bold">Current Photo</label>
+                            <div class="d-flex align-items-center">
+                                {% if mymember.profile_pic %}
+                                    <img src="{{ mymember.profile_pic.url }}" width="40" height="40" class="rounded-circle mr-2 border">
+                                {% endif %}
+                                <div class="custom-file">
+                                    <input type="file" name="file" class="custom-file-input" id="customFile">
+                                    <label class="custom-file-label col-form-label-sm" for="customFile">Change</label>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="text-success font-weight-bold">Paid Amount:</label>
-                                <input type="number" name="fee_paid" value="{{ mymember.fee_paid }}" class="form-control">
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="form-group mt-3">
-                        <label>Current Photo:</label><br>
-                        {% if mymember.profile_pic %}
-                            <img src="/media/{{ mymember.profile_pic }}" width="60" style="border-radius:50%;">
-                        {% else %}
-                            <span>No Image</span>
-                        {% endif %}
-                        <br><br>
-                        <label class="font-weight-bold">Upload New Photo (Optional):</label>
-                        <input type="file" name="file" class="form-control-file border p-2 rounded">
+                    <div class="text-right mt-3">
+                        <button type="submit" class="btn btn-warning shadow-sm px-4 font-weight-bold text-dark">
+                            <i class="fas fa-check-circle mr-2"></i> Update Details
+                        </button>
                     </div>
-
-                    <hr>
-
-                    <button type="submit" class="btn btn-primary btn-icon-split">
-                        <span class="icon text-white-50"><i class="fas fa-save"></i></span>
-                        <span class="text">Update Changes</span>
-                    </button>
-                    
-                    <a href="/" class="btn btn-secondary">Cancel</a>
 
                 </form>
             </div>

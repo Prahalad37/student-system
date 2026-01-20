@@ -1,197 +1,316 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>ID Card - {{ student.firstname }}</title>
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary-blue: #1e40af;
+            --dark-blue: #0f172a;
+            --bg-gray: #e2e8f0;
+        }
+
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-gray);
+            font-family: 'Poppins', sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-        }
-        
-        /* ID Card Size (Standard Credit Card Size) */
-        .id-card {
-            width: 350px;
-            height: 520px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            overflow: hidden;
-            position: relative;
-            text-align: center;
-            border: 1px solid #ddd;
+            gap: 20px;
         }
 
-        /* Top Header Design */
-        .header {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-            height: 130px;
+        /* --- TOGGLE BUTTONS --- */
+        .layout-controls {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .layout-btn {
+            border: 2px solid transparent;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .layout-btn.active {
+            background: #dbeafe;
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .layout-btn:hover { background: #e2e8f0; }
+
+        /* --- 1. HORIZONTAL CARD (Landscape) --- */
+        .card-horizontal {
+            width: 486px;
+            height: 306px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex; /* Hidden by JS when Vertical is active */
+            position: relative;
+        }
+
+        .h-left {
+            width: 32%;
+            background: linear-gradient(150deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             color: white;
-            padding-top: 20px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+        .h-left::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: -20px;
+            width: 40px;
+            height: 100%;
+            background: white;
+            transform: skewX(-10deg);
+        }
+
+        .h-right { width: 68%; padding: 15px 20px 15px 10px; position: relative; }
+
+        /* --- 2. VERTICAL CARD (Portrait) --- */
+        .card-vertical {
+            width: 306px;
+            height: 486px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Vertical Header Design */
+        .v-header {
+            height: 140px;
+            background: linear-gradient(180deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
             border-bottom-left-radius: 50% 20px;
             border-bottom-right-radius: 50% 20px;
-        }
-
-        .school-name {
-            font-size: 22px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .tagline {
-            font-size: 10px;
-            opacity: 0.8;
-        }
-
-        /* Student Photo */
-        .photo-container {
-            margin-top: -60px;
-        }
-        
-        .student-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 5px solid white;
-            object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        /* Details */
-        .details {
-            padding: 10px 20px;
-        }
-
-        .name {
-            font-size: 24px;
-            font-weight: 800;
-            color: #333;
-            margin: 10px 0 5px 0;
-        }
-
-        .role {
-            color: #4e73df;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        .info-table {
-            width: 100%;
-            margin-top: 10px;
-            text-align: left;
-            font-size: 14px;
-            color: #555;
-        }
-        
-        .info-table td {
-            padding: 5px 0;
-            border-bottom: 1px dashed #eee;
-        }
-        
-        .info-label {
-            font-weight: bold;
-            color: #888;
-            width: 80px;
-        }
-
-        /* Footer / Barcode */
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: #f8f9fc;
-            padding: 15px 0;
-            border-top: 1px solid #eee;
-        }
-
-        .id-no {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            font-size: 18px;
-            letter-spacing: 3px;
-        }
-
-        /* Print Button (Hide while printing) */
-        .print-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background: #4e73df;
+            position: relative;
+            text-align: center;
+            padding-top: 15px;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
+        }
+        
+        .v-header h3 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .v-header p { margin: 0; font-size: 10px; opacity: 0.8; }
+
+        .v-photo-container {
+            margin-top: -50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .v-body {
+            padding: 10px 20px;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .v-footer {
+            background: #f8fafc;
+            padding: 10px;
+            border-top: 1px dashed #cbd5e1;
+            text-align: center;
+        }
+
+        /* --- SHARED STYLES --- */
+        .student-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            background: #fff;
+            z-index: 10;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        
+
+        .student-name-lg { font-size: 16px; font-weight: 700; text-transform: uppercase; margin-top: 5px; color: var(--dark-blue); }
+        .student-class-badge { 
+            display: inline-block; background: #e0f2fe; color: #0284c7; 
+            padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: 600; margin-top: 2px;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; text-align: left; }
+        .info-box label { display: block; font-size: 8px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+        .info-box p { margin: 0; font-size: 11px; font-weight: 600; color: #334155; }
+
+        .barcode { font-family: 'Libre Barcode 39 Text', cursive; font-size: 24px; color: #333; line-height: 1; opacity: 0.8; }
+        .sig-label { font-size: 8px; color: var(--primary-blue); font-weight: 700; border-top: 1px solid #cbd5e1; padding-top: 2px; display: block; margin-top: 2px; }
+
+        /* --- ACTION BAR --- */
+        .action-bar {
+            background: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            gap: 15px;
+        }
+        .btn {
+            text-decoration: none; padding: 8px 20px; border-radius: 30px; font-size: 14px; font-weight: 600;
+            border: none; cursor: pointer; transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-print { background: var(--primary-blue); color: white; }
+        .btn-close { background: #f1f5f9; color: #475569; }
+
+        /* --- PRINT SETTINGS --- */
         @media print {
-            body { background: white; height: auto; }
-            .print-btn { display: none; }
-            .id-card { box-shadow: none; border: 1px solid #000; }
+            body { background: none; display: block; padding: 0; margin: 0; }
+            .layout-controls, .action-bar { display: none !important; }
+            
+            /* Print Only the Active Card */
+            .card-horizontal, .card-vertical {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+                margin: 0;
+            }
         }
     </style>
 </head>
 <body>
 
-    <button class="print-btn" onclick="window.print()">🖨️ Print ID Card</button>
+    <div class="layout-controls">
+        <button class="layout-btn active" onclick="showLayout('horizontal')">
+            <i class="fas fa-id-card"></i> Horizontal
+        </button>
+        <button class="layout-btn" onclick="showLayout('vertical')">
+            <i class="fas fa-portrait"></i> Vertical
+        </button>
+    </div>
 
-    <div class="id-card">
-        <div class="header">
-            <div class="school-name">Student ERP School</div>
-            <div class="tagline">Excellence Since 2025</div>
-        </div>
-
-        <div class="photo-container">
+    <div id="card-horizontal" class="card-horizontal">
+        <div class="h-left">
             {% if student.profile_pic %}
-                <img src="/media/{{ student.profile_pic }}" class="student-img">
+                <img src="{{ student.profile_pic.url }}" class="student-photo" alt="Student">
             {% else %}
-                <img src="https://ui-avatars.com/api/?name={{ student.firstname }}&background=random" class="student-img">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="student-photo">
             {% endif %}
+            <div style="font-size: 14px; font-weight: 700; margin-top:10px; text-transform: uppercase;">{{ student.firstname }}<br>{{ student.lastname }}</div>
+            <div style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius:10px; margin-top:5px;">
+                {{ student.student_class }} - {{ student.student_class.section }}
+            </div>
         </div>
-
-        <div class="details">
-            <div class="name">{{ student.firstname }} {{ student.lastname }}</div>
-            <div class="role">Student</div>
-
-            <table class="info-table">
-                <tr>
-                    <td class="info-label">ID No:</td>
-                    <td><b>{{ student.id }}</b></td>
-                </tr>
-                <tr>
-                    <td class="info-label">Class:</td>
-                    <td>XII - PCM</td>
-                </tr>
-                <tr>
-                    <td class="info-label">DOB:</td>
-                    <td>01 Jan 2008</td> </tr>
-                <tr>
-                    <td class="info-label">Phone:</td>
-                    <td>+91 98765 43210</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Valid:</td>
-                    <td>2025 - 2026</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="footer">
-            <div class="id-no">STU-{{ student.id }}-2026</div>
-            <small style="font-size: 10px; color: #aaa;">Principal Signature</small>
+        <div class="h-right">
+            <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center;">
+                <i class="fas fa-university" style="font-size: 28px; color: var(--primary-blue); margin-right: 10px;"></i>
+                <div>
+                    <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--dark-blue);">Prahlad Academy</h3>
+                    <p style="margin:0; font-size:9px; color:#64748b;">New Delhi, India • Est. 2025</p>
+                </div>
+            </div>
+            <div class="info-grid">
+                <div class="info-box"><label>Roll Number</label><p>{{ student.roll_number|default:"-" }}</p></div>
+                <div class="info-box"><label>DOB</label><p>{{ student.dob|date:"d M, Y"|default:"-" }}</p></div>
+                <div class="info-box"><label>Blood Group</label><p style="color: #dc2626;">{{ student.blood_group|default:"-" }}</p></div>
+                <div class="info-box"><label>Phone</label><p>{{ student.mobile_number|default:"-" }}</p></div>
+            </div>
+            <div style="position:absolute; bottom:15px; width:90%; display:flex; justify-content:space-between; align-items:flex-end;">
+                <div class="barcode">*{{ student.id }}PA*</div>
+                <div style="text-align:center;">
+                    <span style="font-family:'Brush Script MT',cursive; font-size:16px; color:var(--primary-blue);">Principal</span>
+                    <span class="sig-label">AUTHORIZED SIGNATORY</span>
+                </div>
+            </div>
         </div>
     </div>
+
+    <div id="card-vertical" class="card-vertical">
+        <div class="v-header">
+            <h3>Prahlad Academy</h3>
+            <p>Excellence in Education</p>
+        </div>
+        <div class="v-photo-container">
+            {% if student.profile_pic %}
+                <img src="{{ student.profile_pic.url }}" class="student-photo" alt="Student">
+            {% else %}
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="student-photo">
+            {% endif %}
+        </div>
+        <div class="v-body">
+            <div class="student-name-lg">{{ student.firstname }} {{ student.lastname }}</div>
+            <div class="student-class-badge">{{ student.student_class }} ({{ student.student_class.section }})</div>
+
+            <div class="info-grid" style="grid-template-columns: 1fr; gap: 6px; margin-top: 20px; text-align: center;">
+                <div class="info-box">
+                    <label>Roll Number</label>
+                    <p>{{ student.roll_number|default:"-" }}</p>
+                </div>
+                <div class="info-box">
+                    <label>Mobile Number</label>
+                    <p>{{ student.mobile_number|default:"-" }}</p>
+                </div>
+                <div class="info-box">
+                    <label>Valid Upto</label>
+                    <p>March 31, 2026</p>
+                </div>
+            </div>
+        </div>
+        <div class="v-footer">
+            <div class="barcode" style="font-size: 20px; margin-bottom: 5px;">*{{ student.id }}*</div>
+            <span style="font-family:'Brush Script MT',cursive; font-size:16px; color:var(--primary-blue);">Principal</span>
+            <span class="sig-label" style="border:none;">AUTHORIZED SIGNATORY</span>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <button onclick="window.print()" class="btn btn-print"><i class="fas fa-print mr-2"></i>Print ID</button>
+        <a href="javascript:window.close();" class="btn btn-close">Close</a>
+    </div>
+
+    <script>
+        function showLayout(type) {
+            const hCard = document.getElementById('card-horizontal');
+            const vCard = document.getElementById('card-vertical');
+            const btns = document.querySelectorAll('.layout-btn');
+
+            if (type === 'horizontal') {
+                hCard.style.display = 'flex';
+                vCard.style.display = 'none';
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+            } else {
+                hCard.style.display = 'none';
+                vCard.style.display = 'flex';
+                btns[0].classList.remove('active');
+                btns[1].classList.add('active');
+            }
+        }
+    </script>
 
 </body>
 </html>

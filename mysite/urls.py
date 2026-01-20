@@ -6,7 +6,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('members.urls')),  # Saara traffic members app par bhej do
+    path('', include('members.urls')),  # ✅ Saara traffic members app par jayega
+    # ❌ marksheet_pdf wali line YAHAN SE HATA DI HAI (Wo members/urls.py mein hai)
 ]
 
 # Images/Media dikhane ke liye zaroori code

@@ -4,64 +4,96 @@
 
 {% block content %}
 
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">👤 Student Profile</h1>
-    <a href="{% url 'index' %}" class="btn btn-secondary btn-sm shadow-sm">
-        <i class="fas fa-arrow-left"></i> Back to Dashboard
-    </a>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-id-badge mr-2"></i>Student Profile
+    </h1>
+    <div>
+        <a href="{% url 'index' %}" class="btn btn-secondary btn-sm shadow-sm mr-1">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <a href="{% url 'update' student.id %}" class="btn btn-warning btn-sm shadow-sm mr-1">
+            <i class="fas fa-pen"></i> Edit
+        </a>
+        <a href="{% url 'receipt_pdf' student.id %}" target="_blank" class="btn btn-primary btn-sm shadow-sm mr-1">
+            <i class="fas fa-download"></i> Receipt
+        </a>
+        <a href="{% url 'id_card' student.id %}" target="_blank" class="btn btn-info btn-sm shadow-sm">
+            <i class="fas fa-id-card"></i> ID Card
+        </a>
+    </div>
 </div>
 
 <div class="row">
 
     <div class="col-xl-4 col-lg-5">
-        
         <div class="card shadow mb-4">
             <div class="card-body text-center">
                 {% if student.profile_pic %}
-                    <img class="img-profile rounded-circle mb-3 shadow" src="/media/{{ student.profile_pic }}" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
+                    <img class="img-profile rounded-circle mb-3 shadow" src="{{ student.profile_pic.url }}" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
                 {% else %}
-                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 150px; height: 150px;">
-                        <i class="fas fa-user fa-5x text-gray-300"></i>
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 150px; height: 150px; font-size: 3rem; border: 4px solid #fff;">
+                        {{ student.firstname|slice:":1" }}
                     </div>
                 {% endif %}
                 
-                <h4 class="font-weight-bold text-dark">{{ student.firstname }} {{ student.lastname }}</h4>
-                <p class="text-muted mb-1">Class 12 - PCM</p>
-                <div class="badge badge-primary px-3 py-2">ID: #{{ student.id }}</div>
+                <h4 class="font-weight-bold text-dark mb-1">{{ student.firstname }} {{ student.lastname }}</h4>
+                <p class="text-muted mb-2">
+                    {% if student.student_class %}
+                        Class {{ student.student_class }}
+                    {% else %}
+                        No Class Assigned
+                    {% endif %}
+                </p>
+                
+                <div class="mb-3">
+                    <span class="badge badge-primary px-2">ID: #{{ student.id }}</span>
+                    {% if student.roll_number %}
+                        <span class="badge badge-secondary px-2">Roll: {{ student.roll_number }}</span>
+                    {% endif %}
+                </div>
 
                 <hr>
                 
-                <div class="text-left mt-4">
-                    <h6 class="font-weight-bold text-uppercase text-gray-600 text-xs">Fees Overview</h6>
-                    
-                    <div class="d-flex justify-content-between mb-2">
+                <div class="text-left mt-3">
+                    <h6 class="font-weight-bold text-uppercase text-xs text-gray-600 mb-3">Fees Status</h6>
+                    <div class="d-flex justify-content-between mb-2 small">
                         <span>Total Fees:</span>
                         <span class="font-weight-bold">₹{{ student.fee_total }}</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-2">
+                    <div class="d-flex justify-content-between mb-2 small">
                         <span>Paid:</span>
                         <span class="text-success font-weight-bold">₹{{ student.fee_paid }}</span>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between small">
                         <span>Due Amount:</span>
                         {% if student.due_amount > 0 %}
-                            <span class="text-danger font-weight-bold bg-danger-light px-2 rounded">₹{{ student.due_amount }}</span>
+                            <span class="text-danger font-weight-bold">₹{{ student.due_amount }}</span>
                         {% else %}
-                            <span class="text-success font-weight-bold">Clear ✅</span>
+                            <span class="badge badge-success">Paid ✅</span>
                         {% endif %}
                     </div>
                 </div>
-                
-                <hr>
-                <a href="{% url 'id_card' student.id %}" target="_blank" class="btn btn-warning btn-block mb-2 text-white">
-                    <i class="fas fa-id-card"></i> Generate ID Card
-                </a>
-                <a href="{% url 'receipt_pdf' student.id %}" target="_blank" class="btn btn-info btn-block mb-2">
-                    <i class="fas fa-file-invoice"></i> Download Receipt
-                </a>
-                <a href="/update/{{ student.id }}" class="btn btn-primary btn-block">
-                    <i class="fas fa-edit"></i> Edit Profile
-                </a>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">📊 Attendance</h6>
+            </div>
+            <div class="card-body text-center">
+                <h2 class="display-4 font-weight-bold text-dark mb-0">{{ attendance_percent }}%</h2>
+                <div class="progress mb-3 mt-2" style="height: 10px;">
+                    <div class="progress-bar {% if attendance_percent >= 75 %}bg-success{% elif attendance_percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}" role="progressbar" style="width: {{ attendance_percent }}%"></div>
+                </div>
+                <div class="row small text-muted">
+                    <div class="col-6 border-right">
+                        <strong>{{ present_days }}</strong> Present
+                    </div>
+                    <div class="col-6">
+                        <strong>{{ total_days }}</strong> Total
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -69,29 +101,73 @@
     <div class="col-xl-8 col-lg-7">
         
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">📊 Attendance Performance</h6>
+            <div class="card-header py-3 bg-gradient-primary text-white">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-user-graduate mr-2"></i>Academic & Personal Info</h6>
             </div>
             <div class="card-body">
-                <div class="row align-items-center">
+                <div class="row">
                     <div class="col-md-6 mb-3">
-                        <h2 class="display-4 font-weight-bold text-dark mb-0">{{ attendance_percent }}%</h2>
-                        <p class="text-muted">Overall Attendance</p>
+                        <small class="text-uppercase text-secondary font-weight-bold">Father's Name</small>
+                        <h6 class="font-weight-bold text-dark">{{ student.father_name|default:"-" }}</h6>
                     </div>
-                    <div class="col-md-6">
-                        <div class="progress mb-2" style="height: 20px;">
-                            <div class="progress-bar {% if attendance_percent >= 75 %}bg-success{% elif attendance_percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
-                                 role="progressbar" style="width: {{ attendance_percent }}%">
-                            </div>
-                        </div>
-                        <small class="text-muted">Present: <b>{{ present_days }}</b> days out of <b>{{ total_days }}</b> working days.</small>
+                    <div class="col-md-6 mb-3">
+                        <small class="text-uppercase text-secondary font-weight-bold">Date of Birth</small>
+                        <h6 class="font-weight-bold text-dark">{{ student.dob|date:"d M, Y"|default:"-" }}</h6>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <small class="text-uppercase text-secondary font-weight-bold">Mobile</small>
+                        <h6 class="font-weight-bold text-dark">{{ student.mobile_number|default:"-" }}</h6>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <small class="text-uppercase text-secondary font-weight-bold">Email</small>
+                        <h6 class="font-weight-bold text-dark">{{ student.email|default:"-" }}</h6>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <small class="text-uppercase text-secondary font-weight-bold">House Team</small>
+                        <h6>
+                            {% if student.house_team == 'Red' %}<span class="badge badge-danger">🔴 Red House</span>
+                            {% elif student.house_team == 'Blue' %}<span class="badge badge-primary">🔵 Blue House</span>
+                            {% elif student.house_team == 'Green' %}<span class="badge badge-success">🟢 Green House</span>
+                            {% elif student.house_team == 'Yellow' %}<span class="badge badge-warning">🟡 Yellow House</span>
+                            {% else %}-{% endif %}
+                        </h6>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <small class="text-uppercase text-secondary font-weight-bold">Stream</small>
+                        <h6 class="font-weight-bold text-dark">{{ student.preferred_stream|default:"General" }}</h6>
+                    </div>
+                    <div class="col-12">
+                         <small class="text-uppercase text-secondary font-weight-bold">Address</small>
+                         <p class="text-dark bg-light p-2 rounded small">{{ student.address|default:"No Address Provided" }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-white">
+            <div class="card-header py-3 bg-white border-bottom-primary">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bus-alt mr-2"></i>Transport & Medical</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 border-right">
+                        <h6 class="text-primary font-weight-bold mb-3 small text-uppercase">🚌 Transport</h6>
+                        <p class="mb-1"><strong>Mode:</strong> {{ student.transport_mode }}</p>
+                        <p class="mb-1"><strong>Route/Stop:</strong> {{ student.route_name|default:"-" }}</p>
+                    </div>
+                    <div class="col-md-6 pl-md-4">
+                        <h6 class="text-danger font-weight-bold mb-3 small text-uppercase">🚑 Medical</h6>
+                        <p class="mb-1"><strong>Blood Group:</strong> 
+                            <span class="badge badge-danger">{{ student.blood_group|default:"Unknown" }}</span>
+                        </p>
+                        <p class="mb-1"><strong>Conditions:</strong> {{ student.medical_conditions|default:"None" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-info">📝 Exam History</h6>
             </div>
             <div class="card-body p-0">
@@ -100,26 +176,30 @@
                         <thead class="bg-light">
                             <tr>
                                 <th>Exam Name</th>
-                                <th>Date</th>
-                                <th>Total Marks</th>
-                                <th>Percentage</th>
+                                <th>Math</th>
+                                <th>Phy</th>
+                                <th>Chem</th>
+                                <th>Eng</th>
+                                <th>Comp</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for exam in exams %}
+                            {% for score in exams %}
                             <tr>
-                                <td class="font-weight-bold">{{ exam.exam_name }}</td>
-                                <td>{{ exam.created_at|date:"d M Y" }}</td>
-                                <td>{{ exam.total_marks }} / 500</td>
-                                <td>
-                                    <span class="badge {% if exam.percentage >= 60 %}badge-success{% else %}badge-warning{% endif %}">
-                                        {{ exam.percentage|floatformat:1 }}%
-                                    </span>
+                                <td class="font-weight-bold">{{ score.exam_name }}</td>
+                                <td>{{ score.maths }}</td>
+                                <td>{{ score.physics }}</td>
+                                <td>{{ score.chemistry }}</td>
+                                <td>{{ score.english }}</td>
+                                <td>{{ score.computer }}</td>
+                                <td class="font-weight-bold text-primary">
+                                    {{ score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer }}
                                 </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="4" class="text-center p-4 text-muted">No exams given yet.</td>
+                                <td colspan="7" class="text-center p-4 text-muted">No exams recorded yet.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
