@@ -11,14 +11,21 @@ from django.core.files.storage import FileSystemStorage
 from datetime import date
 from xhtml2pdf import pisa
 
-# ✅ Import Models
-from .models import Member, Attendance, StudyMaterial, ExamScore, Notice, Expense, ClassRoom
+# ✅ REST Framework Imports (New for Phase 2)
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .serializers import StudentSerializer
+
+# ✅ Import Models (Updated)
+from .models import Member, Attendance, StudyMaterial, ExamScore, Notice, Expense, ClassRoom, School, Payment
 
 # ==========================================
 #               DASHBOARD
 # ==========================================
 @login_required
 def index(request):
+    # Future: Filter by request.user.school
     mymembers = Member.objects.all()
     total_students = Member.objects.count()
     
@@ -138,6 +145,7 @@ def addrecord(request):
         img = request.FILES.get('file')
             
         # 6. Save
+        # Note: We are relying on the Default '1' for school in Phase 2
         member = Member(
             firstname=first, lastname=last, father_name=father,       
             mobile_number=mobile, email=email, admission_no=admission_no,
@@ -465,3 +473,23 @@ def export_excel(request):
 
     wb.save(response)
     return response
+
+# ==========================================
+# 🚀 API ENDPOINTS (For Mobile App)
+# ==========================================
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def student_api_list(request):
+    """
+    API endpoint for Mobile App (Flutter/React Native)
+    Returns list of students in JSON format
+    """
+    if request.user.is_superuser:
+         students = Member.objects.all()
+    else:
+         # Future Phase: Filter by School
+         students = Member.objects.all() 
+    
+    serializer = StudentSerializer(students, many=True)
+    return Response(serializer.data)

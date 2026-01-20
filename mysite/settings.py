@@ -1,6 +1,6 @@
 """
 Django settings for mysite project.
-UPDATED FOR: Prahlad Academy ERP v2.0
+UPDATED FOR: Prahlad Academy ERP v2.0 (SaaS Phase 2)
 """
 
 import os
@@ -16,7 +16,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-od3$^1(250-5m5t#ep^kr&%ch%tt$do6j3@tfn@#xers2(ppkh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Development ke liye True rakho, Live server par False karna
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'prahalad.pythonanywhere.com', 'prahaladpal.pythonanywhere.com']
@@ -32,6 +31,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Third Party Apps (Phase 2)
+    'rest_framework',
+    'corsheaders',
+    'pwa',  # ✅ Comma fix here (Crucial!)
+    
     # Custom Apps
     'members',
 ]
@@ -39,6 +43,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    
+    # ✅ CORS Middleware must be before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware', 
+    
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -94,18 +102,14 @@ USE_TZ = True
 
 # --- STATIC & MEDIA FILES ---
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 
-# Ye batata hai ki naya SB Admin Template kahan rakha hai
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# Jab live server par 'collectstatic' chalate hain, tab files yahan jati hain
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files (Student Photos etc.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -114,9 +118,34 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'login'              # Agar login nahi hai to yahan bhejo
-LOGIN_REDIRECT_URL = 'index'     # Login hone ke baad Dashboard par bhejo
-LOGOUT_REDIRECT_URL = 'login'    # Logout hone ke baad Login page par bhejo
+LOGIN_URL = 'login'              
+LOGIN_REDIRECT_URL = 'index'     
+LOGOUT_REDIRECT_URL = 'login'    
 
 # Trust settings for PythonAnywhere
 CSRF_TRUSTED_ORIGINS = ['https://prahalad.pythonanywhere.com', 'https://prahaladpal.pythonanywhere.com']
+
+# --- PWA CONFIGURATION (Mobile App Settings) ---
+PWA_APP_NAME = 'Prahlad Academy'
+PWA_APP_DESCRIPTION = "Smart School ERP System"
+PWA_APP_THEME_COLOR = '#0f172a'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_START_URL = '/'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/img/icon-160.png',
+        'sizes': '160x160'
+    }
+]
+
+# --- REST FRAMEWORK CONFIG ---
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+# --- CORS CONFIG ---
+CORS_ALLOW_ALL_ORIGINS = True # Allow Mobile Apps to connect
