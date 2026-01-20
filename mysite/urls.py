@@ -5,9 +5,16 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # ✅ PWA URLs (Mobile App "Install" Feature)
+    # Isse browser ko manifest.json aur serviceworker.js milta hai
+    path('', include('pwa.urls')),
+
+    # Authentication (Login/Logout)
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('members.urls')),  # ✅ Saara traffic members app par jayega
-    # ❌ marksheet_pdf wali line YAHAN SE HATA DI HAI (Wo members/urls.py mein hai)
+
+    # Main App URLs (Dashboard, Students, etc.)
+    path('', include('members.urls')),
 ]
 
 # Images/Media dikhane ke liye zaroori code
