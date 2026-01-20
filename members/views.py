@@ -13,6 +13,7 @@ from xhtml2pdf import pisa
 from .models import Book, LibraryTransaction  # Add these
 from .utils import get_current_school         # Add this
 import datetime
+from .models import TransportRoute, StudentTransport, Member # Ensure these are imported
 
 # ✅ REST Framework Imports (New for Phase 2)
 from rest_framework.decorators import api_view, permission_classes
@@ -582,3 +583,74 @@ def return_book(request, id):
         
     trans.save()
     return redirect('library_home')
+
+# ==========================================
+# 11. TRANSPORT VIEWS
+# ==========================================
+
+def transport_home(request):
+    school = get_current_school(request)
+    if not school:
+        return render(request, '404.html')
+
+    # 1. Fetch Routes (Buses)
+    routes = TransportRoute.objects.filter(school=school)
+    
+    # 2. Fetch Student Allocations
+    transport_students = StudentTransport.objects.filter(school=school).select_related('student', 'route')
+    
+    context = {
+        'routes': routes,
+        'transport_students': transport_students,
+        'total_buses': routes.count(),
+        'students_on_bus': transport_students.count()
+    }
+    return render(request, 'transport.html', context)
+
+def add_route(request):
+    school = get_current_school(request)
+    if request.method == "POST":
+        route_name = request.POST['route_name']
+        vehicle_number = request.POST['vehicle_number']
+        driver_name = request.POST['driver_name']
+        driver_phone = request.POST['driver_phone']
+        
+        TransportRoute.objects.create(
+            school=school,
+            route_name=route_name,
+            vehicle_number=vehicle_number,
+            driver_name=driver_name,
+            driver_phone=driver_phone
+        )
+        return redirect('transport_home')
+    return redirect('transport_home')
+
+def transport_assign(request):
+    school = get_current_school(request)
+    if request.method == "POST":
+        student_id = request.POST['student_id']
+        route_id = request.POST['route_id']
+        pickup_point = request.POST['pickup_point']
+        monthly_fee = request.POST['monthly_fee']
+        
+        # Get Objects
+        student = Member.objects.get(id=student_id)
+        route = TransportRoute.objects.get(id=route_id)
+        
+        # Create or Update Allocation
+        StudentTransport.objects.update_or_create(
+            school=school,
+            student=student,
+            defaults={
+                'route': route,
+                'pickup_point': pickup_point,
+                'monthly_fee': monthly_fee
+            }
+        )
+        
+        # Update Student Profile too (for quick reference)
+        student.transport_mode = 'School Bus'
+        student.route_name = route.route_name
+        student.save()
+        
+    return redirect('transport_home')

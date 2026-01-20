@@ -74,4 +74,11 @@ urlpatterns = [
     path('library/add/', views.add_book, name='add_book'),
     path('library/issue/', views.issue_book, name='issue_book'),
     path('library/return/<int:id>/', views.return_book, name='return_book'),
+
+    # ==============================
+    # TRANSPORT PATHS
+    # ==============================
+    path('transport/', views.transport_home, name='transport_home'),
+    path('transport/add-route/', views.add_route, name='add_route'),
+    path('transport/assign/', views.transport_assign, name='transport_assign'),
 ]
