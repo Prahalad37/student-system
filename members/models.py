@@ -298,3 +298,32 @@ class LibraryTransaction(models.Model):
         if end_date > self.due_date:
             return (end_date - self.due_date).days
         return 0
+    
+# ... (Previous code) ...
+
+# ==========================================
+# 12. HR & PAYROLL MODULE
+# ==========================================
+
+class Staff(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=15)
+    
+    designation = models.CharField(max_length=100, choices=[
+        ('Teacher', 'Teacher'), 
+        ('Principal', 'Principal'),
+        ('Accountant', 'Accountant'),
+        ('Driver', 'Driver'),
+        ('Cleaner', 'Cleaner'),
+        ('Other', 'Other')
+    ])
+    
+    salary = models.IntegerField(default=0, help_text="Monthly Salary")
+    join_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.designation})"

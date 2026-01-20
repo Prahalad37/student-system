@@ -14,6 +14,7 @@ from .models import Book, LibraryTransaction  # Add these
 from .utils import get_current_school         # Add this
 import datetime
 from .models import TransportRoute, StudentTransport, Member # Ensure these are imported
+from .models import Staff, Member, School, UserProfile, Book, LibraryTransaction, TransportRoute, StudentTransport # Update imports
 
 # ✅ REST Framework Imports (New for Phase 2)
 from rest_framework.decorators import api_view, permission_classes
@@ -654,3 +655,47 @@ def transport_assign(request):
         student.save()
         
     return redirect('transport_home')
+
+# ==========================================
+# 12. HR VIEWS
+# ==========================================
+
+def staff_list(request):
+    school = get_current_school(request)
+    if not school:
+        return render(request, '404.html')
+        
+    # Fetch Active Staff
+    staff_members = Staff.objects.filter(school=school, is_active=True)
+    
+    # Calculate Total Monthly Expense
+    total_expense = sum(staff.salary for staff in staff_members)
+    
+    context = {
+        'staff_members': staff_members,
+        'total_staff': staff_members.count(),
+        'total_expense': total_expense
+    }
+    return render(request, 'hr_staff.html', context)
+
+def add_staff(request):
+    school = get_current_school(request)
+    if request.method == "POST":
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        phone = request.POST['phone']
+        designation = request.POST['designation']
+        salary = request.POST['salary']
+        join_date = request.POST['join_date']
+        
+        Staff.objects.create(
+            school=school,
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            designation=designation,
+            salary=salary,
+            join_date=join_date
+        )
+        return redirect('staff_list')
+    return redirect('staff_list')

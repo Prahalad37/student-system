@@ -81,4 +81,8 @@ urlpatterns = [
     path('transport/', views.transport_home, name='transport_home'),
     path('transport/add-route/', views.add_route, name='add_route'),
     path('transport/assign/', views.transport_assign, name='transport_assign'),
+
+    # HR Paths
+    path('hr/staff/', views.staff_list, name='staff_list'),
+    path('hr/staff/add/', views.add_staff, name='add_staff'),
 ]
