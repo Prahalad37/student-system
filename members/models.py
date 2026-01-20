@@ -248,3 +248,53 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
+
+# ... (Previous code remains same) ...
+
+# ==========================================
+# 10. LIBRARY MANAGEMENT MODULE
+# ==========================================
+
+class Book(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
+    isbn = models.CharField(max_length=50, blank=True, null=True, help_text="ISBN or Barcode ID")
+    category = models.CharField(max_length=100, default="General")
+    
+    # Inventory
+    total_copies = models.IntegerField(default=1)
+    available_copies = models.IntegerField(default=1)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.available_copies}/{self.total_copies})"
+
+class LibraryTransaction(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    student = models.ForeignKey(Member, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    
+    issue_date = models.DateField(auto_now_add=True)
+    due_date = models.DateField()
+    return_date = models.DateField(null=True, blank=True)
+    
+    fine_amount = models.IntegerField(default=0, help_text="Calculated automatically if late")
+    status = models.CharField(max_length=20, choices=[('Issued', 'Issued'), ('Returned', 'Returned')], default='Issued')
+
+    def __str__(self):
+        return f"{self.student.firstname} - {self.book.title}"
+
+    # Auto-Calculate Fine Logic
+    @property
+    def days_overdue(self):
+        from datetime import date
+        if self.return_date:
+            end_date = self.return_date
+        else:
+            end_date = date.today()
+            
+        if end_date > self.due_date:
+            return (end_date - self.due_date).days
+        return 0
