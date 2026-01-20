@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from datetime import date
 from xhtml2pdf import pisa
+from .models import Book, LibraryTransaction  # Add these
+from .utils import get_current_school         # Add this
+import datetime
 
 # ✅ REST Framework Imports (New for Phase 2)
 from rest_framework.decorators import api_view, permission_classes
@@ -493,3 +496,89 @@ def student_api_list(request):
     
     serializer = StudentSerializer(students, many=True)
     return Response(serializer.data)
+
+# ==========================================
+# 10. LIBRARY VIEWS
+# ==========================================
+
+def library_home(request):
+    school = get_current_school(request)
+    if not school:
+        return render(request, '404.html') # Or redirect to login
+        
+    # 1. Fetch Data (SaaS Filtered)
+    books = Book.objects.filter(school=school)
+    transactions = LibraryTransaction.objects.filter(school=school, status='Issued').order_by('due_date')
+    
+    # 2. Statistics
+    total_books = books.count()
+    issued_books = transactions.count()
+    
+    context = {
+        'books': books,
+        'transactions': transactions,
+        'total_books': total_books,
+        'issued_books': issued_books,
+    }
+    return render(request, 'library.html', context)
+
+def add_book(request):
+    school = get_current_school(request)
+    if request.method == "POST":
+        title = request.POST['title']
+        author = request.POST['author']
+        isbn = request.POST['isbn']
+        copies = int(request.POST['copies'])
+        
+        Book.objects.create(
+            school=school,
+            title=title,
+            author=author,
+            isbn=isbn,
+            total_copies=copies,
+            available_copies=copies
+        )
+        return redirect('library_home')
+    return redirect('library_home')
+
+def issue_book(request):
+    school = get_current_school(request)
+    if request.method == "POST":
+        student_id = request.POST['student_id']
+        book_id = request.POST['book_id']
+        due_date = request.POST['due_date']
+        
+        book = Book.objects.get(id=book_id)
+        
+        # Check availability
+        if book.available_copies > 0:
+            LibraryTransaction.objects.create(
+                school=school,
+                student_id=student_id,
+                book_id=book_id,
+                due_date=due_date
+            )
+            # Decrease Stock
+            book.available_copies -= 1
+            book.save()
+            
+    return redirect('library_home')
+
+def return_book(request, id):
+    # Mark as returned and calculate fine
+    trans = LibraryTransaction.objects.get(id=id)
+    trans.status = "Returned"
+    trans.return_date = datetime.date.today()
+    
+    # Increase Stock
+    book = trans.book
+    book.available_copies += 1
+    book.save()
+    
+    # Fine Logic (Simple: ₹10 per day late)
+    if trans.return_date > trans.due_date:
+        overdue_days = (trans.return_date - trans.due_date).days
+        trans.fine_amount = overdue_days * 10
+        
+    trans.save()
+    return redirect('library_home')

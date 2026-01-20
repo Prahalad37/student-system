@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+    
+    
 
 urlpatterns = [
     # ==============================
@@ -63,4 +65,13 @@ urlpatterns = [
     # 📱 MOBILE API (New)
     # ==============================
     path('api/students/', views.student_api_list, name='student_api_list'),
+
+    
+    # ==============================
+    # LIBRARY PATHS
+    # ==============================
+    path('library/', views.library_home, name='library_home'),
+    path('library/add/', views.add_book, name='add_book'),
+    path('library/issue/', views.issue_book, name='issue_book'),
+    path('library/return/<int:id>/', views.return_book, name='return_book'),
 ]
