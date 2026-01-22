@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Slip - {{ t.month_year }}</title>
+    <style>
+        @page { size: A4; margin: 1cm; }
+        body { font-family: Helvetica, Arial, sans-serif; color: #333; line-height: 1.4; }
+        .header-table { width: 100%; border-bottom: 2px solid #4e73df; padding-bottom: 10px; margin-bottom: 20px; }
+        .company-name { font-size: 20pt; font-weight: bold; color: #2c3e50; text-transform: uppercase; }
+        .box { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .salary-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .salary-table th { background-color: #f8f9fc; padding: 10px; text-align: left; border: 1px solid #eee; font-size: 10pt; color: #4e73df; }
+        .salary-table td { padding: 10px; border: 1px solid #eee; font-size: 10pt; }
+        .total-row { background-color: #e8f0fe; font-weight: bold; font-size: 11pt; }
+        .footer { margin-top: 50px; border-top: 1px dashed #ccc; padding-top: 20px; text-align: center; font-size: 9pt; color: #777; }
+    </style>
+</head>
+<body>
+    <table class="header-table">
+        <tr>
+            <td>
+                <div class="company-name">PRAHLAD ACADEMY</div>
+                <div style="font-size: 10pt; color: #666;">Empowering Future Generations</div>
+            </td>
+            <td align="right">
+                <div style="font-size: 16pt; font-weight: bold; color: #7f8c8d;">OFFICIAL PAYSLIP</div>
+                <div style="font-size: 10pt;">Period: {{ t.month_year }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="box">
+        <table width="100%">
+            <tr>
+                <td width="50%"><strong>Employee Name:</strong> {{ t.staff.first_name }} {{ t.staff.last_name }}</td>
+                <td width="50%"><strong>Designation:</strong> {{ t.staff.designation }}</td>
+            </tr>
+            <tr>
+                <td style="padding-top: 8px;"><strong>Payment Date:</strong> {{ t.payment_date }}</td>
+                <td style="padding-top: 8px;"><strong>Payment Mode:</strong> {{ t.payment_mode }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="salary-table">
+        <thead>
+            <tr>
+                <th width="70%">Earnings Description</th>
+                <th width="30%" align="right">Amount (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Monthly Basic Salary</td>
+                <td align="right">{{ t.amount_paid }}</td>
+            </tr>
+            <tr>
+                <td>Allowances / Bonus</td>
+                <td align="right">0.00</td>
+            </tr>
+            <tr class="total-row">
+                <td>NET DISBURSED AMOUNT</td>
+                <td align="right">₹ {{ t.amount_paid }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 20px; font-size: 10pt;">
+        <strong>Remarks:</strong> {{ t.remarks|default:"Salary processed successfully." }}
+    </div>
+
+    <div style="margin-top: 80px;">
+        <table width="100%">
+            <tr>
+                <td align="left">_______________________<br>Employee Signature</td>
+                <td align="right">_______________________<br>Authorized Signatory</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        This is a computer-generated payslip and does not require a physical seal.
+    </div>
+</body>
+</html>

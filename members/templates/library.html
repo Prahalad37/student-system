@@ -1,230 +1,91 @@
 {% extends "master.html" %}
 {% load static %}
 
-{% block title %}Library Management{% endblock %}
+{% block title %}Daily Attendance{% endblock %}
 
 {% block content %}
+<style>
+    .btn-group-toggle .btn { border-radius: 50px; margin: 0 2px; width: 40px; }
+    .btn-group-toggle .btn.active { box-shadow: 0 2px 5px rgba(0,0,0,0.2); transform: scale(1.1); }
+</style>
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-book-reader mr-2"></i>Library Management</h1>
-        <p class="text-muted small">Manage book inventory and student issues.</p>
-    </div>
-    <div class="col-md-6 text-right">
-        <button class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#addBookModal">
-            <i class="fas fa-plus mr-2"></i>Add New Book
-        </button>
-        <button class="btn btn-success shadow-sm ml-2" data-toggle="modal" data-target="#issueBookModal">
-            <i class="fas fa-hand-holding-book mr-2"></i>Issue Book
-        </button>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Books</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_books }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-book fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Currently Issued</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ issued_books }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-clock fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-calendar-check text-primary mr-2"></i>Daily Attendance</h1>
+    <a href="{% url 'attendance_records' %}" class="btn btn-dark shadow-sm"><i class="fas fa-history mr-1"></i> History</a>
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3 bg-white d-flex align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Issued Books (Pending Return)</h6>
+    <div class="card-body bg-light">
+        <form method="GET" class="row align-items-end">
+            <div class="col-md-4">
+                <label class="font-weight-bold small text-uppercase">Select Class</label>
+                <select name="class_id" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- Choose Class --</option>
+                    {% for c in classes %}
+                        <option value="{{ c.id }}" {% if c.id == selected_class_id %}selected{% endif %}>{{ c.name }} - {{ c.section }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="font-weight-bold small text-uppercase">Date</label>
+                <input type="date" name="date" class="form-control" value="{{ selected_date }}" onchange="this.form.submit()">
+            </div>
+        </form>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="issuedTable" width="100%" cellspacing="0">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Student Name</th>
-                        <th>Book Title</th>
-                        <th>Issued Date</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
+</div>
+
+{% if students %}
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="class_id" value="{{ selected_class_id }}">
+    <input type="hidden" name="date" value="{{ selected_date }}">
+
+    <div class="card shadow">
+        <div class="card-header py-3 bg-white d-flex justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Class Register</h6>
+            <button type="button" class="btn btn-sm btn-outline-success" onclick="markAllPresent()">Mark All Present</button>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="bg-primary text-white">
+                    <tr><th>Roll</th><th>Student Name</th><th class="text-center">Status</th></tr>
                 </thead>
                 <tbody>
-                    {% for t in transactions %}
+                    {% for s in students %}
+                    <input type="hidden" name="student_ids" value="{{ s.id }}">
                     <tr>
-                        <td class="font-weight-bold">{{ t.student.firstname }} {{ t.student.lastname }}</td>
-                        <td>{{ t.book.title }}</td>
-                        <td>{{ t.issue_date|date:"d M, Y" }}</td>
-                        <td>
-                            {{ t.due_date|date:"d M, Y" }}
-                            {% if t.days_overdue > 0 %}
-                                <span class="badge badge-danger ml-2">Late: {{ t.days_overdue }} days</span>
-                            {% endif %}
-                        </td>
-                        <td><span class="badge badge-warning px-2">Issued</span></td>
-                        <td>
-                            <a href="{% url 'return_book' t.id %}" class="btn btn-info btn-sm shadow-sm" onclick="return confirm('Mark this book as returned?')">
-                                <i class="fas fa-undo mr-1"></i> Return
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
-                            <i class="fas fa-check-circle mb-2"></i><br>
-                            No pending books. All clean!
+                        <td>{{ s.roll_number|default:"-" }}</td>
+                        <td class="font-weight-bold">{{ s.firstname }} {{ s.lastname }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-outline-success {% if s.current_status == 'Present' %}active{% endif %}">
+                                    <input type="radio" name="status_{{ s.id }}" value="Present" {% if s.current_status == 'Present' %}checked{% endif %}> P
+                                </label>
+                                <label class="btn btn-outline-danger {% if s.current_status == 'Absent' %}active{% endif %}">
+                                    <input type="radio" name="status_{{ s.id }}" value="Absent" {% if s.current_status == 'Absent' %}checked{% endif %}> A
+                                </label>
+                                <label class="btn btn-outline-warning {% if s.current_status == 'Late' %}active{% endif %}">
+                                    <input type="radio" name="status_{{ s.id }}" value="Late" {% if s.current_status == 'Late' %}checked{% endif %}> L
+                                </label>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
-
-<div class="card shadow mb-4">
-    <div class="card-header py-3 bg-white">
-        <h6 class="m-0 font-weight-bold text-secondary">Book Inventory</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="booksTable" width="100%" cellspacing="0">
-                <thead class="bg-light">
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>ISBN / Code</th>
-                        <th>Availability</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for b in books %}
-                    <tr>
-                        <td class="font-weight-bold">{{ b.title }}</td>
-                        <td>{{ b.author }}</td>
-                        <td>{{ b.isbn|default:"-" }}</td>
-                        <td>
-                            {% if b.available_copies > 0 %}
-                                <span class="badge badge-success px-2 py-1">{{ b.available_copies }} Available</span>
-                                <span class="small text-muted ml-1">(Total: {{ b.total_copies }})</span>
-                            {% else %}
-                                <span class="badge badge-danger px-2 py-1">Out of Stock</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center py-4 text-muted">No books added yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="card-footer text-center">
+            <button type="submit" class="btn btn-primary px-5">Save Attendance</button>
         </div>
     </div>
-</div>
+</form>
+{% else %}
+    <div class="text-center py-5 text-muted"><h5>Select a Class to view students.</h5></div>
+{% endif %}
 
-<div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title font-weight-bold">Add New Book</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{% url 'add_book' %}" method="POST">
-                {% csrf_token %}
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Book Title <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Concept of Physics" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Author Name <span class="text-danger">*</span></label>
-                        <input type="text" name="author" class="form-control" placeholder="e.g. H.C. Verma" required>
-                    </div>
-                    <div class="form-group">
-                        <label>ISBN / Barcode (Optional)</label>
-                        <input type="text" name="isbn" class="form-control" placeholder="Scan or type code">
-                    </div>
-                    <div class="form-group">
-                        <label>Number of Copies</label>
-                        <input type="number" name="copies" class="form-control" value="1" min="1" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save to Inventory</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="issueBookModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title font-weight-bold">Issue Book</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{% url 'issue_book' %}" method="POST">
-                {% csrf_token %}
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Select Book (Available Only)</label>
-                        <select name="book_id" class="form-control" required>
-                            <option value="" selected disabled>-- Choose Book --</option>
-                            {% for b in books %}
-                                {% if b.available_copies > 0 %}
-                                    <option value="{{ b.id }}">{{ b.title }} (By {{ b.author }})</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Student ID (Numeric)</label>
-                        <input type="number" name="student_id" class="form-control" placeholder="Enter Student ID" required>
-                        <small class="text-muted">You can find ID in the Student List.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Return Due Date</label>
-                        <input type="date" name="due_date" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Confirm Issue</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
+<script>
+    function markAllPresent() {
+        document.querySelectorAll('input[value="Present"]').forEach(r => r.click());
+    }
+</script>
 {% endblock %}

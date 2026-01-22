@@ -1,87 +1,137 @@
 {% extends "master.html" %}
+{% load static %}
 
-{% block title %}Mark Attendance{% endblock %}
+{% block title %}Smart Attendance{% endblock %}
 
 {% block content %}
 
-<form action="" method="post">
-    {% csrf_token %}
+<style>
+    /* Custom Toggle Buttons */
+    .attendance-toggle { display: flex; gap: 5px; }
+    .attendance-btn {
+        flex: 1; border-radius: 50px !important; font-weight: 600; padding: 5px 15px; transition: all 0.2s;
+    }
+    .attendance-btn input[type="radio"] { display: none; }
     
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">
-            <i class="fas fa-calendar-check text-primary mr-2"></i>Daily Attendance
-        </h1>
-        <div class="d-flex align-items-center">
-            <label class="mr-2 font-weight-bold text-dark mb-0">Date:</label>
-            <input type="date" name="date" class="form-control form-control-sm shadow-sm border-0 bg-white" required 
-                   value="{% now 'Y-m-d' %}" style="width: 150px;">
-            <button type="submit" class="btn btn-success btn-sm shadow-sm ml-3 px-4">
-                <i class="fas fa-save mr-1"></i> Save Attendance
-            </button>
+    /* Active State Colors */
+    .btn-outline-success.active { background-color: #1cc88a !important; color: white; border-color: #1cc88a; box-shadow: 0 4px 6px rgba(28, 200, 138, 0.3); }
+    .btn-outline-danger.active { background-color: #e74a3b !important; color: white; border-color: #e74a3b; box-shadow: 0 4px 6px rgba(231, 74, 59, 0.3); }
+    .btn-outline-warning.active { background-color: #f6c23e !important; color: white; border-color: #f6c23e; }
+
+    /* Student Avatar */
+    .student-avatar {
+        width: 45px; height: 45px; border-radius: 50%; object-fit: cover;
+        background: linear-gradient(45deg, #4e73df, #224abe); color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: bold; font-size: 1.2rem; margin-right: 15px;
+    }
+    .student-avatar img { width: 100%; height: 100%; border-radius: 50%; }
+</style>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">📝 Daily Attendance</h1>
+        <p class="mb-0 text-muted small">Mark & track student presence.</p>
+    </div>
+    
+    <div class="d-flex">
+        <div class="card bg-success text-white shadow-sm mr-3 py-2 px-4 text-center rounded-lg" style="min-width: 100px;">
+            <div class="small text-white-50 font-weight-bold text-uppercase" style="font-size: 0.7rem;">Present</div>
+            <div class="h4 font-weight-bold mb-0" id="count-present">0</div>
+        </div>
+        <div class="card bg-danger text-white shadow-sm py-2 px-4 text-center rounded-lg" style="min-width: 100px;">
+            <div class="small text-white-50 font-weight-bold text-uppercase" style="font-size: 0.7rem;">Absent</div>
+            <div class="h4 font-weight-bold mb-0" id="count-absent">0</div>
         </div>
     </div>
+</div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold">Class Register</h6>
-            <span class="badge badge-light text-primary px-3">Total Students: {{ mymembers.count }}</span>
+<div class="card shadow-sm mb-4 border-left-primary">
+    <div class="card-body bg-white py-3">
+        <form method="GET" class="row align-items-center">
+            <div class="col-md-5">
+                <label class="small font-weight-bold text-gray-500 text-uppercase">Select Class</label>
+                <div class="input-group">
+                    <div class="input-group-prepend"><span class="input-group-text bg-light border-0"><i class="fas fa-chalkboard text-primary"></i></span></div>
+                    <select name="class_id" class="form-control bg-light border-0 small" onchange="this.form.submit()">
+                        <option value="">-- Choose Class --</option>
+                        {% for c in classes %}
+                            <option value="{{ c.id }}" {% if c.id == selected_class_id %}selected{% endif %}>{{ c.name }} - {{ c.section }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="small font-weight-bold text-gray-500 text-uppercase">Date</label>
+                <input type="date" name="date" class="form-control bg-light border-0 small" value="{{ selected_date }}" onchange="this.form.submit()">
+            </div>
+            <div class="col-md-3 text-right">
+                <a href="{% url 'attendance_records' %}" class="btn btn-sm btn-outline-secondary mt-4 shadow-sm">
+                    <i class="fas fa-history mr-1"></i> View Logs
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if students %}
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="class_id" value="{{ selected_class_id }}">
+    <input type="hidden" name="date" value="{{ selected_date }}">
+
+    <div class="card shadow mb-5">
+        <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center sticky-top" style="top: 0; z-index: 10;">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Register <span class="badge badge-light text-primary border ml-2">{{ students.count }} Students</span>
+            </h6>
+            <button type="button" class="btn btn-sm btn-success shadow-sm font-weight-bold" onclick="markAllPresent()">
+                <i class="fas fa-check-double mr-1"></i> Mark All Present
+            </button>
         </div>
+
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="bg-light text-dark">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-uppercase text-gray-500 small">
                         <tr>
-                            <th width="5%" class="text-center">Roll</th>
-                            <th width="10%" class="text-center">Photo</th>
-                            <th width="35%">Student Name</th>
-                            <th width="50%" class="text-center">Status</th>
+                            <th class="pl-4 border-0" width="10%">Roll No</th>
+                            <th class="border-0">Student</th>
+                            <th class="text-center border-0" width="35%">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for x in mymembers %}
+                        {% for s in students %}
+                        <input type="hidden" name="student_ids" value="{{ s.id }}">
                         <tr>
-                            <td class="text-center font-weight-bold text-secondary">
-                                {{ x.roll_number|default:"-" }}
-                            </td>
-                            <td class="text-center">
-                                {% if x.profile_pic %}
-                                    <img src="{{ x.profile_pic.url }}" class="rounded-circle border" width="40" height="40" style="object-fit: cover;">
-                                {% else %}
-                                    <div class="btn-circle btn-sm btn-secondary font-weight-bold mx-auto">
-                                        {{ x.firstname|slice:":1" }}
-                                    </div>
-                                {% endif %}
-                            </td>
+                            <td class="pl-4 font-weight-bold text-muted">#{{ s.roll_number|default:"--" }}</td>
                             <td>
-                                <div class="font-weight-bold text-dark">{{ x.firstname }} {{ x.lastname }}</div>
-                                <small class="text-muted">Class: {{ x.student_class|default:"-" }}</small>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                    
-                                    <label class="btn btn-outline-success btn-sm active" style="width: 100px;">
-                                        <input type="radio" name="status_{{ x.id }}" value="Present" checked> 
-                                        <i class="fas fa-check-circle"></i> Present
-                                    </label>
-                                    
-                                    <label class="btn btn-outline-danger btn-sm" style="width: 100px;">
-                                        <input type="radio" name="status_{{ x.id }}" value="Absent"> 
-                                        <i class="fas fa-times-circle"></i> Absent
-                                    </label>
-                                    
-                                    <label class="btn btn-outline-warning btn-sm text-dark" style="width: 100px;">
-                                        <input type="radio" name="status_{{ x.id }}" value="Leave"> 
-                                        <i class="fas fa-envelope-open"></i> Leave
-                                    </label>
-
+                                <div class="d-flex align-items-center">
+                                    <div class="student-avatar shadow-sm">
+                                        {% if s.profile_pic %}
+                                            <img src="{{ s.profile_pic.url }}">
+                                        {% else %}
+                                            {{ s.firstname|slice:":1" }}
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="font-weight-bold text-dark">{{ s.firstname }} {{ s.lastname }}</div>
+                                        <small class="text-muted">ID: {{ s.admission_no|default:"N/A" }}</small>
+                                    </div>
                                 </div>
                             </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
-                                <i class="fas fa-user-graduate fa-3x mb-3 text-gray-300"></i><br>
-                                No students found to mark attendance.
+                            <td class="text-center">
+                                <div class="btn-group btn-group-toggle attendance-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-success attendance-btn {% if s.current_status == 'Present' %}active{% endif %}" onclick="updateStats()">
+                                        <input type="radio" name="status_{{ s.id }}" value="Present" {% if s.current_status == 'Present' %}checked{% endif %}> P
+                                    </label>
+                                    <label class="btn btn-outline-danger attendance-btn {% if s.current_status == 'Absent' %}active{% endif %}" onclick="updateStats()">
+                                        <input type="radio" name="status_{{ s.id }}" value="Absent" {% if s.current_status == 'Absent' %}checked{% endif %}> A
+                                    </label>
+                                    <label class="btn btn-outline-warning attendance-btn {% if s.current_status == 'Late' %}active{% endif %}" onclick="updateStats()">
+                                        <input type="radio" name="status_{{ s.id }}" value="Late" {% if s.current_status == 'Late' %}checked{% endif %}> L
+                                    </label>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -89,8 +139,46 @@
                 </table>
             </div>
         </div>
+        
+        <div class="card-footer bg-white text-center py-4 sticky-bottom" style="position: sticky; bottom: 0; z-index: 10; border-top: 1px solid #eaecf4;">
+            <button type="submit" class="btn btn-primary btn-lg px-5 shadow rounded-pill font-weight-bold">
+                <i class="fas fa-save mr-2"></i> Save Attendance
+            </button>
+        </div>
     </div>
-
 </form>
+{% else %}
+    <div class="text-center py-5 mt-4">
+        <div class="icon-circle bg-light mx-auto mb-4" style="width: 80px; height: 80px; display:flex; align-items:center; justify-content:center; border-radius:50%;">
+            <i class="fas fa-user-graduate fa-3x text-gray-300"></i>
+        </div>
+        <h5 class="text-gray-600 font-weight-bold">Ready to take attendance?</h5>
+        <p class="text-muted">Select a Class from the top bar to view the student list.</p>
+    </div>
+{% endif %}
+
+<script>
+    function markAllPresent() {
+        document.querySelectorAll('label.btn-outline-success').forEach(lbl => {
+            // Simulate click to trigger visual change and input selection
+            lbl.click(); 
+        });
+        updateStats();
+    }
+
+    function updateStats() {
+        // Small delay to let the DOM update active classes
+        setTimeout(() => {
+            let presentCount = document.querySelectorAll('label.btn-outline-success.active').length;
+            let absentCount = document.querySelectorAll('label.btn-outline-danger.active').length;
+            
+            document.getElementById('count-present').innerText = presentCount;
+            document.getElementById('count-absent').innerText = absentCount;
+        }, 50);
+    }
+
+    // Run on page load to set initial stats
+    document.addEventListener("DOMContentLoaded", updateStats);
+</script>
 
 {% endblock %}

@@ -1,135 +1,294 @@
 {% extends "master.html" %}
 {% load static %}
 
-{% block title %}HR Management{% endblock %}
+{% block title %}HR & Payroll{% endblock %}
 
 {% block content %}
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-user-tie mr-2"></i>Staff Directory</h1>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-briefcase text-dark mr-2"></i>HR Management</h1>
+        <p class="mb-0 text-muted small">Manage staff directory, attendance, and payroll.</p>
     </div>
-    <div class="col-md-6 text-right">
-        <button class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#addStaffModal">
-            <i class="fas fa-plus mr-2"></i>Add New Staff
+    <div>
+        <button class="btn btn-dark shadow-sm mr-2" data-toggle="modal" data-target="#addStaffModal">
+            <i class="fas fa-user-plus mr-1"></i> Add New Staff
+        </button>
+        <button class="btn btn-success shadow-sm font-weight-bold" data-toggle="modal" data-target="#paySalaryModal">
+            <i class="fas fa-money-bill-wave mr-1"></i> Pay Salary
         </button>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-xl-3 col-md-6 mb-4">
+<div class="row mb-4">
+    <div class="col-xl-4 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Employees</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_staff }}</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Staff</div>
+                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{ total_staff }} <span class="small text-muted">Active</span></div>
                     </div>
-                    <div class="col-auto"><i class="fas fa-id-badge fa-2x text-gray-300"></i></div>
+                    <div class="col-auto"><i class="fas fa-id-card fa-2x text-gray-300"></i></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6 mb-4">
+
+    <div class="col-xl-4 col-md-6 mb-4">
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Monthly Salary Expense</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ total_expense }}</div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Est. Monthly Payroll</div>
+                        <div class="h4 mb-0 font-weight-bold text-gray-800">₹{{ monthly_payroll_est }}</div>
                     </div>
-                    <div class="col-auto"><i class="fas fa-rupee-sign fa-2x text-gray-300"></i></div>
+                    <div class="col-auto"><i class="fas fa-wallet fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Payroll Status</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Ready</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-check-double fa-2x text-gray-300"></i></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3 bg-white">
-        <h6 class="m-0 font-weight-bold text-secondary">Employee List</h6>
+<div class="row">
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow mb-4 h-100">
+            <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-dark">Staff Directory</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="pl-4">Name</th>
+                                <th>Designation</th>
+                                <th>Phone</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in staff_members %}
+                            <tr>
+                                <td class="pl-4 font-weight-bold text-dark">{{ s.first_name }} {{ s.last_name }}</td>
+                                <td><span class="badge badge-light border">{{ s.designation }}</span></td>
+                                <td>{{ s.phone }}</td>
+                                <td class="text-success font-weight-bold">₹{{ s.salary }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center py-4 text-muted">No staff members found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead class="bg-light">
-                    <tr>
-                        <th>Name</th>
-                        <th>Designation</th>
-                        <th>Phone</th>
-                        <th>Salary</th>
-                        <th>Join Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s in staff_members %}
-                    <tr>
-                        <td class="font-weight-bold">{{ s.first_name }} {{ s.last_name }}</td>
-                        <td><span class="badge badge-info">{{ s.designation }}</span></td>
-                        <td>{{ s.phone }}</td>
-                        <td>₹{{ s.salary }}</td>
-                        <td>{{ s.join_date }}</td>
-                        <td><span class="badge badge-success">Active</span></td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="6" class="text-center text-muted">No staff added yet.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+    <div class="col-lg-5">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 bg-white">
+                <h6 class="m-0 font-weight-bold text-success">Recent Salary Payments</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-striped mb-0">
+                        <thead class="thead-light sticky-top">
+                            <tr>
+                                <th class="pl-4">Staff</th>
+                                <th>Month</th>
+                                <th>Amount</th>
+                                <th>Slip</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in salary_history %}
+                            <tr>
+                                <td class="pl-4 font-weight-bold">{{ t.staff.first_name }}</td>
+                                <td>{{ t.month_year }}</td>
+                                <td class="text-success font-weight-bold">₹{{ t.amount_paid }}</td>
+                                <td>
+                                    <a href="{% url 'salary_slip_pdf' t.id %}" target="_blank" class="btn btn-sm btn-circle btn-light border">
+                                        <i class="fas fa-file-pdf text-danger"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center py-4 text-muted">No payments made yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="addStaffModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">Add New Employee</h5>
+<div class="modal fade" id="addStaffModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title font-weight-bold">👤 Add New Staff</h5>
                 <button class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <form action="{% url 'add_staff' %}" method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>First Name</label>
+                        <div class="col-6 mb-3">
+                            <label class="font-weight-bold small text-muted">First Name</label>
                             <input type="text" name="first_name" class="form-control" required>
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label>Last Name</label>
+                        <div class="col-6 mb-3">
+                            <label class="font-weight-bold small text-muted">Last Name</label>
                             <input type="text" name="last_name" class="form-control" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="text" name="phone" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Designation</label>
+                        <label class="font-weight-bold small text-muted">Designation / Role</label>
                         <select name="designation" class="form-control">
                             <option value="Teacher">Teacher</option>
-                            <option value="Driver">Driver</option>
                             <option value="Accountant">Accountant</option>
-                            <option value="Cleaner">Cleaner</option>
-                            <option value="Other">Other</option>
+                            <option value="Librarian">Librarian</option>
+                            <option value="Driver">Driver</option>
+                            <option value="Admin">Admin</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Monthly Salary (₹)</label>
-                        <input type="number" name="salary" class="form-control" value="15000" required>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="font-weight-bold small text-muted">Phone</label>
+                            <input type="text" name="phone" class="form-control" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="font-weight-bold small text-muted">Basic Salary (₹)</label>
+                            <input type="number" name="salary" class="form-control" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Joining Date</label>
+                        <label class="font-weight-bold small text-muted">Joining Date</label>
                         <input type="date" name="join_date" class="form-control" required>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save Employee</button>
+                <div class="modal-footer bg-light">
+                    <button type="submit" class="btn btn-dark btn-block font-weight-bold">Save Staff Member</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="paySalaryModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+            
+            <div class="modal-header bg-gradient-success text-white py-4">
+                <div>
+                    <h5 class="modal-title font-weight-bold"><i class="fas fa-hand-holding-usd mr-2"></i>Process Salary</h5>
+                    <p class="mb-0 small text-white-50">Disburse monthly salary and generate slip.</p>
+                </div>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="{% url 'pay_salary' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-0">
+                    <div class="row no-gutters">
+                        
+                        <div class="col-md-5 bg-light p-4 border-right">
+                            <h6 class="text-uppercase text-gray-500 font-weight-bold small mb-3">Select Employee</h6>
+                            
+                            <div class="form-group">
+                                <select name="staff_id" class="form-control" size="10" style="height: 250px;" onchange="updateStaffCard(this)" required>
+                                    {% for s in staff_members %}
+                                        <option value="{{ s.id }}" data-name="{{ s.first_name }} {{ s.last_name }}" data-role="{{ s.designation }}" data-salary="{{ s.salary }}">
+                                            {{ s.first_name }} {{ s.last_name }}
+                                        </option>
+                                    {% empty %}
+                                        <option disabled>No staff added.</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7 p-4">
+                            <div class="d-flex align-items-center mb-4 p-3 bg-white shadow-sm rounded border-left-success">
+                                <div class="mr-3">
+                                    <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="font-weight-bold text-dark mb-0" id="card_staff_name">Select Employee</h6>
+                                    <small class="text-muted" id="card_staff_role">Role Info</small>
+                                </div>
+                            </div>
+
+                            <h6 class="text-uppercase text-gray-500 font-weight-bold small mb-3">Payment Details</h6>
+                            
+                            <div class="form-group">
+                                <label class="font-weight-bold text-dark">Amount to Pay (₹)</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">₹</span></div>
+                                    <input type="number" name="amount" id="salary_input" class="form-control font-weight-bold text-success" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label class="small font-weight-bold">Salary Month</label>
+                                    <input type="text" name="month_year" class="form-control" placeholder="e.g. Jan 2026" required>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="small font-weight-bold">Payment Mode</label>
+                                    <select name="mode" class="form-control">
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Cheque">Cheque</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="small font-weight-bold">Payment Date</label>
+                                <input type="date" name="payment_date" class="form-control" required value="{% now 'Y-m-d' %}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer bg-light border-top-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success shadow px-4 font-weight-bold">Confirm Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateStaffCard(selectObject) {
+        var selectedOption = selectObject.options[selectObject.selectedIndex];
+        document.getElementById('card_staff_name').innerText = selectedOption.getAttribute('data-name');
+        document.getElementById('card_staff_role').innerText = selectedOption.getAttribute('data-role');
+        
+        // Auto-fill salary amount
+        document.getElementById('salary_input').value = selectedOption.getAttribute('data-salary');
+    }
+</script>
 
 {% endblock %}

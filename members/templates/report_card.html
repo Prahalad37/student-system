@@ -1,83 +1,87 @@
 {% extends "master.html" %}
 
-{% block title %}Exam Results{% endblock %}
+{% block title %}Exam Results Directory{% endblock %}
 
 {% block content %}
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
-        <i class="fas fa-trophy text-warning mr-2"></i>Exam Results Directory
+        <i class="fas fa-chart-line text-primary mr-2"></i>Academic Performance
     </h1>
-    <a href="{% url 'add_marks' %}" class="btn btn-primary btn-sm shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Upload New Marks
+    <a href="{% url 'add_marks' %}" class="btn btn-primary shadow-sm">
+        <i class="fas fa-plus-circle mr-2"></i> Upload New Marks
     </a>
 </div>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3 bg-white border-bottom-primary d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary">All Student Marks</h6>
-        <div class="small text-muted">Latest results shown first</div>
+<div class="card shadow mb-4 border-0">
+    <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-secondary">Student Marksheet Records</h6>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
-                <thead class="bg-light text-dark">
+            <table class="table table-hover mb-0" id="resultsTable">
+                <thead class="thead-light text-uppercase small font-weight-bold">
                     <tr>
-                        <th class="pl-4">Student Name</th>
-                        <th>Exam Name</th>
-                        <th class="text-center">Mat</th>
-                        <th class="text-center">Phy</th>
-                        <th class="text-center">Che</th>
-                        <th class="text-center">Eng</th>
-                        <th class="text-center">Com</th>
-                        <th class="text-center bg-gray-100 border-left">Total</th>
-                        <th class="text-center">Result</th>
-                        <th class="text-center">Action</th>
+                        <th class="border-0 pl-4">Student & Class</th>
+                        <th class="border-0">Examination</th>
+                        <th class="border-0 text-center">Math</th>
+                        <th class="border-0 text-center">Phy</th>
+                        <th class="border-0 text-center">Che</th>
+                        <th class="border-0 text-center">Eng</th>
+                        <th class="border-0 text-center">Comp</th>
+                        <th class="border-0 text-center bg-gray-100">Total (%)</th>
+                        <th class="border-0 text-center">Status</th>
+                        <th class="border-0 text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for score in scores %}
                     <tr>
-                        <td class="pl-4">
-                            <div class="font-weight-bold text-dark">{{ score.student.firstname }} {{ score.student.lastname }}</div>
-                            <small class="text-muted">Class: {{ score.student.student_class|default:"-" }}</small>
+                        <td class="pl-4 align-middle">
+                            <div class="font-weight-bold text-gray-800">{{ score.student.firstname }} {{ score.student.lastname }}</div>
+                            <span class="badge badge-pill badge-light border text-muted small">ID: {{ score.student.roll_number|default:"N/A" }}</span>
                         </td>
-                        <td>
-                            <span class="badge badge-info px-2">{{ score.exam_name }}</span>
+                        <td class="align-middle">
+                            <span class="text-primary font-weight-bold small">{{ score.exam_name }}</span>
                         </td>
                         
-                        <td class="text-center">{{ score.maths }}</td>
-                        <td class="text-center">{{ score.physics }}</td>
-                        <td class="text-center">{{ score.chemistry }}</td>
-                        <td class="text-center">{{ score.english }}</td>
-                        <td class="text-center">{{ score.computer }}</td>
+                        <td class="text-center align-middle">{{ score.maths }}</td>
+                        <td class="text-center align-middle">{{ score.physics }}</td>
+                        <td class="text-center align-middle">{{ score.chemistry }}</td>
+                        <td class="text-center align-middle">{{ score.english }}</td>
+                        <td class="text-center align-middle">{{ score.computer }}</td>
                         
-                        <td class="text-center font-weight-bold bg-gray-100 border-left text-primary">
-                            {{ score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer }}
-                            <span class="small text-muted">/500</span>
+                        <td class="text-center align-middle bg-gray-100 font-weight-bold">
+                            {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
+                                <div class="text-dark">{{ total }} <span class="text-muted small">/500</span></div>
+                                <div class="text-info small mt-n1">{{ total|floatformat:0 }}%</div>
+                            {% endwith %}
                         </td>
 
-                        <td class="text-center">
+                        <td class="text-center align-middle">
                             {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
                                 {% if total >= 165 %}
-                                    <span class="badge badge-success">PASS</span>
+                                    <span class="badge badge-success px-3 py-1 shadow-sm"><i class="fas fa-check mr-1 small"></i>PASS</span>
                                 {% else %}
-                                    <span class="badge badge-danger">FAIL</span>
+                                    <span class="badge badge-danger px-3 py-1 shadow-sm"><i class="fas fa-times mr-1 small"></i>FAIL</span>
                                 {% endif %}
                             {% endwith %}
                         </td>
 
-                        <td class="text-center">
-                            <a href="{% url 'marksheet_pdf' score.id %}" target="_blank" class="btn btn-sm btn-circle btn-light border text-dark" title="Print Marksheet">
-                                <i class="fas fa-print"></i>
+                        <td class="text-center align-middle">
+                            <a href="{% url 'marksheet_pdf' score.id %}" target="_blank" class="btn btn-sm btn-outline-info shadow-sm" title="Generate PDF">
+                                <i class="fas fa-file-pdf mr-1"></i> Marksheet
                             </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="10" class="text-center py-5 text-muted">
-                            <i class="fas fa-folder-open fa-3x mb-3 text-gray-300"></i><br>
-                            No exam results uploaded yet.
+                        <td colspan="10" class="text-center py-5">
+                            <div class="py-4">
+                                <i class="fas fa-clipboard-list fa-3x text-gray-200 mb-3"></i>
+                                <h5 class="text-gray-400">No marks recorded yet.</h5>
+                                <a href="{% url 'add_marks' %}" class="btn btn-sm btn-primary mt-2">Add First Result</a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}

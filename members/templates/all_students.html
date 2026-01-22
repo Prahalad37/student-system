@@ -1,72 +1,76 @@
 {% extends "master.html" %}
+{% load static %}
+
+{% block title %}Student Directory{% endblock %}
 
 {% block content %}
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">All Registered Students 🎓</h1>
-    <a href="/members/add/" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-user-plus fa-sm text-white-50"></i> Add New Student
+    <a href="{% url 'add' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-user-plus fa-sm text-white-50 mr-2"></i>Add New Student
     </a>
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 bg-white border-bottom-primary">
         <h6 class="m-0 font-weight-bold text-primary">Student Directory</h6>
     </div>
-    <div class="card-body">
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="bg-light">
                     <tr>
-                        <th>ID</th>
+                        <th class="pl-4">ID</th>
                         <th>Name</th>
                         <th>Class</th>
                         <th>Father's Name</th>
                         <th>Mobile</th>
-                        <th>Fees Paid</th>
-                        <th>Actions</th>
+                        <th>Status</th>
+                        <th class="text-right pr-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for x in mymembers %}
                     <tr>
-                        <td>#{{ x.id }}</td>
-                        <td>
+                        <td class="pl-4 text-muted">#{{ x.id }}</td>
+                        <td class="font-weight-bold text-dark">
                             <div class="d-flex align-items-center">
-                                {% if x.profile_pic %}
-                                    <img src="{{ x.profile_pic.url }}" class="rounded-circle mr-2" width="30" height="30">
-                                {% else %}
-                                    <div class="btn-circle btn-sm btn-info mr-2">{{ x.firstname|slice:":1" }}</div>
-                                {% endif %}
-                                <span class="font-weight-bold">{{ x.firstname }} {{ x.lastname }}</span>
+                                <div class="rounded-circle bg-gradient-primary text-white d-flex align-items-center justify-content-center mr-3" style="width: 35px; height: 35px; font-size: 14px;">
+                                    {{ x.firstname|slice:":1" }}
+                                </div>
+                                <div>
+                                    {{ x.firstname }} {{ x.lastname }}
+                                </div>
                             </div>
                         </td>
-                        <td>
-                            {% if x.student_class %}
-                                <span class="badge badge-primary">{{ x.student_class }}</span>
-                            {% else %}
-                                <span class="badge badge-secondary">N/A</span>
-                            {% endif %}
-                        </td>
+                        <td><span class="badge badge-light border">{{ x.student_class }}</span></td>
                         <td>{{ x.father_name }}</td>
-                        <td><a href="tel:{{ x.mobile_number }}">{{ x.mobile_number }}</a></td>
+                        <td>{{ x.mobile_number }}</td>
                         <td>
-                            {% if x.due_amount > 0 %}
-                                <span class="text-danger font-weight-bold">Due: ₹{{ x.due_amount }}</span>
+                            {% if x.fee_paid >= x.fee_total %}
+                                <span class="badge badge-success">Paid</span>
                             {% else %}
-                                <span class="text-success font-weight-bold">Paid</span>
+                                <span class="badge badge-warning text-dark">Due</span>
                             {% endif %}
                         </td>
-                        <td class="text-center">
+                        <td class="text-right pr-4">
                             <a href="{% url 'update' x.id %}" class="btn btn-warning btn-circle btn-sm" title="Edit">
                                 <i class="fas fa-pen"></i>
                             </a>
-                            <a href="{% url 'delete' x.id %}" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Are you sure?')" title="Delete">
+                            <a href="{% url 'delete' x.id %}" class="btn btn-danger btn-circle btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this student?');">
                                 <i class="fas fa-trash"></i>
                             </a>
-                            <a href="{% url 'student_profile' x.id %}" class="btn btn-info btn-circle btn-sm" title="View">
+                            <a href="{% url 'student_profile' x.id %}" class="btn btn-info btn-circle btn-sm" title="View Profile">
                                 <i class="fas fa-eye"></i>
                             </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <img src="{% static 'img/undraw_profile.svg' %}" style="width: 100px; opacity: 0.5;" class="mb-3">
+                            <p class="text-muted">No students found. Add one to get started!</p>
                         </td>
                     </tr>
                     {% endfor %}

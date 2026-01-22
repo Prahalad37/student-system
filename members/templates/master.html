@@ -1,83 +1,67 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    {% load static %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Prahlad Academy - Premium ERP</title>
-
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#4e73df">
+    <title>{% block title %}School Manager{% endblock %}</title>
 
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-
+    
     <style>
-        /* --- 1. PREMIUM SIDEBAR (Electric Look) --- */
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%) !important;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+        /* Modern Card Styling */
+        .card { border: none; border-radius: 10px; box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); }
+        .topbar { box-shadow: none !important; border-bottom: 1px solid #e3e6f0; }
+
+        /* --- SIDEBAR SUB-MENU POLISH --- */
+        
+        /* 1. Remove the white box & borders */
+        .sidebar .collapse-inner {
+            background: transparent !important; /* Make background see-through */
+            border-radius: 0 !important;
+            padding: 5px 0 15px 0 !important;
+            margin: 0 !important;
+            box-shadow: none !important;
         }
 
-        .sidebar-brand-text {
-            color: #ffffff !important;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+        /* 2. Style the links inside */
+        .sidebar .collapse-item {
+            color: rgba(255, 255, 255, 0.7) !important; /* Light text */
+            font-size: 0.85rem;
+            padding: 8px 10px 8px 40px !important; /* Indent them */
+            margin: 0 !important;
+            border-radius: 5px;
+            transition: all 0.2s ease-in-out;
+            display: block;
+            text-decoration: none;
         }
 
-        /* --- 2. SIDEBAR LINKS --- */
-        .sidebar-dark .nav-item .nav-link {
-            color: #ffffff !important;
-            opacity: 0.95;
+        /* 3. Hover Effect: Glowy White */
+        .sidebar .collapse-item:hover {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            color: #fff !important;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transform: translateX(5px); /* Slide right slightly */
         }
 
-        .sidebar-dark .nav-item .nav-link:hover {
-            color: #fbbf24 !important;
-            transform: translateX(5px);
-            background-color: rgba(255,255,255,0.1);
-            border-radius: 10px;
-        }
-        
-        .sidebar-dark .nav-item .nav-link i {
-            color: #ffffff !important;
-            opacity: 1 !important;
+        /* 4. Active State (if needed) */
+        .sidebar .collapse-item.active {
+            color: #fff !important;
+            font-weight: 700;
+            background-color: rgba(255, 255, 255, 0.2) !important;
         }
 
-        /* --- 3. SOLID COLOR CARDS --- */
-        .border-left-primary { background: linear-gradient(45deg, #4e73df, #224abe); border: none !important; }
-        .border-left-success { background: linear-gradient(45deg, #1cc88a, #13855c); border: none !important; }
-        .border-left-danger { background: linear-gradient(45deg, #e74a3b, #be2617); border: none !important; }
-        .border-left-info { background: linear-gradient(45deg, #36b9cc, #258391); border: none !important; }
-
-        .border-left-primary *, .border-left-success *, 
-        .border-left-danger *, .border-left-info * {
-            color: white !important;
-        }
-
-        /* --- 4. ANIMATIONS & UI --- */
-        body { background-color: #f3f4f6; font-family: 'Nunito', sans-serif; }
-        
-        .card {
-            border-radius: 16px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s !important;
-        }
-
-        .card:hover {
-            transform: translateY(-8px) !important;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;
-            cursor: pointer;
-        }
-
-        .card-header {
-            background-color: white;
-            border-bottom: 1px solid #f0f0f0;
+        /* 5. Hide the tiny header text like "Directory:" if you want cleaner look */
+        .sidebar .collapse-header {
+            color: rgba(255, 255, 255, 0.4) !important;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            margin-left: 20px;
         }
     </style>
 </head>
@@ -88,11 +72,11 @@
 
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Prahlad Academy</div>
+                <div class="sidebar-brand-text mx-3">Prahlad <sup>Academy</sup></div>
             </a>
 
             <hr class="sidebar-divider my-0">
@@ -100,43 +84,39 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'index' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>Command Center</span></a>
             </li>
 
             <hr class="sidebar-divider">
-            <div class="sidebar-heading">Management</div>
+            <div class="sidebar-heading">Academic Operations</div>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'all_students' %}">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Students Directory</span></a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'add' %}">
-                    <i class="fas fa-fw fa-user-plus"></i>
-                    <span>New Admission</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'import_students' %}">
-                    <i class="fas fa-fw fa-file-import"></i>
-                    <span>Bulk Import</span></a>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStudents">
+                    <i class="fas fa-fw fa-user-graduate"></i>
+                    <span>Students</span>
+                </a>
+                <div id="collapseStudents" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Directory:</h6>
+                        <a class="collapse-item" href="{% url 'all_students' %}">View All Students</a>
+                        <a class="collapse-item" href="{% url 'add' %}">New Admission</a>
+                    </div>
+                </div>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'export_excel' %}">
-                    <i class="fas fa-fw fa-download"></i>
-                    <span>Export Data</span></a>
+                <a class="nav-link" href="{% url 'attendance' %}">
+                    <i class="fas fa-fw fa-calendar-check"></i>
+                    <span>Attendance</span></a>
             </li>
-            
+
             <hr class="sidebar-divider">
-            <div class="sidebar-heading">Facilities & Transport</div>
+            <div class="sidebar-heading">Administration</div>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'library_home' %}">
-                    <i class="fas fa-fw fa-book-reader"></i>
-                    <span>Library</span></a>
+                <a class="nav-link" href="{% url 'fee_home' %}">
+                    <i class="fas fa-fw fa-wallet"></i>
+                    <span>Fees & Finance</span></a>
             </li>
 
             <li class="nav-item">
@@ -145,94 +125,56 @@
                     <span>Transport</span></a>
             </li>
 
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">Academics</div>
-
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'attendance_records' %}">
-                    <i class="fas fa-fw fa-calendar-check"></i>
-                    <span>Attendance</span></a>
+                <a class="nav-link" href="{% url 'library' %}">
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>Library</span></a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'report_card' %}">
-                    <i class="fas fa-fw fa-poll"></i>
-                    <span>Exam Results</span></a>
+                <a class="nav-link" href="{% url 'staff_list' %}">
+                    <i class="fas fa-fw fa-briefcase"></i>
+                    <span>HR & Payroll</span></a>
             </li>
 
-            <hr class="sidebar-divider">
-            <div class="sidebar-heading">Finance</div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'add_expense' %}">
-                    <i class="fas fa-fw fa-wallet"></i>
-                    <span>Expenses</span></a>
-            </li>
+            <hr class="sidebar-divider d-none d-md-block">
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
 
         </ul>
+
         <div id="content-wrapper" class="d-flex flex-column">
-
             <div id="content">
-
+                
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
+                    
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Administrator</span>
                                 <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}">
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'logout' %}" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
                         </li>
                     </ul>
                 </nav>
+
                 <div class="container-fluid">
                     {% block content %}
                     {% endblock %}
                 </div>
+
             </div>
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Prahlad Academy 2026</span>
+                        <span>&copy; Prahlad Academy 2026</span>
                     </div>
                 </div>
             </footer>
-        </div>
-    </div>
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="{% url 'login' %}">Logout</a>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -240,8 +182,6 @@
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
-
-    {% block scripts %}{% endblock %}
 
 </body>
 </html>

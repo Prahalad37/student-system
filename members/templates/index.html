@@ -1,90 +1,150 @@
 {% extends "master.html" %}
 {% load static %}
 
+{% block title %}Dashboard Overview{% endblock %}
+
 {% block content %}
 
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <div>
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <p class="text-muted small mb-0">Overview of your institution's performance</p>
-    </div>
+<style>
+    /* --- DASHBOARD STYLES --- */
     
-    <div class="mt-2 mt-sm-0">
-        <a href="{% url 'export_excel' %}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm mr-2">
-            <i class="fas fa-file-excel fa-sm text-white-50"></i> Export Report
-        </a>
-        <a href="{% url 'add' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-user-plus fa-sm text-white-50"></i> New Admission
-        </a>
-    </div>
+    /* 1. Elegant Stats Card */
+    .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        transition: all 0.3s ease;
+        border: 1px solid #f1f5f9;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+    }
+
+    /* Soft Icon Backgrounds */
+    .icon-box {
+        width: 50px; height: 50px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem;
+    }
+    .icon-blue   { background: #eff6ff; color: #3b82f6; }
+    .icon-green  { background: #ecfdf5; color: #10b981; }
+    .icon-purple { background: #f5f3ff; color: #8b5cf6; }
+    .icon-orange { background: #fff7ed; color: #f97316; }
+
+    /* Typography */
+    .stat-label { font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 5px; }
+    .stat-meta  { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; }
+    .stat-meta span { font-weight: 600; }
+    .text-up { color: #10b981; }
+    .text-down { color: #ef4444; }
+
+    /* 2. FIXED: QUICK ACTION BUTTONS (Solid Tiles) */
+    .btn-quick {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 15px;
+        padding: 20px 10px;
+        text-decoration: none !important;
+        height: 100%;
+        width: 100%;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+    }
+
+    .btn-quick:hover {
+        transform: translateY(-3px);
+        border-color: #3b82f6;
+        background: #f8fafc;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-quick i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .btn-quick span {
+        font-weight: 600;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+
+    /* 3. Table Styles */
+    .table-clean th { 
+        font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 0.75rem; 
+        border-top: none; border-bottom: 1px solid #e2e8f0;
+    }
+    .table-clean td { vertical-align: middle; color: #334155; font-weight: 500; border-top: 1px solid #f1f5f9; }
+</style>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Dashboard</h1>
+    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm rounded-pill px-3">
+        <i class="fas fa-download fa-sm text-white-50 mr-2"></i> Report
+    </a>
 </div>
 
 <div class="row">
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Students</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                    </div>
+        <div class="stat-card shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Total Students</div>
+                    <div class="stat-value">{{ total_students }}</div>
+                    <div class="stat-meta"><span class="text-up"><i class="fas fa-arrow-up"></i> {{ new_admissions }}</span> new this month</div>
                 </div>
+                <div class="icon-box icon-blue"><i class="fas fa-user-graduate"></i></div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Total Revenue</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ total_revenue }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
-                    </div>
+        <div class="stat-card shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Fees Collected</div>
+                    <div class="stat-value">₹{{ total_revenue }}</div>
+                    <div class="stat-meta">Pending: <span class="text-down">₹{{ pending_dues }}</span></div>
                 </div>
+                <div class="icon-box icon-green"><i class="fas fa-wallet"></i></div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Expenses</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ total_expense }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-file-invoice-dollar fa-2x text-gray-300"></i>
-                    </div>
+        <div class="stat-card shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Transport</div>
+                    <div class="stat-value">{{ students_on_bus }}</div>
+                    <div class="stat-meta">Active Routes Used</div>
                 </div>
+                <div class="icon-box icon-orange"><i class="fas fa-bus"></i></div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            Net Profit</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ net_profit }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-chart-line fa-2x text-gray-300"></i>
-                    </div>
+        <div class="stat-card shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Library</div>
+                    <div class="stat-value">{{ books_issued }}</div>
+                    <div class="stat-meta">Books Currently Issued</div>
                 </div>
+                <div class="icon-box icon-purple"><i class="fas fa-book-reader"></i></div>
             </div>
         </div>
     </div>
@@ -92,163 +152,99 @@
 
 <div class="row">
 
-    <div class="col-lg-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-bullhorn mr-1"></i> Notice Board
-                </h6>
-                <button type="button" class="btn btn-sm btn-warning shadow-sm font-weight-bold" data-toggle="modal" data-target="#noticeModal">
-                    <i class="fas fa-plus"></i> Post Notice
-                </button>
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-0">
+                <h6 class="m-0 font-weight-bold text-dark">🚀 Quick Actions</h6>
             </div>
             <div class="card-body">
-                {% if notices %}
-                    <div class="row">
-                    {% for notice in notices|slice:":3" %}
-                        <div class="col-md-12 mb-2">
-                            <div class="alert alert-light border-left-warning shadow-sm" role="alert">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ notice.title }}</strong>
-                                        <span class="d-block text-muted small mt-1">{{ notice.message }}</span>
-                                    </div>
-                                    <div class="text-right" style="min-width: 100px;">
-                                        <small class="text-gray-500 d-block">{{ notice.created_at|timesince }} ago</small>
-                                        <a href="{% url 'delete_notice' notice.id %}" class="text-danger small" onclick="return confirm('Delete this notice?')">Delete</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                <div class="row g-3">
+                    <div class="col-6 mb-3">
+                        <a href="{% url 'add' %}" class="btn-quick">
+                            <i class="fas fa-user-plus text-primary"></i>
+                            <span>New Admission</span>
+                        </a>
                     </div>
-                {% else %}
-                    <div class="text-center py-4">
-                        <div class="mb-3">
-                            <i class="fas fa-clipboard-list fa-3x text-gray-300"></i>
-                        </div>
-                        <p class="text-gray-500 mb-0">No new notices posted yet.</p>
+                    <div class="col-6 mb-3">
+                        <a href="{% url 'fee_home' %}" class="btn-quick">
+                            <i class="fas fa-rupee-sign text-success"></i>
+                            <span>Collect Fee</span>
+                        </a>
                     </div>
-                {% endif %}
+                    <div class="col-6">
+                        <a href="{% url 'transport_home' %}" class="btn-quick">
+                            <i class="fas fa-bus text-warning"></i>
+                            <span>Transport</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'staff_list' %}" class="btn-quick">
+                            <i class="fas fa-users text-secondary"></i>
+                            <span>Staff / HR</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-</div>
-
-<div class="card shadow mb-4">
-    <div class="card-header py-3 bg-white">
-        <h6 class="m-0 font-weight-bold text-primary">Recent Student Enrollments</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead class="bg-light text-gray-700">
-                    <tr>
-                        <th style="width: 5%;">ID</th>
-                        <th style="width: 25%;">Student Name</th>
-                        <th style="width: 15%;">Class</th>
-                        <th style="width: 20%;">Guardian</th>
-                        <th style="width: 15%;">Fees Paid</th>
-                        <th style="width: 20%;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if mymembers %}
-                        {% for x in mymembers|slice:":10" %}
-                        <tr>
-                            <td class="align-middle">#{{ x.id }}</td>
-                            
-                            <td class="align-middle">
-                                <div class="d-flex align-items-center">
-                                    {% if x.profile_pic %}
-                                        <img src="{{ x.profile_pic.url }}" class="rounded-circle mr-2" width="35" height="35" style="object-fit: cover; border: 2px solid #eaecf4;">
-                                    {% else %}
-                                        <div class="btn-circle btn-sm btn-secondary mr-2 font-weight-bold">
-                                            {{ x.firstname|slice:":1" }}
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
+                <h6 class="m-0 font-weight-bold text-dark">Recent Transactions</h6>
+                <a href="{% url 'fee_home' %}" class="small font-weight-bold text-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-clean mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="pl-4">Student</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th class="text-right pr-4">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in recent_transactions %}
+                            <tr>
+                                <td class="pl-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center mr-2 font-weight-bold" style="width:35px; height:35px;">
+                                            {{ t.student.firstname|slice:":1" }}
                                         </div>
-                                    {% endif %}
-                                    <div>
-                                        <div class="font-weight-bold text-gray-800">{{ x.firstname }} {{ x.lastname }}</div>
-                                        <div class="small text-gray-500">{{ x.admission_no|default:"No Reg No." }}</div>
+                                        <div>
+                                            <div class="text-dark">{{ t.student.firstname }} {{ t.student.lastname }}</div>
+                                            <div class="small text-muted">{{ t.student.student_class }}</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-
-                            <td class="align-middle">
-                                {% if x.student_class %}
-                                    <span class="badge badge-primary px-2 py-1">{{ x.student_class }}</span>
-                                {% else %}
-                                    <span class="badge badge-warning">Unassigned</span>
-                                {% endif %}
-                            </td>
-
-                            <td class="align-middle text-gray-600">{{ x.father_name|default:"-" }}</td>
-
-                            <td class="align-middle">
-                                <div class="font-weight-bold text-success">₹{{ x.fee_paid }}</div>
-                                <div class="small text-muted">Total: ₹{{ x.fee_total }}</div>
-                            </td>
-
-                            <td class="align-middle">
-                                <a href="{% url 'student_profile' x.id %}" class="btn btn-info btn-sm btn-icon-split shadow-sm">
-                                    <span class="icon text-white-50"><i class="fas fa-eye"></i></span>
-                                    <span class="text">View</span>
-                                </a>
-                                <a href="{% url 'update' x.id %}" class="btn btn-light btn-sm text-gray-600 ml-1" title="Edit">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center py-5">
-                                <img src="{% static 'img/undraw_profile.svg' %}" width="120" class="mb-3 opacity-50" style="opacity: 0.5;">
-                                <h5 class="text-gray-600">No Students Found</h5>
-                                <p class="text-gray-500 mb-3">Get started by adding your first student to the system.</p>
-                                <a href="{% url 'add' %}" class="btn btn-primary shadow-sm">
-                                    <i class="fas fa-plus fa-sm text-white-50 mr-2"></i>Add Student
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                                </td>
+                                <td class="text-muted small">{{ t.payment_date }}</td>
+                                <td><span class="badge badge-success bg-success text-white px-2 py-1" style="opacity: 0.8;">Paid</span></td>
+                                <td class="text-right pr-4 font-weight-bold text-dark">+ ₹{{ t.amount_paid }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center py-5 text-muted">No recent activity.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        {% if mymembers %}
-        <div class="text-center mt-3">
-            <a href="{% url 'all_students' %}" class="btn btn-link text-gray-600">View All Students <i class="fas fa-arrow-right ml-1"></i></a>
-        </div>
-        {% endif %}
     </div>
 </div>
 
-<div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title font-weight-bold">📢 Post New Announcement</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+<div class="modal fade" id="addNoticeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-danger text-white"><h5 class="modal-title">Post Notice</h5><button class="close text-white" data-dismiss="modal">&times;</button></div>
             <form action="{% url 'add_notice' %}" method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label class="font-weight-bold text-gray-700">Notice Title</label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Exam Schedule Release" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="font-weight-bold text-gray-700">Details</label>
-                        <textarea name="message" class="form-control" rows="4" placeholder="Enter the full details of the announcement here..." required></textarea>
-                    </div>
+                    <input type="text" name="title" class="form-control mb-2" placeholder="Title" required>
+                    <textarea name="message" class="form-control" rows="3" placeholder="Message" required></textarea>
                 </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary shadow-sm"><i class="fas fa-paper-plane mr-2"></i>Post Notice</button>
-                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-danger btn-block">Post</button></div>
             </form>
         </div>
     </div>

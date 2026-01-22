@@ -1,0 +1,342 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Smart Fee Management{% endblock %}
+
+{% block content %}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-wallet text-success mr-2"></i>Fee Management</h1>
+        <p class="mb-0 text-muted small">Real-time financial tracking & invoicing.</p>
+    </div>
+    <div>
+        <button class="btn btn-primary shadow-sm mr-2" data-toggle="modal" data-target="#invoiceModal">
+            <i class="fas fa-file-invoice mr-1"></i> Generate Bills
+        </button>
+        <button class="btn btn-dark shadow-sm mr-2" data-toggle="modal" data-target="#configModal">
+            <i class="fas fa-cogs mr-1"></i> Config
+        </button>
+        <button class="btn btn-success shadow-sm" data-toggle="modal" data-target="#collectModal">
+            <i class="fas fa-plus-circle mr-1"></i> Collect Fee
+        </button>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4 border-0 border-left-primary">
+    <div class="card-body py-3">
+        <form method="GET" class="row align-items-end">
+            <div class="col-md-3">
+                <label class="small font-weight-bold text-uppercase text-gray-500">From Date</label>
+                <input type="date" name="start_date" class="form-control bg-light border-0 small">
+            </div>
+            <div class="col-md-3">
+                <label class="small font-weight-bold text-uppercase text-gray-500">To Date</label>
+                <input type="date" name="end_date" class="form-control bg-light border-0 small">
+            </div>
+            <div class="col-md-3">
+                <label class="small font-weight-bold text-uppercase text-gray-500">Class Filter</label>
+                <select name="class_id" class="form-control bg-light border-0 small">
+                    <option value="">All Classes</option>
+                    {% for c in classes %}
+                        <option value="{{ c.id }}">{{ c.name }} - {{ c.section }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-block shadow-sm">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Collected</div>
+                        <div class="h4 mb-0 font-weight-bold text-gray-800">₹{{ total_collected }}</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-rupee-sign fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-9 col-md-12 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-danger"><i class="fas fa-exclamation-circle mr-2"></i>Outstanding Dues</h6>
+                <span class="badge badge-danger px-3">Action Required</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="bg-light sticky-top">
+                            <tr>
+                                <th class="pl-4">Student</th>
+                                <th>Class</th>
+                                <th>Total Bill</th>
+                                <th>Paid</th>
+                                <th class="text-danger">Balance Due</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in students %}
+                                {% if s.balance > 0 %}
+                                <tr>
+                                    <td class="pl-4 font-weight-bold text-dark">{{ s.firstname }} {{ s.lastname }}</td>
+                                    <td><span class="badge badge-light border">{{ s.student_class }}</span></td>
+                                    <td>₹{{ s.fee_total }}</td>
+                                    <td class="text-success">₹{{ s.fee_paid }}</td>
+                                    <td class="text-danger font-weight-bold h6 mb-0">₹{{ s.balance }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success shadow-sm" 
+                                                onclick="preSelectStudent('{{ s.id }}')"
+                                                data-toggle="modal" data-target="#collectModal">
+                                            Pay Now
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% empty %}
+                                <tr><td colspan="6" class="text-center py-4 text-muted">No pending dues found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-white">
+        <h6 class="m-0 font-weight-bold text-primary">Recent Transactions</h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="pl-4">Receipt #</th>
+                        <th>Student Name</th>
+                        <th>Date</th>
+                        <th>Mode</th>
+                        <th>Amount</th>
+                        <th class="text-center">Receipt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td class="pl-4 text-muted">#{{ t.id }}</td>
+                        <td class="font-weight-bold">{{ t.student.firstname }} {{ t.student.lastname }}</td>
+                        <td>{{ t.payment_date|date:"d M, Y" }}</td>
+                        <td><span class="badge badge-light border">{{ t.payment_mode }}</span></td>
+                        <td class="font-weight-bold text-dark">₹{{ t.amount_paid }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'receipt_pdf' t.id %}" target="_blank" class="btn btn-sm btn-circle btn-outline-primary">
+                                <i class="fas fa-print"></i>
+                            </a>
+                            {% if user.is_superuser %}
+                            <a href="{% url 'delete_fee' t.id %}" class="btn btn-sm btn-circle btn-outline-danger ml-1" onclick="return confirm('Delete transaction?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-5 text-muted">No history found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white"><h5 class="modal-title">Generate Bills</h5><button class="close text-white" data-dismiss="modal">&times;</button></div>
+            <form action="{% url 'generate_monthly_dues' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <input type="text" name="month_year" class="form-control" placeholder="Billing Month (e.g. Feb 2026)" required>
+                    <small class="text-muted">Adds monthly fee to all student balances.</small>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-primary btn-block">Generate</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="collectModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+            
+            <div class="modal-header bg-gradient-success text-white py-4">
+                <div>
+                    <h5 class="modal-title font-weight-bold"><i class="fas fa-cash-register mr-2"></i>Record Payment</h5>
+                    <p class="mb-0 small text-white-50">Select student to collect fee.</p>
+                </div>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form action="{% url 'collect_fee' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-0">
+                    <div class="row no-gutters">
+                        
+                        <div class="col-md-5 bg-light p-4 border-right">
+                            <h6 class="text-uppercase text-gray-500 font-weight-bold small mb-3">Find Student</h6>
+                            <input type="text" id="studentSearch" class="form-control mb-2" placeholder="Search name..." onkeyup="filterStudents()">
+                            
+                            <select name="student_id" id="student_list" class="form-control shadow-sm" size="10" style="height: 250px;" onchange="updatePaymentForm(this)" required>
+                                {% for s in students %}
+                                    <option value="{{ s.id }}" data-name="{{ s.firstname }} {{ s.lastname }}" data-class="{{ s.student_class }}" data-due="{{ s.balance }}">
+                                        {{ s.firstname }} {{ s.lastname }} (Due: ₹{{ s.balance }})
+                                    </option>
+                                {% empty %}
+                                    <option disabled>No students found.</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-7 p-4">
+                            <div class="d-flex align-items-center mb-4 p-3 bg-white shadow-sm rounded border-left-success">
+                                <div class="mr-3">
+                                    <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-user-graduate"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 class="font-weight-bold text-dark mb-0" id="card_student_name">Select from list</h6>
+                                    <small class="text-muted" id="card_student_class">--</small>
+                                </div>
+                            </div>
+
+                            <div class="card border-0 bg-light mb-3">
+                                <div class="card-body p-2 text-center">
+                                    <small class="text-muted font-weight-bold">CURRENT DUE</small>
+                                    <h4 class="text-danger font-weight-bold mb-0" id="card_current_due">₹0</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold text-dark">Amount Paying (₹)</label>
+                                <input type="number" name="amount" id="amount_input" class="form-control form-control-lg font-weight-bold text-success" placeholder="0.00" oninput="calcRemaining()" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="small font-weight-bold">Mode</label>
+                                    <select name="mode" class="form-control">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Online">Online/UPI</option>
+                                        <option value="Cheque">Cheque</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="small font-weight-bold">Date</label>
+                                    <input type="date" name="date" class="form-control" value="{% now 'Y-m-d' %}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 text-right">
+                                <small class="font-weight-bold text-muted">Remaining Balance: <span id="remaining_display">--</span></small>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer bg-light border-top-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success shadow px-4 font-weight-bold">Confirm Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="configModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white"><h5 class="modal-title">Fee Structure</h5></div>
+            <form action="{% url 'fee_config' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <select name="class_id" class="form-control mb-2">{% for c in classes %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select>
+                    <input type="text" name="title" class="form-control mb-2" placeholder="Fee Title">
+                    <input type="number" name="amount" class="form-control" placeholder="Amount">
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-dark btn-block">Save</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentDue = 0;
+
+    // 1. Called when user selects from the list manually
+    function updatePaymentForm(selectObject) {
+        var selectedOption = selectObject.options[selectObject.selectedIndex];
+        var name = selectedOption.getAttribute('data-name');
+        var cls = selectedOption.getAttribute('data-class');
+        var due = selectedOption.getAttribute('data-due');
+
+        document.getElementById('card_student_name').innerText = name;
+        document.getElementById('card_student_class').innerText = cls;
+        document.getElementById('card_current_due').innerText = "₹" + due;
+        
+        currentDue = parseFloat(due);
+        calcRemaining();
+    }
+
+    // 2. Called when "Pay Now" button is clicked in the table
+    function preSelectStudent(id) {
+        var list = document.getElementById('student_list');
+        list.value = id; // Select the option
+        updatePaymentForm(list); // Trigger visual update
+    }
+
+    // 3. Calculator
+    function calcRemaining() {
+        let paying = parseFloat(document.getElementById('amount_input').value) || 0;
+        let rem = currentDue - paying;
+        let disp = document.getElementById('remaining_display');
+        
+        disp.innerText = "₹" + rem.toFixed(2);
+        if(rem <= 0) {
+            disp.className = "text-success font-weight-bold";
+            disp.innerText += " (Clear)";
+        } else {
+            disp.className = "text-danger font-weight-bold";
+        }
+    }
+
+    // 4. Search Filter
+    function filterStudents() {
+        var input, filter, select, option, i;
+        input = document.getElementById("studentSearch");
+        filter = input.value.toUpperCase();
+        select = document.getElementById("student_list");
+        option = select.getElementsByTagName("option");
+        for (i = 0; i < option.length; i++) {
+            if (option[i].text.toUpperCase().indexOf(filter) > -1) {
+                option[i].style.display = "";
+            } else {
+                option[i].style.display = "none";
+            }
+        }
+    }
+</script>
+
+{% endblock %}

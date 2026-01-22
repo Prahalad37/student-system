@@ -2,173 +2,183 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Report Card</title>
+    <title>Report Card - {{ student.firstname }}</title>
     <style>
-        @page {
-            size: A4;
-            margin: 1cm;
-        }
-        body {
-            font-family: Helvetica, Arial, sans-serif;
-            font-size: 11pt;
-            color: #333;
-        }
-
-        /* --- Main Border & Layout --- */
-        .container {
-            border: 3px double #2c3e50;
-            padding: 20px;
-            /* Height remove kar di taaki content stretch na ho */
-        }
-
-        /* --- Header --- */
-        .header { text-align: center; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; margin-bottom: 20px; }
-        .school-name { font-size: 24pt; font-weight: bold; color: #1a237e; text-transform: uppercase; }
-        .school-info { font-size: 10pt; color: #555; margin-top: 5px; }
-        .report-title { 
-            font-size: 16pt; font-weight: bold; text-decoration: underline; 
-            margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        /* --- Student Info Grid --- */
-        .info-table { width: 100%; margin-bottom: 25px; }
-        .info-table td { padding: 6px; vertical-align: bottom; }
-        .label { font-weight: bold; color: #555; width: 15%; }
-        .value { font-weight: bold; color: #000; border-bottom: 1px dotted #888; width: 35%; }
-
-        /* --- Marks Table (The Fix) --- */
-        .marks-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .marks-table th {
-            background-color: #1a237e; color: #fff;
-            padding: 8px; border: 1px solid #000;
-            font-size: 10pt; font-weight: bold;
-        }
-        .marks-table td {
-            padding: 10px; border: 1px solid #000;
-            text-align: center; font-size: 11pt;
-        }
-        .sub-name { text-align: left; padding-left: 10px; font-weight: bold; }
-
-        /* --- Result Section --- */
-        .result-box {
-            border: 1px solid #000; background-color: #f8f9fa; 
-            padding: 10px; margin-top: 20px; text-align: center;
-        }
+        @page { size: A4; margin: 1.5cm; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; line-height: 1.2; }
         
-        .pass { color: green; font-weight: bold; }
-        .fail { color: red; font-weight: bold; }
+        /* Header Styling */
+        .header { text-align: center; border-bottom: 2px solid #4e73df; padding-bottom: 10px; margin-bottom: 20px; }
+        .school-name { font-size: 26pt; font-weight: bold; color: #1a237e; margin: 0; text-transform: uppercase; }
+        .school-info { font-size: 10pt; color: #555; margin-top: 5px; }
+        
+        .report-title { background: #4e73df; color: white; padding: 8px; text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 25px; border-radius: 4px; }
+        
+        /* Information Table */
+        .student-info { width: 100%; margin-bottom: 25px; border-collapse: collapse; }
+        .student-info td { padding: 8px 5px; font-size: 11pt; border-bottom: 1px solid #eee; }
+        .label { font-weight: bold; color: #666; width: 20%; }
+        .value { width: 30%; font-weight: bold; color: #000; }
 
-        /* --- Footer --- */
-        .footer { margin-top: 50px; width: 100%; }
-        .sign-box { text-align: center; width: 33%; font-size: 10pt; font-weight: bold; }
-        .sign-line { border-top: 1px solid #333; width: 80%; margin: 0 auto 5px auto; height: 1px; }
+        /* Marks Table */
+        .marks-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .marks-table th { background: #f0f2f8; border: 1px solid #ccc; padding: 12px 8px; text-align: left; font-size: 10pt; text-transform: uppercase; color: #4e73df; }
+        .marks-table td { border: 1px solid #ccc; padding: 12px 8px; font-size: 11pt; }
+        .text-center { text-align: center; }
+        
+        /* Summary Section */
+        .summary-box { width: 100%; border: 1px solid #4e73df; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+        .summary-table { width: 100%; border-collapse: collapse; }
+        .summary-item { padding: 20px; text-align: center; border-right: 1px solid #4e73df; }
+        .summary-item:last-child { border-right: none; }
+        .summary-label { font-size: 9pt; font-weight: bold; color: #666; display: block; margin-bottom: 5px; text-transform: uppercase; }
+        .summary-value { font-size: 18pt; font-weight: bold; color: #1a237e; }
 
+        .result-pass { color: #28a745; text-transform: uppercase; }
+        .result-fail { color: #dc3545; text-transform: uppercase; }
+
+        /* Footer Signature */
+        .footer { margin-top: 80px; }
+        .signature-table { width: 100%; }
+        .sig-box { width: 200px; text-align: center; }
+        .sig-line { border-top: 1px solid #333; margin-bottom: 5px; }
+        .sig-text { font-size: 10pt; font-weight: bold; color: #444; }
     </style>
 </head>
 <body>
 
-<div class="container">
-
     <div class="header">
-        <div class="school-name">Prahlad Academy</div>
-        <div class="school-info">Excellence in Education | Session: 2025-2026</div>
-        <div class="school-info">New Delhi, India | Ph: +91 98765 43210</div>
-        <div class="report-title">Statement of Marks</div>
+        <div class="school-name">PRAHLAD ACADEMY</div>
+        <div class="school-info">Affiliated to Board of Secondary Education | Recognition No: 2026-X99<br>Academic Session 2025-2026</div>
     </div>
 
-    <table class="info-table">
+    <div class="report-title">ANNUAL PROGRESS REPORT CARD</div>
+
+    <table class="student-info">
         <tr>
-            <td class="label">Name:</td>
+            <td class="label">Student Name:</td>
             <td class="value">{{ student.firstname }} {{ student.lastname }}</td>
-            <td class="label">Roll No:</td>
-            <td class="value">{{ student.roll_number|default:"-" }}</td>
+            <td class="label">Roll Number:</td>
+            <td class="value">{{ student.roll_number|default:"--" }}</td>
         </tr>
         <tr>
-            <td class="label">Father Name:</td>
-            <td class="value">{{ student.father_name|default:"-" }}</td>
             <td class="label">Class:</td>
-            <td class="value">{{ student.student_class|default:"-" }}</td>
+            <td class="value">{{ student.student_class }}</td>
+            <td class="label">Examination:</td>
+            <td class="value">{{ score.exam_name }}</td>
         </tr>
         <tr>
-            <td class="label">Exam:</td>
-            <td class="value">{{ score.exam_name }}</td>
+            <td class="label">Father's Name:</td>
+            <td class="value">{{ student.father_name|default:"--" }}</td>
             <td class="label">Date:</td>
-            <td class="value">{% now "d-M-Y" %}</td>
+            <td class="value">{{ date|date:"d-M-Y" }}</td>
         </tr>
     </table>
 
     <table class="marks-table">
         <thead>
             <tr>
-                <th width="40%" align="left" style="padding-left:10px;">SUBJECT</th>
-                <th width="20%">MAX MARKS</th>
-                <th width="20%">PASS MARKS</th>
-                <th width="20%">OBTAINED</th>
+                <th width="40%">Subject Name</th>
+                <th width="20%" class="text-center">Max Marks</th>
+                <th width="20%" class="text-center">Marks Obtained</th>
+                <th width="20%" class="text-center">Grade</th>
             </tr>
         </thead>
         <tbody>
+            {% with subjects="Mathematics,Physics,Chemistry,English,Computer Science" %}
             <tr>
-                <td class="sub-name">Mathematics</td>
-                <td>100</td>
-                <td>33</td>
-                <td>{{ score.maths }}</td>
-            </tr>
-            <tr>
-                <td class="sub-name">Physics</td>
-                <td>100</td>
-                <td>33</td>
-                <td>{{ score.physics }}</td>
+                <td>Mathematics</td>
+                <td class="text-center">100</td>
+                <td class="text-center">{{ score.maths }}</td>
+                <td class="text-center">
+                    <b>{% if score.maths >= 91 %}A1{% elif score.maths >= 81 %}A2{% elif score.maths >= 71 %}B1{% elif score.maths >= 61 %}B2{% elif score.maths >= 51 %}C1{% elif score.maths >= 41 %}C2{% elif score.maths >= 33 %}D{% else %}E{% endif %}</b>
+                </td>
             </tr>
             <tr>
-                <td class="sub-name">Chemistry</td>
-                <td>100</td>
-                <td>33</td>
-                <td>{{ score.chemistry }}</td>
+                <td>Physics</td>
+                <td class="text-center">100</td>
+                <td class="text-center">{{ score.physics }}</td>
+                <td class="text-center">
+                    <b>{% if score.physics >= 91 %}A1{% elif score.physics >= 81 %}A2{% elif score.physics >= 71 %}B1{% elif score.physics >= 61 %}B2{% elif score.physics >= 51 %}C1{% elif score.physics >= 41 %}C2{% elif score.physics >= 33 %}D{% else %}E{% endif %}</b>
+                </td>
             </tr>
             <tr>
-                <td class="sub-name">English</td>
-                <td>100</td>
-                <td>33</td>
-                <td>{{ score.english }}</td>
+                <td>Chemistry</td>
+                <td class="text-center">100</td>
+                <td class="text-center">{{ score.chemistry }}</td>
+                <td class="text-center">
+                    <b>{% if score.chemistry >= 91 %}A1{% elif score.chemistry >= 81 %}A2{% elif score.chemistry >= 71 %}B1{% elif score.chemistry >= 61 %}B2{% elif score.chemistry >= 51 %}C1{% elif score.chemistry >= 41 %}C2{% elif score.chemistry >= 33 %}D{% else %}E{% endif %}</b>
+                </td>
             </tr>
             <tr>
-                <td class="sub-name">Computer Science</td>
-                <td>100</td>
-                <td>33</td>
-                <td>{{ score.computer }}</td>
+                <td>English</td>
+                <td class="text-center">100</td>
+                <td class="text-center">{{ score.english }}</td>
+                <td class="text-center">
+                    <b>{% if score.english >= 91 %}A1{% elif score.english >= 81 %}A2{% elif score.english >= 71 %}B1{% elif score.english >= 61 %}B2{% elif score.english >= 51 %}C1{% elif score.english >= 41 %}C2{% elif score.english >= 33 %}D{% else %}E{% endif %}</b>
+                </td>
             </tr>
-            <tr style="background-color: #eee; font-weight: bold;">
-                <td class="sub-name">GRAND TOTAL</td>
-                <td>500</td>
-                <td>165</td>
-                <td>{{ total_obtained }}</td>
+            <tr>
+                <td>Computer Science</td>
+                <td class="text-center">100</td>
+                <td class="text-center">{{ score.computer }}</td>
+                <td class="text-center">
+                    <b>{% if score.computer >= 91 %}A1{% elif score.computer >= 81 %}A2{% elif score.computer >= 71 %}B1{% elif score.computer >= 61 %}B2{% elif score.computer >= 51 %}C1{% elif score.computer >= 41 %}C2{% elif score.computer >= 33 %}D{% else %}E{% endif %}</b>
+                </td>
             </tr>
+            {% endwith %}
         </tbody>
     </table>
 
-    <div class="result-box">
-        <table width="100%">
+    <div class="summary-box">
+        <table class="summary-table">
             <tr>
-                <td width="33%">Percentage: <b>{{ percentage }}%</b></td>
-                <td width="33%">Result: <span class="{% if result_status == 'PASS' %}pass{% else %}fail{% endif %}">{{ result_status }}</span></td>
-                <td width="33%">Attendance: <b>{{ attendance_percent|default:"Good" }}</b></td>
+                <td class="summary-item">
+                    <span class="summary-label">Grand Total</span>
+                    <span class="summary-value">{{ total_obtained }} / {{ total_max }}</span>
+                </td>
+                <td class="summary-item">
+                    <span class="summary-label">Percentage</span>
+                    <span class="summary-value">{{ percentage }}%</span>
+                </td>
+                <td class="summary-item">
+                    <span class="summary-label">Final Result</span>
+                    <span class="summary-value {% if result_status == 'PASS' %}result-pass{% else %}result-fail{% endif %}">
+                        {{ result_status }}
+                    </span>
+                </td>
             </tr>
         </table>
     </div>
 
-    <div style="margin-top: 20px; font-size: 10pt;">
-        <b>Remarks:</b> __________________________________________________________________
+    <div class="footer">
+        <table width="100%" class="signature-table">
+            <tr>
+                <td align="left">
+                    <div class="sig-box">
+                        <div class="sig-line"></div>
+                        <div class="sig-text">Class Teacher</div>
+                    </div>
+                </td>
+                <td align="center">
+                    <div class="sig-box">
+                        <div class="sig-line"></div>
+                        <div class="sig-text">Exam Controller</div>
+                    </div>
+                </td>
+                <td align="right">
+                    <div class="sig-box">
+                        <div class="sig-line"></div>
+                        <div class="sig-text">Principal</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <table class="footer">
-        <tr>
-            <td class="sign-box"><div class="sign-line"></div>Class Teacher</td>
-            <td class="sign-box"><div class="sign-line"></div>Exam Controller</td>
-            <td class="sign-box"><div class="sign-line"></div>Principal</td>
-        </tr>
-    </table>
-
-</div>
+    <div style="position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 8pt; color: #999; border-top: 1px dashed #ccc; padding-top: 5px;">
+        This is a computer-generated report card and does not require a physical seal/signature for online verification.
+    </div>
 
 </body>
 </html>
