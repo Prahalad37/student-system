@@ -27,6 +27,11 @@ class TenantMiddleware(MiddlewareMixin):
     """
 
     def process_request(self, request):
+        path = (request.path or "").strip("/")
+        if path.startswith("admin/") or path == "health":
+            request.school = None
+            request.role = None
+            return None
         subdomain = extract_subdomain(request)
         user = getattr(request, "user", None)
         is_authenticated = user and getattr(user, "is_authenticated", False)
