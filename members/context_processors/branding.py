@@ -1,12 +1,12 @@
 from django.templatetags.static import static
-from ..utils import get_current_school
 
 def school_branding(request):
     """
     Context processor to make school branding details available globally.
+    Uses defaults when no tenant (request.school None) e.g. marketing, error pages, fresh deploy.
     """
-    school = get_current_school(request)
-    
+    school = getattr(request, "school", None)
+
     # Defaults
     branding = {
         'SCHOOL_NAME': school.name if school else 'ABC School',

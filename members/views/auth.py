@@ -35,16 +35,17 @@ class TenantLoginView(LoginView):
     redirect_authenticated_user = True
 
     def dispatch(self, request, *args, **kwargs):
-        school = getattr(request, "school", None)
-        if school is None:
-            return redirect("index")
+        # When school is None (Render *.onrender.com, fresh deploy), show login so superuser can access admin
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         user = form.get_user()
         school = getattr(self.request, "school", None)
         if school is None:
-            return redirect("index")
+            if user.is_superuser:
+                return super().form_valid(form)
+            form.add_error(None, "No school configured yet. Contact admin or add a school at /admin/")
+            return self.form_invalid(form)
         if not user.is_superuser:
             profile = getattr(user, "userprofile", None)
             if not profile or profile.school_id != school.id:

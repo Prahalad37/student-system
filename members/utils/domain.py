@@ -30,6 +30,10 @@ def extract_subdomain(host_or_request):
     if host in root_like or len(labels) <= 1:
         return None
 
+    # Render default domain (*.onrender.com) = single-tenant, no school subdomain
+    if len(labels) >= 3 and labels[-2] == "onrender" and labels[-1] == "com":
+        return None
+
     if len(labels) == 2 and labels[1] == "localhost":
         return labels[0]
 
