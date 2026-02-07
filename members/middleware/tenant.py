@@ -28,7 +28,7 @@ class TenantMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         path = (request.path or "").strip("/")
-        if path.startswith("admin/") or path == "health":
+        if path.startswith("admin") or path == "health":
             request.school = None
             request.role = None
             return None
