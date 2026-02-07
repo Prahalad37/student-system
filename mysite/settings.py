@@ -104,7 +104,21 @@ db_url = os.environ.get('DATABASE_URL')
 if db_url:
     try:
         import dj_database_url
-        DATABASES = {'default': dj_database_url.config(default=db_url, conn_max_age=600)}
+        from urllib.parse import urlparse, urlunparse
+        # Render/Heroku use postgres://; Django 4+ expects postgresql://
+        if db_url.startswith('postgres://'):
+            db_url = db_url.replace('postgres://', 'postgresql://', 1)
+        # Render: internal hostnames (dpg-xxx-a) don't resolve across regions; use external host
+        parsed = urlparse(db_url)
+        host = parsed.hostname or ''
+        if host and '.' not in host and host.startswith('dpg-') and host.endswith('-a'):
+            region = os.environ.get('DB_REGION', 'singapore')
+            external_host = f'{host}.{region}-postgres.render.com'
+            netloc = parsed.netloc
+            new_netloc = netloc.replace(host, external_host, 1)
+            db_url = urlunparse(parsed._replace(netloc=new_netloc))
+        db_config = dj_database_url.config(default=db_url, conn_max_age=600)
+        DATABASES = {'default': db_config or {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
     except ImportError:
         DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 else:
