@@ -117,6 +117,7 @@ if db_url:
             netloc = parsed.netloc
             new_netloc = netloc.replace(host, external_host, 1)
             db_url = urlunparse(parsed._replace(netloc=new_netloc))
+            os.environ['DATABASE_URL'] = db_url  # config() reads env; use transformed URL
         db_config = dj_database_url.config(default=db_url, conn_max_age=600)
         DATABASES = {'default': db_config or {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
     except ImportError:
