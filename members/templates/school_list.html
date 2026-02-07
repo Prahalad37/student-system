@@ -1,0 +1,49 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Manage Schools{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb bg-transparent py-2 mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Manage Schools</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800 font-weight-bold"><i class="fas fa-building text-primary mr-2"></i>Manage Schools</h1>
+    <a href="{% url 'add_school' %}" class="btn btn-primary"><i class="fas fa-plus mr-2"></i>Add New School</a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>School Name</th>
+                    <th>School Code</th>
+                    <th>Subdomain</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in schools %}
+                <tr>
+                    <td>{{ s.name }}</td>
+                    <td><code>{{ s.school_code }}</code></td>
+                    <td><code>{{ s.code }}.yoursite.com</code></td>
+                    <td>{{ s.created_at|date:"d M Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No schools yet. <a href="{% url 'add_school' %}">Add your first school</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

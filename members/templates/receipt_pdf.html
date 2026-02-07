@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Receipt #{{ t.receipt_number }}</title>
+    <title>Receipt #{{ t.id }}</title>
     <style>
         @page {
             size: A4;
             margin: 0.5cm;
         }
+
         body {
-            font-family: Helvetica, Arial, sans-serif;
+            font-family: 'DejaVu Sans', Helvetica, Arial, sans-serif;
             font-size: 10pt;
             color: #333;
             line-height: 1.3;
@@ -17,45 +19,113 @@
 
         /* --- CONTAINER --- */
         .receipt-container {
-            border: 2px solid #4e73df; /* Brand Color Border */
+            border: 2px solid #4e73df;
+            /* Brand Color Border */
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
         }
 
         /* --- HEADER --- */
-        .header-table { width: 100%; border-bottom: 2px solid #eee; margin-bottom: 15px; padding-bottom: 10px; }
-        .school-name { font-size: 20pt; font-weight: 800; color: #1a237e; text-transform: uppercase; letter-spacing: 1px; }
-        .school-details { font-size: 9pt; color: #666; margin-top: 5px; }
-        .receipt-tag { 
-            background: #e8f0fe; color: #1a237e; border: 1px solid #b3c7f9; 
-            padding: 5px 12px; font-size: 10pt; font-weight: bold; border-radius: 4px;
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        .school-name {
+            font-size: 20pt;
+            font-weight: 800;
+            color: #1a237e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .school-details {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .receipt-tag {
+            background: #e8f0fe;
+            color: #1a237e;
+            border: 1px solid #b3c7f9;
+            padding: 5px 12px;
+            font-size: 10pt;
+            font-weight: bold;
+            border-radius: 4px;
             display: inline-block;
         }
 
         /* --- INFO GRID --- */
-        .info-table { width: 100%; margin-bottom: 15px; font-size: 10pt; }
-        .info-table td { padding: 4px 0; vertical-align: top; }
-        .label { font-weight: bold; color: #777; font-size: 8pt; text-transform: uppercase; display: block; }
-        .value { font-weight: bold; color: #000; font-size: 10pt; }
+        .info-table {
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 10pt;
+        }
+
+        .info-table td {
+            padding: 4px 0;
+            vertical-align: top;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #777;
+            font-size: 8pt;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .value {
+            font-weight: bold;
+            color: #000;
+            font-size: 10pt;
+        }
 
         /* --- FEE TABLE --- */
-        .fee-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .fee-table th {
-            background-color: #f8f9fc; border-bottom: 2px solid #ddd;
-            padding: 8px; text-align: left; font-size: 9pt; font-weight: bold; color: #444;
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
         }
+
+        .fee-table th {
+            background-color: #f8f9fc;
+            border-bottom: 2px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 9pt;
+            font-weight: bold;
+            color: #444;
+        }
+
         .fee-table td {
             border-bottom: 1px solid #eee;
-            padding: 8px; font-size: 10pt;
+            padding: 8px;
+            font-size: 10pt;
         }
-        .amount { text-align: right; font-family: 'Courier New', Courier, monospace; }
+
+        .amount {
+            text-align: right;
+            font-family: 'DejaVu Sans Mono', 'Courier New', Courier, monospace;
+        }
 
         /* --- FOOTER --- */
-        .footer-table { width: 100%; margin-top: 20px; }
-        .sign-area { 
-            border-top: 1px solid #333; 
-            width: 80%; margin: 0 auto; text-align: center; padding-top: 5px; font-size: 9pt; 
+        .footer-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .sign-area {
+            border-top: 1px solid #333;
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 5px;
+            font-size: 9pt;
         }
 
         /* --- CUT LINE --- */
@@ -65,16 +135,23 @@
             text-align: center;
             height: 10px;
         }
-        .cut-icon { 
-            background: #fff; padding: 0 15px; position: relative; top: -12px; 
-            color: #777; font-size: 10pt; font-weight: bold; 
+
+        .cut-icon {
+            background: #fff;
+            padding: 0 15px;
+            position: relative;
+            top: -12px;
+            color: #777;
+            font-size: 10pt;
+            font-weight: bold;
         }
     </style>
 </head>
+
 <body>
 
     <div class="receipt-container">
-        
+
         <table class="header-table">
             <tr>
                 <td width="70%">
@@ -90,29 +167,29 @@
         <table class="info-table">
             <tr>
                 <td width="33%">
-                    <span class="label">Receipt No</span> 
-                    <span class="value">{{ t.receipt_number }}</span>
+                    <span class="label">Receipt No</span>
+                    <span class="value">#{{ t.id }}</span>
                 </td>
                 <td width="33%">
-                    <span class="label">Payment Date</span> 
+                    <span class="label">Payment Date</span>
                     <span class="value">{{ t.payment_date }}</span>
                 </td>
                 <td width="33%">
-                    <span class="label">Payment Mode</span> 
+                    <span class="label">Payment Mode</span>
                     <span class="value">{{ t.payment_mode }}</span>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <span class="label">Student Name</span> 
+                    <span class="label">Student Name</span>
                     <span class="value">{{ t.student.firstname }} {{ t.student.lastname }}</span>
                 </td>
                 <td>
-                    <span class="label">Class / Section</span> 
+                    <span class="label">Class / Section</span>
                     <span class="value">{{ t.student.student_class }}</span>
                 </td>
                 <td>
-                    <span class="label">Roll Number</span> 
+                    <span class="label">Roll Number</span>
                     <span class="value">{{ t.student.roll_number|default:"-" }}</span>
                 </td>
             </tr>
@@ -129,10 +206,10 @@
                 <tr>
                     <td>
                         <strong>Fee Payment</strong><br>
-                        <small style="color: #666;">{{ t.remarks|default:"Regular Fee Payment" }}</small>
+                        <small style="color: #666;">Fee Payment</small>
                     </td>
                     <td class="amount">
-                        <span style="font-size: 12pt; font-weight: bold;">₹ {{ t.amount_paid }}</span>
+                        <span style="font-size: 12pt; font-weight: bold;">INR {{ t.amount_paid }}</span>
                     </td>
                 </tr>
             </tbody>
@@ -153,7 +230,7 @@
                 <td></td>
                 <td style="text-align: right; font-weight: bold; font-size: 10pt;">Remaining Balance:</td>
                 <td style="text-align: right; font-weight: bold; font-size: 10pt; color: #d32f2f;">
-                    ₹ {{ t.student.fee_total|add:"-t.student.fee_paid" }}
+                    INR {{ remaining_balance }}
                 </td>
             </tr>
         </table>
@@ -174,7 +251,7 @@
     <div class="cut-line"><span class="cut-icon">✂️ CUT HERE</span></div>
 
     <div class="receipt-container" style="background-color: #fdfdfd;">
-        
+
         <table class="header-table">
             <tr>
                 <td width="70%">
@@ -182,19 +259,21 @@
                     <div class="school-details">Office Record</div>
                 </td>
                 <td width="30%" style="text-align: right;">
-                    <div class="receipt-tag" style="background: #e2e2e2; color: #333; border-color: #ccc;">OFFICE COPY</div>
+                    <div class="receipt-tag" style="background: #e2e2e2; color: #333; border-color: #ccc;">OFFICE COPY
+                    </div>
                 </td>
             </tr>
         </table>
 
         <table class="info-table">
             <tr>
-                <td width="33%"><span class="label">Receipt No:</span> <span class="value">{{ t.receipt_number }}</span></td>
+                <td width="33%"><span class="label">Receipt No:</span> <span class="value">#{{ t.id }}</span></td>
                 <td width="33%"><span class="label">Date:</span> <span class="value">{{ t.payment_date }}</span></td>
                 <td width="33%"><span class="label">Mode:</span> <span class="value">{{ t.payment_mode }}</span></td>
             </tr>
             <tr>
-                <td><span class="label">Student:</span> <span class="value">{{ t.student.firstname }} {{ t.student.lastname }}</span></td>
+                <td><span class="label">Student:</span> <span class="value">{{ t.student.firstname }} {{
+                        t.student.lastname }}</span></td>
                 <td><span class="label">Class:</span> <span class="value">{{ t.student.student_class }}</span></td>
                 <td><span class="label">ID:</span> <span class="value">{{ t.student.id }}</span></td>
             </tr>
@@ -210,13 +289,13 @@
             <tbody>
                 <tr>
                     <td>Fee Collection</td>
-                    <td class="amount" style="font-weight: bold;">₹ {{ t.amount_paid }}</td>
+                    <td class="amount" style="font-weight: bold;">INR {{ t.amount_paid }}</td>
                 </tr>
             </tbody>
         </table>
 
         <div style="font-size: 9pt; margin-top: 10px;">
-            <strong>Remarks:</strong> {{ t.remarks|default:"None" }}
+            <strong>Status:</strong> {{ t.status|default:"Paid" }}
         </div>
 
         <table class="footer-table">
@@ -230,4 +309,5 @@
     </div>
 
 </body>
+
 </html>

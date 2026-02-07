@@ -2,23 +2,25 @@
 Django settings for mysite project.
 UPDATED FOR: Prahlad Academy ERP v2.0 (Phase 2 + PWA Fix)
 """
-
+import environ
 import os
+import socket
 from pathlib import Path
+
+# Initialise environ
+env = environ.Env()
+environ.Env.read_env()  # Read .env file
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# --- SECURITY SETTINGS ---
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-od3$^1(250-5m5t#ep^kr&%ch%tt$do6j3@tfn@#xers2(ppkh'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = env.bool('DEBUG', default=False)
 DEBUG = True
-
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'prahalad.pythonanywhere.com', 'prahaladpal.pythonanywhere.com']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 
 # --- APPLICATION DEFINITION ---
@@ -29,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'debug_toolbar',
     'django.contrib.staticfiles',
     
     # ✅ Phase 2 Apps (Restored)
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  # MUST BE FIRST for Debug Toolbar
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     
@@ -50,6 +54,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    
+    # ✅ Tenant Middleware (Sets request.school and request.role)
+    'members.middleware.tenant.TenantMiddleware',
+    
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -77,10 +85,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # --- DATABASE ---
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db(),
 }
 
 
@@ -110,17 +115,15 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # --- AUTHENTICATION & LOGIN ---
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'login'              
-LOGIN_REDIRECT_URL = 'index'     
-LOGOUT_REDIRECT_URL = 'login'    
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+ 
 
 CSRF_TRUSTED_ORIGINS = ['https://prahalad.pythonanywhere.com', 'https://prahaladpal.pythonanywhere.com']
 
@@ -150,3 +153,34 @@ REST_FRAMEWORK = {
 
 # --- CORS CONFIG ---
 CORS_ALLOW_ALL_ORIGINS = True
+
+# --- CELERY SETTINGS ---
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://redis:6379/0')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://redis:6379/0')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# Media Files (Uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# --- DEBUG TOOLBAR CONFIGURATION (Add this to the bottom) ---
+if DEBUG:
+    import mimetypes
+    
+    # 1. Fix MIME types so the browser accepts the JS
+    mimetypes.add_type("application/javascript", ".js", True)
+
+    # 2. Add standard localhost IPs
+    INTERNAL_IPS = ["127.0.0.1", "localhost", "0.0.0.0"]
+
+    # 3. Force the toolbar to show (Bypasses Docker IP issues)
+    def show_toolbar(request):
+        return True
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+        'INSERT_BEFORE': '</body>',
+    }

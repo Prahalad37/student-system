@@ -1,3 +1,2 @@
-from django.test import TestCase
-
-# Create your tests here.
+# Test suite moved to members/tests/
+# Run: python manage.py test members.tests

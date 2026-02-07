@@ -1,0 +1,58 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Profile Details{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb bg-transparent py-2 mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Profile Details</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex align-items-center">
+                <i class="fas fa-user-circle fa-2x text-primary mr-3"></i>
+                <div>
+                    <h5 class="m-0 font-weight-bold text-primary">Profile Details</h5>
+                    <small class="text-muted">{{ request.user.username }}</small>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold text-muted">Username</div>
+                    <div class="col-md-8">{{ request.user.username }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold text-muted">Full Name</div>
+                    <div class="col-md-8">{{ request.user.get_full_name|default:"—" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold text-muted">Email</div>
+                    <div class="col-md-8">{{ request.user.email|default:"—" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold text-muted">Role</div>
+                    <div class="col-md-8">{{ role_display }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold text-muted">School</div>
+                    <div class="col-md-8">{{ school.name|default:"—" }}</div>
+                </div>
+                <hr>
+                <a href="{% url 'index' %}" class="btn btn-secondary mr-2">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </a>
+                <a href="{% url 'password_change' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-key mr-2"></i>Change Password
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

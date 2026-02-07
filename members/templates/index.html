@@ -3,11 +3,19 @@
 
 {% block title %}Dashboard Overview{% endblock %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb bg-transparent py-2 mb-0">
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
 
 <style>
     /* --- DASHBOARD STYLES --- */
-    
+
     /* 1. Elegant Stats Card */
     .stat-card {
         background: #fff;
@@ -19,31 +27,76 @@
         overflow: hidden;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
-    
+
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
     }
 
     /* Soft Icon Backgrounds */
     .icon-box {
-        width: 50px; height: 50px;
+        width: 50px;
+        height: 50px;
         border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 1.2rem;
     }
-    .icon-blue   { background: #eff6ff; color: #3b82f6; }
-    .icon-green  { background: #ecfdf5; color: #10b981; }
-    .icon-purple { background: #f5f3ff; color: #8b5cf6; }
-    .icon-orange { background: #fff7ed; color: #f97316; }
+
+    .icon-blue {
+        background: #eff6ff;
+        color: #3b82f6;
+    }
+
+    .icon-green {
+        background: #ecfdf5;
+        color: #10b981;
+    }
+
+    .icon-purple {
+        background: #f5f3ff;
+        color: #8b5cf6;
+    }
+
+    .icon-orange {
+        background: #fff7ed;
+        color: #f97316;
+    }
 
     /* Typography */
-    .stat-label { font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-value { font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 5px; }
-    .stat-meta  { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; }
-    .stat-meta span { font-weight: 600; }
-    .text-up { color: #10b981; }
-    .text-down { color: #ef4444; }
+    .stat-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-top: 5px;
+    }
+
+    .stat-meta {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 5px;
+    }
+
+    .stat-meta span {
+        font-weight: 600;
+    }
+
+    .text-up {
+        color: #10b981;
+    }
+
+    .text-down {
+        color: #ef4444;
+    }
 
     /* 2. FIXED: QUICK ACTION BUTTONS (Solid Tiles) */
     .btn-quick {
@@ -81,11 +134,21 @@
     }
 
     /* 3. Table Styles */
-    .table-clean th { 
-        font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 0.75rem; 
-        border-top: none; border-bottom: 1px solid #e2e8f0;
+    .table-clean th {
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        border-top: none;
+        border-bottom: 1px solid #e2e8f0;
     }
-    .table-clean td { vertical-align: middle; color: #334155; font-weight: 500; border-top: 1px solid #f1f5f9; }
+
+    .table-clean td {
+        vertical-align: middle;
+        color: #334155;
+        font-weight: 500;
+        border-top: 1px solid #f1f5f9;
+    }
 </style>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -103,7 +166,11 @@
                 <div>
                     <div class="stat-label">Total Students</div>
                     <div class="stat-value">{{ total_students }}</div>
-                    <div class="stat-meta"><span class="text-up"><i class="fas fa-arrow-up"></i> {{ new_admissions }}</span> new this month</div>
+                    <div class="stat-meta">
+                        <span class="mr-2"><i class="fas fa-male text-primary"></i> {{ male_count }}</span>
+                        <span class="mr-2"><i class="fas fa-female text-danger"></i> {{ female_count }}</span>
+                        <span class="text-up"><i class="fas fa-arrow-up"></i> {{ new_admissions }} new</span>
+                    </div>
                 </div>
                 <div class="icon-box icon-blue"><i class="fas fa-user-graduate"></i></div>
             </div>
@@ -154,8 +221,9 @@
 
     <div class="col-lg-5 mb-4">
         <div class="card shadow-sm h-100">
-            <div class="card-header bg-white py-3 border-0">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-dark">🚀 Quick Actions</h6>
+                <span class="badge badge-primary">{{ total_students }} students</span>
             </div>
             <div class="card-body">
                 <div class="row g-3">
@@ -171,10 +239,28 @@
                             <span>Collect Fee</span>
                         </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6 mb-3">
+                        <a href="{% url 'attendance' %}" class="btn-quick">
+                            <i class="fas fa-calendar-check text-info"></i>
+                            <span>Mark Attendance</span>
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
                         <a href="{% url 'transport_home' %}" class="btn-quick">
                             <i class="fas fa-bus text-warning"></i>
                             <span>Transport</span>
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <a href="{% url 'learning_hub' %}" class="btn-quick">
+                            <i class="fas fa-graduation-cap text-info"></i>
+                            <span>Learning Hub</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'library_home' %}" class="btn-quick">
+                            <i class="fas fa-book-reader text-purple"></i>
+                            <span>Library</span>
                         </a>
                     </div>
                     <div class="col-6">
@@ -184,6 +270,45 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Gender Distribution Chart -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white py-3 border-0">
+                <h6 class="m-0 font-weight-bold text-dark">Students by Gender</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="genderChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Admissions Widget -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-dark">🎓 New Admissions</h6>
+                <a href="{% url 'all_students' %}" class="small font-weight-bold text-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for s in recent_admissions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-light text-success d-flex align-items-center justify-content-center mr-3 font-weight-bold"
+                                style="width:35px; height:35px;">
+                                {{ s.firstname|slice:":1" }}
+                            </div>
+                            <div>
+                                <div class="font-weight-bold text-dark">{{ s.firstname }} {{ s.lastname }}</div>
+                                <div class="small text-muted">{{ s.student_class|default:"No Class" }}</div>
+                            </div>
+                        </div>
+                        <span class="small text-muted">{{ s.joined_date|date:"d M" }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center py-4 text-muted">No new admissions.</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
@@ -210,21 +335,26 @@
                             <tr>
                                 <td class="pl-4">
                                     <div class="d-flex align-items-center">
-                                        <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center mr-2 font-weight-bold" style="width:35px; height:35px;">
+                                        <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center mr-2 font-weight-bold"
+                                            style="width:35px; height:35px;">
                                             {{ t.student.firstname|slice:":1" }}
                                         </div>
                                         <div>
-                                            <div class="text-dark">{{ t.student.firstname }} {{ t.student.lastname }}</div>
+                                            <div class="text-dark">{{ t.student.firstname }} {{ t.student.lastname }}
+                                            </div>
                                             <div class="small text-muted">{{ t.student.student_class }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="text-muted small">{{ t.payment_date }}</td>
-                                <td><span class="badge badge-success bg-success text-white px-2 py-1" style="opacity: 0.8;">Paid</span></td>
+                                <td><span class="badge badge-success bg-success text-white px-2 py-1"
+                                        style="opacity: 0.8;">Paid</span></td>
                                 <td class="text-right pr-4 font-weight-bold text-dark">+ ₹{{ t.amount_paid }}</td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="4" class="text-center py-5 text-muted">No recent activity.</td></tr>
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">No recent activity.</td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -237,7 +367,10 @@
 <div class="modal fade" id="addNoticeModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content border-0">
-            <div class="modal-header bg-danger text-white"><h5 class="modal-title">Post Notice</h5><button class="close text-white" data-dismiss="modal">&times;</button></div>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Post Notice</h5><button class="close text-white"
+                    data-dismiss="modal">&times;</button>
+            </div>
             <form action="{% url 'add_notice' %}" method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
@@ -250,4 +383,29 @@
     </div>
 </div>
 
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var ctx = document.getElementById('genderChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Male', 'Female'],
+                datasets: [{
+                    data: [{{ male_count }}, {{ female_count }}],
+                    backgroundColor: ['#4e73df', '#ec4899'],
+                    hoverBackgroundColor: ['#2e59d9', '#d946ef']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                legend: { position: 'bottom' },
+                cutoutPercentage: 60
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

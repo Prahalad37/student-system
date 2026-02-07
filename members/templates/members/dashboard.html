@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ school.name }} | Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to {{ school.name }}</h1>
+        <p>School Dashboard Overview</p>
+        <hr>
+    </header>
+
+    <section>
+        <h2>Key Metrics</h2>
+        <ul>
+            <li><strong>Total Students:</strong> {{ total_students|default:0 }}</li>
+            <li><strong>New Admissions (This Month):</strong> {{ new_admissions|default:0 }}</li>
+            <li><strong>Total Revenue:</strong> ₹{{ total_revenue|default:0 }}</li>
+            <li><strong>Pending Dues:</strong> ₹{{ pending_dues|default:0 }}</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>Recent Transactions</h2>
+
+        {% if recent_transactions %}
+            <ul>
+                {% for tx in recent_transactions %}
+                    <li>
+                        {{ tx.student }} — ₹{{ tx.amount_paid }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No recent transactions found.</p>
+        {% endif %}
+    </section>
+
+    <hr>
+
+    {% if can_view_finance %}
+        <a href="{% url 'fee_home' %}">Finance</a>
+    {% endif %}
+    {% if can_manage_staff %}
+        <a href="{% url 'staff_list' %}">Staff Management</a>
+        <a href="{% url 'add_notice' %}">Add Notice</a>
+    {% endif %}
+
+    <hr>
+
+    <footer>
+        <a href="{% url 'logout' %}">Logout</a>
+    </footer>
+
+</body>
+</html>

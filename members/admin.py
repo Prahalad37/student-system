@@ -8,7 +8,7 @@ from .models import (
 
 # --- 0. SAAS & SECURITY ADMIN ---
 class SchoolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'school_code', 'created_at')
+    list_display = ('name', 'school_code', 'code', 'created_at')
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'school', 'role')

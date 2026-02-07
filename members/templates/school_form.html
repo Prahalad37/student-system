@@ -1,0 +1,82 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Add New School{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb bg-transparent py-2 mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'school_list' %}">Manage Schools</a></li>
+        <li class="breadcrumb-item active">Add New School</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800 font-weight-bold"><i class="fas fa-plus-circle text-primary mr-2"></i>Add New School</h1>
+    <a href="{% url 'school_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left mr-2"></i>Back</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">School Details</h6>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>School Name *</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. ABC Public School" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Address *</label>
+                        <textarea name="address" class="form-control" rows="3" placeholder="Full address" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>School Code *</label>
+                        <input type="text" name="school_code" class="form-control" placeholder="e.g. ABC001" required>
+                        <small class="text-muted">Unique identifier (letters/numbers)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Subdomain Code</label>
+                        <input type="text" name="code" class="form-control" placeholder="e.g. abc-school (auto from school code if empty)">
+                        <small class="text-muted">Lowercase, no spaces. Used for: code.yoursite.com</small>
+                    </div>
+
+                    <hr>
+                    <h6 class="font-weight-bold text-secondary mb-3">Create Owner Account (optional)</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Owner Username</label>
+                                <input type="text" name="owner_username" class="form-control" placeholder="e.g. abc_admin">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Owner Email</label>
+                                <input type="email" name="owner_email" class="form-control" placeholder="admin@school.com">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Owner Password</label>
+                                <input type="password" name="owner_password" class="form-control" placeholder="Temp password">
+                            </div>
+                        </div>
+                    </div>
+                    <small class="text-muted">Fill all 3 to create an owner login for this school.</small>
+
+                    <hr>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i>Create School</button>
+                    <a href="{% url 'school_list' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
