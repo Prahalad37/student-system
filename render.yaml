@@ -1,5 +1,11 @@
 # One-Click Deploy - Database + Web Service auto-created
 # Deploy: https://render.com/deploy?repo=https://github.com/Prahalad37/student-system
+# Define databases first so fromDatabase refs resolve correctly
+databases:
+  - name: school-erp-db
+    plan: free
+    region: singapore
+
 services:
   - type: web
     name: school-erp
@@ -23,8 +29,3 @@ services:
         value: "False"
       - key: ALLOWED_HOST
         value: ".onrender.com"
-
-databases:
-  - name: school-erp-db
-    plan: free
-    region: singapore
