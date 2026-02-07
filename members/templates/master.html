@@ -9,20 +9,32 @@
     <title>{% block title %}School Manager{% endblock %}</title>
 
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-    
+    <link href="{% static 'css/variables.css' %}" rel="stylesheet">
+
     <style>
         /* Modern Card Styling */
-        .card { border: none; border-radius: 10px; box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); }
-        .topbar { box-shadow: none !important; border-bottom: 1px solid #e3e6f0; }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .topbar {
+            box-shadow: none !important;
+            border-bottom: 1px solid #e3e6f0;
+        }
 
         /* --- SIDEBAR SUB-MENU POLISH --- */
-        
+
         /* 1. Remove the white box & borders */
         .sidebar .collapse-inner {
-            background: transparent !important; /* Make background see-through */
+            background: transparent !important;
+            /* Make background see-through */
             border-radius: 0 !important;
             padding: 5px 0 15px 0 !important;
             margin: 0 !important;
@@ -31,9 +43,11 @@
 
         /* 2. Style the links inside */
         .sidebar .collapse-item {
-            color: rgba(255, 255, 255, 0.7) !important; /* Light text */
+            color: rgba(255, 255, 255, 0.7) !important;
+            /* Light text */
             font-size: 0.85rem;
-            padding: 8px 10px 8px 40px !important; /* Indent them */
+            padding: 8px 10px 8px 40px !important;
+            /* Indent them */
             margin: 0 !important;
             border-radius: 5px;
             transition: all 0.2s ease-in-out;
@@ -46,7 +60,8 @@
             background-color: rgba(255, 255, 255, 0.15) !important;
             color: #fff !important;
             font-weight: 600;
-            transform: translateX(5px); /* Slide right slightly */
+            transform: translateX(5px);
+            /* Slide right slightly */
         }
 
         /* 4. Active State (if needed) */
@@ -70,17 +85,23 @@
 
     <div id="wrapper">
 
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-{{ branding.THEME_COLOR|default:'primary' }} sidebar sidebar-dark accordion"
+            id="accordionSidebar">
 
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% if is_student %}{% url 'student_portal' %}{% else %}{% url 'index' %}{% endif %}">
                 <div class="sidebar-brand-icon rotate-n-15">
+                    {% if branding.SCHOOL_LOGO %}
+                    <img src="{{ branding.SCHOOL_LOGO }}" alt="Logo" style="width: 40px; height: 40px;">
+                    {% else %}
                     <i class="fas fa-graduation-cap"></i>
+                    {% endif %}
                 </div>
-                <div class="sidebar-brand-text mx-3">Prahlad <sup>Academy</sup></div>
+                <div class="sidebar-brand-text mx-3">{{ branding.SCHOOL_NAME }}</div>
             </a>
 
             <hr class="sidebar-divider my-0">
 
+            {% block sidebar_nav %}
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'index' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -110,6 +131,20 @@
                     <span>Attendance</span></a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="/report_card/">
+                    <i class="fas fa-file-alt menu-icon"></i>
+                    <span class="menu-title">Exams & Reports</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'learning_hub' %}">
+                    <i class="fas fa-fw fa-graduation-cap"></i>
+                    <span>Learning Hub</span>
+                </a>
+            </li>
+
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Administration</div>
 
@@ -126,7 +161,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'library' %}">
+                <a class="nav-link" href="{% url 'library_home' %}">
                     <i class="fas fa-fw fa-book"></i>
                     <span>Library</span></a>
             </li>
@@ -137,32 +172,80 @@
                     <span>HR & Payroll</span></a>
             </li>
 
+            {% if is_owner or is_admin %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'school_settings' %}">
+                    <i class="fas fa-fw fa-school"></i>
+                    <span>School Settings</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% if request.user.is_superuser %}
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Platform Admin</div>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'school_list' %}">
+                    <i class="fas fa-fw fa-building"></i>
+                    <span>Manage Schools</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'add_school' %}">
+                    <i class="fas fa-fw fa-plus-circle"></i>
+                    <span>Add New School</span>
+                </a>
+            </li>
+            {% endif %}
+
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+            {% endblock sidebar_nav %}
 
         </ul>
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                
+
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-                    
+
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Administrator</span>
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ request.user.get_full_name|default:request.user.username }} ({{ user_role_display|default:"User" }})</span>
                                 <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}">
                             </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="{% url 'user_profile' %}">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile Details
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
                         </li>
                     </ul>
                 </nav>
 
                 <div class="container-fluid">
+                    {% block breadcrumbs %}{% endblock %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     {% block content %}
                     {% endblock %}
                 </div>
@@ -171,7 +254,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>&copy; Prahlad Academy 2026</span>
+                        <span>&copy; {{ branding.SCHOOL_NAME }} {% now "Y" %}</span>
                     </div>
                 </div>
             </footer>
@@ -184,4 +267,5 @@
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 
 </body>
+
 </html>

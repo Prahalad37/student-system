@@ -233,6 +233,38 @@
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label class="small font-weight-bold">Billing Mode</label>
+                                <select name="billing_mode" class="form-control">
+                                    <option value="Manual" selected>Manual (enter fee)</option>
+                                    <option value="Zone">Zone (zone base)</option>
+                                    <option value="Stop">Stop (stop surcharge)</option>
+                                    <option value="Hybrid">Hybrid (zone + stop)</option>
+                                </select>
+                                <small class="text-muted">Hybrid computes fee = Zone base + Stop surcharge.</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label class="small font-weight-bold">Zone</label>
+                                    <select name="zone_id" class="form-control">
+                                        <option value="">-- Optional --</option>
+                                        {% for z in zones %}
+                                            <option value="{{ z.id }}">{{ z.name }} (₹{{ z.base_monthly_fee }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="small font-weight-bold">Stop</label>
+                                    <select name="stop_id" class="form-control">
+                                        <option value="">-- Optional --</option>
+                                        {% for st in stops %}
+                                            <option value="{{ st.id }}">{{ st.zone.name }} - {{ st.name }} (₹{{ st.monthly_surcharge }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-6 form-group">
                                     <label class="small font-weight-bold">Pickup Point</label>

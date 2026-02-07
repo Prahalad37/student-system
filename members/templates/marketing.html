@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prahlad Academy ERP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; margin: 0; min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #fff; text-align: center; padding: 2rem; box-sizing: border-box; }
+        .logo { font-size: 3rem; color: #93c5fd; margin-bottom: 0.5rem; }
+        h1 { font-size: 2rem; font-weight: 700; margin: 0 0 0.5rem; }
+        p { font-size: 1rem; opacity: 0.9; max-width: 420px; margin: 0 0 2rem; line-height: 1.5; }
+        a.cta { display: inline-block; padding: 14px 28px; background: #3b82f6; color: #fff;
+            text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 1rem;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); transition: transform 0.2s, box-shadow 0.2s; }
+        a.cta:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4); }
+        .footer { margin-top: 3rem; font-size: 0.85rem; opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <i class="fas fa-graduation-cap logo"></i>
+    <h1>Prahlad Academy ERP</h1>
+    <p>Smart School Management. Use your school subdomain to sign in, or log in here if you have an account.</p>
+    <a href="{% url 'login' %}" class="cta">Log in</a>
+    <div class="footer">&copy; 2025 Prahlad Academy</div>
+</body>
+</html>

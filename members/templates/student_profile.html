@@ -15,12 +15,22 @@
         <a href="{% url 'update' student.id %}" class="btn btn-warning btn-sm shadow-sm mr-1">
             <i class="fas fa-pen"></i> Edit
         </a>
-        <a href="{% url 'receipt_pdf' student.id %}" target="_blank" class="btn btn-primary btn-sm shadow-sm mr-1">
-            <i class="fas fa-download"></i> Receipt
+        <a href="{% url 'admission_receipt_pdf' student.id %}" target="_blank"
+            class="btn btn-success btn-sm shadow-sm mr-1">
+            <i class="fas fa-file-pdf"></i> Admission Receipt
+        </a>
+        <a href="{% url 'student_receipt_pdf' student.id %}" target="_blank"
+            class="btn btn-primary btn-sm shadow-sm mr-1">
+            <i class="fas fa-file-invoice-dollar"></i> Fee Receipt
         </a>
         <a href="{% url 'id_card' student.id %}" target="_blank" class="btn btn-info btn-sm shadow-sm">
             <i class="fas fa-id-card"></i> ID Card
         </a>
+        {% if not has_login %}{% if is_owner or is_admin %}
+        <a href="{% url 'create_student_login' student.id %}" class="btn btn-success btn-sm shadow-sm ml-1">
+            <i class="fas fa-user-plus"></i> Create Student Login
+        </a>
+        {% endif %}{% endif %}
     </div>
 </div>
 
@@ -30,31 +40,33 @@
         <div class="card shadow mb-4">
             <div class="card-body text-center">
                 {% if student.profile_pic %}
-                    <img class="img-profile rounded-circle mb-3 shadow" src="{{ student.profile_pic.url }}" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
+                <img class="img-profile rounded-circle mb-3 shadow" src="{{ student.profile_pic.url }}"
+                    style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
                 {% else %}
-                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 150px; height: 150px; font-size: 3rem; border: 4px solid #fff;">
-                        {{ student.firstname|slice:":1" }}
-                    </div>
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3 shadow"
+                    style="width: 150px; height: 150px; font-size: 3rem; border: 4px solid #fff;">
+                    {{ student.firstname|slice:":1" }}
+                </div>
                 {% endif %}
-                
+
                 <h4 class="font-weight-bold text-dark mb-1">{{ student.firstname }} {{ student.lastname }}</h4>
                 <p class="text-muted mb-2">
                     {% if student.student_class %}
-                        Class {{ student.student_class }}
+                    Class {{ student.student_class }}
                     {% else %}
-                        No Class Assigned
+                    No Class Assigned
                     {% endif %}
                 </p>
-                
+
                 <div class="mb-3">
                     <span class="badge badge-primary px-2">ID: #{{ student.id }}</span>
                     {% if student.roll_number %}
-                        <span class="badge badge-secondary px-2">Roll: {{ student.roll_number }}</span>
+                    <span class="badge badge-secondary px-2">Roll: {{ student.roll_number }}</span>
                     {% endif %}
                 </div>
 
                 <hr>
-                
+
                 <div class="text-left mt-3">
                     <h6 class="font-weight-bold text-uppercase text-xs text-gray-600 mb-3">Fees Status</h6>
                     <div class="d-flex justify-content-between mb-2 small">
@@ -68,9 +80,9 @@
                     <div class="d-flex justify-content-between small">
                         <span>Due Amount:</span>
                         {% if student.due_amount > 0 %}
-                            <span class="text-danger font-weight-bold">₹{{ student.due_amount }}</span>
+                        <span class="text-danger font-weight-bold">₹{{ student.due_amount }}</span>
                         {% else %}
-                            <span class="badge badge-success">Paid ✅</span>
+                        <span class="badge badge-success">Paid ✅</span>
                         {% endif %}
                     </div>
                 </div>
@@ -84,7 +96,8 @@
             <div class="card-body text-center">
                 <h2 class="display-4 font-weight-bold text-dark mb-0">{{ attendance_percent }}%</h2>
                 <div class="progress mb-3 mt-2" style="height: 10px;">
-                    <div class="progress-bar {% if attendance_percent >= 75 %}bg-success{% elif attendance_percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}" role="progressbar" style="width: {{ attendance_percent }}%"></div>
+                    <div class="progress-bar {% if attendance_percent >= 75 %}bg-success{% elif attendance_percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                        role="progressbar" style="width: {{ attendance_percent }}%"></div>
                 </div>
                 <div class="row small text-muted">
                     <div class="col-6 border-right">
@@ -99,7 +112,7 @@
     </div>
 
     <div class="col-xl-8 col-lg-7">
-        
+
         <div class="card shadow mb-4">
             <div class="card-header py-3 bg-gradient-primary text-white">
                 <h6 class="m-0 font-weight-bold"><i class="fas fa-user-graduate mr-2"></i>Academic & Personal Info</h6>
@@ -126,9 +139,12 @@
                         <small class="text-uppercase text-secondary font-weight-bold">House Team</small>
                         <h6>
                             {% if student.house_team == 'Red' %}<span class="badge badge-danger">🔴 Red House</span>
-                            {% elif student.house_team == 'Blue' %}<span class="badge badge-primary">🔵 Blue House</span>
-                            {% elif student.house_team == 'Green' %}<span class="badge badge-success">🟢 Green House</span>
-                            {% elif student.house_team == 'Yellow' %}<span class="badge badge-warning">🟡 Yellow House</span>
+                            {% elif student.house_team == 'Blue' %}<span class="badge badge-primary">🔵 Blue
+                                House</span>
+                            {% elif student.house_team == 'Green' %}<span class="badge badge-success">🟢 Green
+                                House</span>
+                            {% elif student.house_team == 'Yellow' %}<span class="badge badge-warning">🟡 Yellow
+                                House</span>
                             {% else %}-{% endif %}
                         </h6>
                     </div>
@@ -137,8 +153,9 @@
                         <h6 class="font-weight-bold text-dark">{{ student.preferred_stream|default:"General" }}</h6>
                     </div>
                     <div class="col-12">
-                         <small class="text-uppercase text-secondary font-weight-bold">Address</small>
-                         <p class="text-dark bg-light p-2 rounded small">{{ student.address|default:"No Address Provided" }}</p>
+                        <small class="text-uppercase text-secondary font-weight-bold">Address</small>
+                        <p class="text-dark bg-light p-2 rounded small">{{ student.address|default:"No Address Provided"
+                            }}</p>
                     </div>
                 </div>
             </div>
@@ -146,7 +163,8 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3 bg-white border-bottom-primary">
-                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bus-alt mr-2"></i>Transport & Medical</h6>
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bus-alt mr-2"></i>Transport & Medical
+                </h6>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -157,7 +175,7 @@
                     </div>
                     <div class="col-md-6 pl-md-4">
                         <h6 class="text-danger font-weight-bold mb-3 small text-uppercase">🚑 Medical</h6>
-                        <p class="mb-1"><strong>Blood Group:</strong> 
+                        <p class="mb-1"><strong>Blood Group:</strong>
                             <span class="badge badge-danger">{{ student.blood_group|default:"Unknown" }}</span>
                         </p>
                         <p class="mb-1"><strong>Conditions:</strong> {{ student.medical_conditions|default:"None" }}</p>
@@ -194,7 +212,9 @@
                                 <td>{{ score.english }}</td>
                                 <td>{{ score.computer }}</td>
                                 <td class="font-weight-bold text-primary">
-                                    {{ score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer }}
+                                    {{
+                                    score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer
+                                    }}
                                 </td>
                             </tr>
                             {% empty %}

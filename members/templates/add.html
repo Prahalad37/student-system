@@ -14,7 +14,7 @@
                     <i class="fas fa-times mr-1"></i> Cancel
                 </a>
             </div>
-            
+
             <div class="card-body p-4">
                 <form action="{% url 'addrecord' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -25,7 +25,8 @@
                     <div class="form-row">
                         <div class="form-group col-6 col-md-3">
                             <label class="small font-weight-bold">Admin No <span class="text-danger">*</span></label>
-                            <input type="text" name="admission_no" class="form-control form-control-sm" placeholder="A-001" required>
+                            <input type="text" name="admission_no" class="form-control form-control-sm"
+                                placeholder="A-001" required>
                         </div>
                         <div class="form-group col-6 col-md-3">
                             <label class="small font-weight-bold">Join Date</label>
@@ -33,7 +34,8 @@
                         </div>
                         <div class="form-group col-6 col-md-3">
                             <label class="small font-weight-bold">Roll No</label>
-                            <input type="text" name="roll_number" class="form-control form-control-sm" placeholder="e.g. 25">
+                            <input type="text" name="roll_number" class="form-control form-control-sm"
+                                placeholder="e.g. 25">
                         </div>
                         <div class="form-group col-6 col-md-3">
                             <label class="small font-weight-bold">Gender <span class="text-danger">*</span></label>
@@ -54,33 +56,146 @@
                     <div class="form-row">
                         <div class="form-group col-md-4 col-sm-6">
                             <label class="small font-weight-bold">First Name <span class="text-danger">*</span></label>
-                            <input type="text" name="first" class="form-control form-control-sm" placeholder="First Name" required>
+                            <input type="text" name="first" class="form-control form-control-sm"
+                                placeholder="First Name" required>
                         </div>
                         <div class="form-group col-md-4 col-sm-6">
                             <label class="small font-weight-bold">Last Name <span class="text-danger">*</span></label>
-                            <input type="text" name="last" class="form-control form-control-sm" placeholder="Last Name" required>
+                            <input type="text" name="last" class="form-control form-control-sm" placeholder="Last Name"
+                                required>
                         </div>
                         <div class="form-group col-md-4 col-sm-6">
                             <label class="small font-weight-bold">DOB</label>
                             <input type="date" name="dob" class="form-control form-control-sm">
                         </div>
-                        
+
                         <div class="form-group col-md-4 col-sm-6">
                             <label class="small font-weight-bold">Father's Name</label>
-                            <input type="text" name="father_name" class="form-control form-control-sm" placeholder="Father Name">
+                            <input type="text" name="father_name" class="form-control form-control-sm"
+                                placeholder="Father Name">
                         </div>
                         <div class="form-group col-md-4 col-sm-6">
                             <label class="small font-weight-bold">Mobile</label>
-                            <input type="tel" name="mobile_number" class="form-control form-control-sm" placeholder="10-digit Mobile">
+                            <input type="tel" name="mobile_number" class="form-control form-control-sm"
+                                placeholder="10-digit Mobile">
                         </div>
                         <div class="form-group col-md-4 col-sm-12">
                             <label class="small font-weight-bold">Email</label>
-                            <input type="email" name="email" class="form-control form-control-sm" placeholder="student@email.com">
+                            <input type="email" name="email" class="form-control form-control-sm"
+                                placeholder="student@email.com">
                         </div>
-                        
+
                         <div class="form-group col-12">
                             <label class="small font-weight-bold">Address</label>
-                            <input type="text" name="address" class="form-control form-control-sm" placeholder="Full Residential Address">
+                            <input type="text" name="address" class="form-control form-control-sm"
+                                placeholder="Full Residential Address">
+                        </div>
+                    </div>
+
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-female mr-1"></i> Mother's Information
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Mother's Name</label>
+                            <input type="text" name="mother_name" class="form-control form-control-sm"
+                                placeholder="Mother's Full Name">
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Mother's Mobile</label>
+                            <input type="tel" name="mother_mobile" class="form-control form-control-sm"
+                                placeholder="10-digit Mobile">
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Mother's Occupation</label>
+                            <input type="text" name="mother_occupation" class="form-control form-control-sm"
+                                placeholder="e.g. Teacher">
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Father's Occupation</label>
+                            <input type="text" name="father_occupation" class="form-control form-control-sm"
+                                placeholder="e.g. Engineer">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-id-badge mr-1"></i> Government & Identity
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Aadhaar Number</label>
+                            <input type="text" name="aadhaar_number" class="form-control form-control-sm"
+                                placeholder="12 digits" maxlength="12" pattern="[0-9]{12}">
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Caste/Category</label>
+                            <select name="caste_category" class="form-control form-control-sm">
+                                <option value="General">General</option>
+                                <option value="OBC">OBC</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="EWS">EWS</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Religion</label>
+                            <input type="text" name="religion" class="form-control form-control-sm"
+                                placeholder="e.g. Hindu, Muslim">
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Nationality</label>
+                            <input type="text" name="nationality" class="form-control form-control-sm" value="Indian">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-school mr-1"></i> Previous Education
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-5 col-sm-12">
+                            <label class="small font-weight-bold">Previous School Name</label>
+                            <input type="text" name="previous_school" class="form-control form-control-sm"
+                                placeholder="Last school attended">
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold">Last Class Attended</label>
+                            <input type="text" name="previous_class" class="form-control form-control-sm"
+                                placeholder="e.g. Class 8">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Transfer Certificate No.</label>
+                            <input type="text" name="tc_number" class="form-control form-control-sm"
+                                placeholder="TC Number">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-phone-alt mr-1"></i> Emergency Contact
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Emergency Person Name</label>
+                            <input type="text" name="emergency_contact_person" class="form-control form-control-sm"
+                                placeholder="Contact person name">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Emergency Phone</label>
+                            <input type="tel" name="emergency_phone" class="form-control form-control-sm"
+                                placeholder="10-digit number">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <label class="small font-weight-bold">Relationship</label>
+                            <input type="text" name="emergency_relationship" class="form-control form-control-sm"
+                                placeholder="e.g. Uncle, Aunt">
                         </div>
                     </div>
 
@@ -92,7 +207,8 @@
                     <div class="form-row">
                         <div class="form-group col-6 col-md-3">
                             <label class="small font-weight-bold">Class <span class="text-danger">*</span></label>
-                            <input type="text" name="student_class" class="form-control form-control-sm" placeholder="e.g. 10" required>
+                            <input type="text" name="student_class" class="form-control form-control-sm"
+                                placeholder="e.g. 10" required>
                         </div>
                         <div class="form-group col-6 col-md-3">
                             <label class="small font-weight-bold">Section</label>
@@ -138,16 +254,213 @@
                             </select>
                         </div>
                         <div class="form-group col-6 col-md-3">
-                            <label class="small font-weight-bold">Mode</label>
-                            <select name="transport_mode" class="form-control form-control-sm">
+                            <label class="small font-weight-bold">Transport Mode</label>
+                            <select name="transport_mode" id="id_transport_mode" class="form-control form-control-sm">
                                 <option value="Self">Self</option>
                                 <option value="School Bus">School Bus</option>
                                 <option value="Private">Private</option>
                             </select>
                         </div>
-                        <div class="form-group col-12 col-md-7">
+                        <div class="form-group col-12 col-md-7" id="transport_assign_section" style="display:none;">
+                            <label class="small font-weight-bold">Assign Bus Route</label>
+                            {% if not routes %}
+                            <p class="small text-warning mb-2"><i class="fas fa-info-circle"></i> No bus routes. Add routes in <a href="{% url 'transport_home' %}" target="_blank">Transport</a> first.</p>
+                            {% endif %}
+                            <div class="form-row">
+                                <div class="col-md-4 mb-2">
+                                    <select name="transport_route_id" class="form-control form-control-sm">
+                                        <option value="">Select Route</option>
+                                        {% for r in routes %}
+                                        <option value="{{ r.id }}">{{ r.route_name }} ({{ r.vehicle_number }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <input type="text" name="transport_pickup_point" class="form-control form-control-sm" placeholder="Pickup Point">
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <input type="number" name="transport_monthly_fee" class="form-control form-control-sm" placeholder="Monthly Fee (₹)" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-12 col-md-7" id="route_note_section">
                             <label class="small font-weight-bold">Route / Medical Note</label>
-                            <input type="text" name="route_name" class="form-control form-control-sm" placeholder="Bus Route or Medical Condition">
+                            <input type="text" name="route_name" class="form-control form-control-sm"
+                                placeholder="Bus Route or Medical Condition (if not School Bus)">
+                        </div>
+                        <div class="form-group col-12 col-md-5">
+                            <label class="small font-weight-bold">WhatsApp Number</label>
+                            <input type="tel" name="whatsapp_number" class="form-control form-control-sm"
+                                placeholder="10-digit WhatsApp">
+                        </div>
+                    </div>
+
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-heartbeat mr-1"></i> Medical Information
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Known Allergies</label>
+                            <textarea name="known_allergies" class="form-control form-control-sm" rows="2"
+                                placeholder="Food, medicine allergies"></textarea>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Chronic Conditions</label>
+                            <textarea name="chronic_conditions" class="form-control form-control-sm" rows="2"
+                                placeholder="Diabetes, Asthma, etc."></textarea>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Special Needs</label>
+                            <textarea name="special_needs" class="form-control form-control-sm" rows="2"
+                                placeholder="Learning/physical disabilities"></textarea>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Vaccination Status</label>
+                            <input type="text" name="vaccination_status" class="form-control form-control-sm"
+                                placeholder="COVID-19, MMR, etc.">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Family Doctor Name</label>
+                            <input type="text" name="family_doctor_name" class="form-control form-control-sm"
+                                placeholder="Doctor's name">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Doctor's Phone</label>
+                            <input type="tel" name="family_doctor_phone" class="form-control form-control-sm"
+                                placeholder="Doctor's contact">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-user-shield mr-1"></i> Guardian Information (If Different from Parents)
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Guardian Name</label>
+                            <input type="text" name="guardian_name" class="form-control form-control-sm"
+                                placeholder="Legal guardian name">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Relationship</label>
+                            <input type="text" name="guardian_relationship" class="form-control form-control-sm"
+                                placeholder="Grandparent, Uncle, etc.">
+                        </div>
+                        <div class="form-group col-md-4 col-sm-12">
+                            <label class="small font-weight-bold">Guardian Contact</label>
+                            <input type="tel" name="guardian_contact" class="form-control form-control-sm"
+                                placeholder="Guardian's phone">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-rupee-sign mr-1"></i> Family & Financial Information
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 col-sm-6">
+                            <label class="small font-weight-bold">Annual Family Income (₹)</label>
+                            <input type="number" name="annual_income" class="form-control form-control-sm"
+                                placeholder="Annual income">
+                        </div>
+                        <div class="form-group col-md-6 col-sm-6">
+                            <label class="small font-weight-bold">Parent's Highest Education</label>
+                            <input type="text" name="parent_education" class="form-control form-control-sm"
+                                placeholder="e.g. Graduate, Post-Graduate">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-users mr-1"></i> Sibling Information
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-3 col-sm-6">
+                            <label class="small font-weight-bold d-block">Sibling in School?</label>
+                            <div class="custom-control custom-checkbox mt-2">
+                                <input type="checkbox" name="sibling_in_school" class="custom-control-input"
+                                    id="siblingCheck" value="true">
+                                <label class="custom-control-label small" for="siblingCheck">Yes, has siblings
+                                    here</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-9 col-sm-12">
+                            <label class="small font-weight-bold">Sibling Details</label>
+                            <textarea name="sibling_details" class="form-control form-control-sm" rows="2"
+                                placeholder="Name, Class, Admission No of siblings"></textarea>
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-file-upload mr-1"></i> Document Uploads
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Birth Certificate</label>
+                            <div class="custom-file">
+                                <input type="file" name="birth_certificate" class="custom-file-input" id="birthCert"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                <label class="custom-file-label col-form-label-sm" for="birthCert">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Aadhaar Card</label>
+                            <div class="custom-file">
+                                <input type="file" name="aadhaar_card" class="custom-file-input" id="aadhaarDoc"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                <label class="custom-file-label col-form-label-sm" for="aadhaarDoc">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Transfer Certificate</label>
+                            <div class="custom-file">
+                                <input type="file" name="transfer_certificate" class="custom-file-input" id="tcDoc"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                <label class="custom-file-label col-form-label-sm" for="tcDoc">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Previous Marksheet</label>
+                            <div class="custom-file">
+                                <input type="file" name="previous_marksheet" class="custom-file-input" id="marksheetDoc"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                <label class="custom-file-label col-form-label-sm" for="marksheetDoc">Choose
+                                    file</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6">
+                            <label class="small font-weight-bold">Photo ID</label>
+                            <div class="custom-file">
+                                <input type="file" name="photo_id" class="custom-file-input" id="photoIdDoc"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                                <label class="custom-file-label col-form-label-sm" for="photoIdDoc">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-map-marker-alt mr-1"></i> Additional Information
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 col-sm-12">
+                            <label class="small font-weight-bold">Alternate Email</label>
+                            <input type="email" name="alternate_email" class="form-control form-control-sm"
+                                placeholder="Secondary email">
+                        </div>
+                        <div class="form-group col-md-6 col-sm-12">
+                            <label class="small font-weight-bold">Permanent Address</label>
+                            <textarea name="permanent_address" class="form-control form-control-sm" rows="2"
+                                placeholder="If different from current address"></textarea>
                         </div>
                     </div>
 
@@ -156,17 +469,51 @@
                     <div class="form-row align-items-end">
                         <div class="form-group col-6 col-md-4">
                             <label class="small font-weight-bold text-success">Total Fee (₹)</label>
-                            <input type="number" name="fee_total" class="form-control form-control-sm font-weight-bold" value="25000">
+                            <input type="number" name="fee_total" class="form-control form-control-sm font-weight-bold"
+                                value="25000">
                         </div>
                         <div class="form-group col-6 col-md-4">
                             <label class="small font-weight-bold text-primary">Paid Now (₹)</label>
-                            <input type="number" name="fee_paid" class="form-control form-control-sm font-weight-bold" value="0">
+                            <input type="number" name="fee_paid" class="form-control form-control-sm font-weight-bold"
+                                value="0">
                         </div>
                         <div class="form-group col-12 col-md-4">
                             <label class="small font-weight-bold">Photo</label>
                             <div class="custom-file">
                                 <input type="file" name="file" class="custom-file-input" id="customFile">
                                 <label class="custom-file-label col-form-label-sm" for="customFile">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-0 mb-3 border-light">
+
+                    <h6 class="text-uppercase text-secondary text-xs font-weight-bold mb-3">
+                        <i class="fas fa-check-circle mr-1"></i> Consent & Permissions
+                    </h6>
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <div class="custom-control custom-checkbox mb-2">
+                                <input type="checkbox" name="terms_consent" class="custom-control-input"
+                                    id="termsConsent" required>
+                                <label class="custom-control-label small" for="termsConsent">
+                                    <strong>I agree to the school's terms and conditions</strong> <span
+                                        class="text-danger">*</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-checkbox mb-2">
+                                <input type="checkbox" name="photo_permission" class="custom-control-input"
+                                    id="photoPermission">
+                                <label class="custom-control-label small" for="photoPermission">
+                                    I give permission to use student's photos/videos for school events and publications
+                                </label>
+                            </div>
+                            <div class="custom-control custom-checkbox mb-2">
+                                <input type="checkbox" name="communication_consent" class="custom-control-input"
+                                    id="commConsent" checked>
+                                <label class="custom-control-label small" for="commConsent">
+                                    I agree to receive SMS/Email notifications from the school
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -182,4 +529,408 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Phase 3: Client-Side Validation & UX Enhancements
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+
+        // ========== AADHAAR VALIDATION (DISABLED) ==========
+        // Note: Aadhaar validation removed as per user request
+        // Field still collects data but without client-side validation
+        /*
+        const aadhaarInput = document.querySelector('input[name="aadhaar_number"]');
+        if (aadhaarInput) {
+            aadhaarInput.addEventListener('input', function (e) {
+                // Only allow digits
+                this.value = this.value.replace(/\D/g, '');
+
+                if (this.value.length > 0 && this.value.length !== 12) {
+                    this.setCustomValidity('Aadhaar must be exactly 12 digits');
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                } else {
+                    this.setCustomValidity('');
+                    if (this.value.length === 12) {
+                        this.classList.add('is-valid');
+                        this.classList.remove('is-invalid');
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                }
+            });
+        }
+        */
+
+        // ========== MOBILE NUMBER VALIDATION (10 digits, starts with 6-9) ==========
+        const mobileInputs = document.querySelectorAll('input[type="tel"]');
+        mobileInputs.forEach(input => {
+            input.addEventListener('input', function (e) {
+                this.value = this.value.replace(/\D/g, '');
+
+                if (this.value.length > 0) {
+                    if (this.value.length !== 10) {
+                        this.setCustomValidity('Mobile number must be 10 digits');
+                        this.classList.add('is-invalid');
+                        this.classList.remove('is-valid');
+                    } else if (!/^[6-9]/.test(this.value)) {
+                        this.setCustomValidity('Mobile number must start with 6, 7, 8, or 9');
+                        this.classList.add('is-invalid');
+                        this.classList.remove('is-valid');
+                    } else {
+                        this.setCustomValidity('');
+                        this.classList.add('is-valid');
+                        this.classList.remove('is-invalid');
+                    }
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+        });
+
+        // ========== EMAIL VALIDATION ==========
+        const emailInputs = document.querySelectorAll('input[type="email"]');
+        emailInputs.forEach(input => {
+            // Clear validation state on input (real-time)
+            input.addEventListener('input', function (e) {
+                if (this.value.length === 0) {
+                    this.classList.remove('is-valid', 'is-invalid');
+                    this.setCustomValidity('');
+                }
+            });
+
+            // Validate on blur
+            input.addEventListener('blur', function (e) {
+                if (this.value.length > 0 && !this.checkValidity()) {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                } else if (this.value.length > 0) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+        });
+
+        // ========== DATE VALIDATION ==========
+        const dobInput = document.querySelector('input[name="dob"]');
+        const joinDateInput = document.querySelector('input[name="joined_date"]');
+        const today = new Date().toISOString().split('T')[0];
+
+        if (dobInput) {
+            // DOB should not be in the future
+            dobInput.setAttribute('max', today);
+            dobInput.addEventListener('change', function (e) {
+                if (this.value > today) {
+                    this.setCustomValidity('Date of Birth cannot be in the future');
+                    this.classList.add('is-invalid');
+                    alert('Warning: Date of Birth cannot be in the future');
+                    this.value = '';
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
+
+        if (joinDateInput) {
+            // Join Date should not be more than 1 year in the future
+            const maxJoinDate = new Date();
+            maxJoinDate.setFullYear(maxJoinDate.getFullYear() + 1);
+            joinDateInput.setAttribute('max', maxJoinDate.toISOString().split('T')[0]);
+
+            joinDateInput.addEventListener('change', function (e) {
+                if (this.value > maxJoinDate.toISOString().split('T')[0]) {
+                    this.setCustomValidity('Join Date cannot be more than 1 year in the future');
+                    this.classList.add('is-invalid');
+                    alert('Warning: Join Date seems too far in the future');
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
+
+        // ========== FILE UPLOAD LABEL UPDATE ==========
+        const fileInputs = document.querySelectorAll('.custom-file-input');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function (e) {
+                const fileName = this.files[0]?.name || 'Choose file';
+                const label = this.nextElementSibling;
+                label.textContent = fileName;
+                label.classList.add('text-primary');
+            });
+        });
+
+        // ========== ANNUAL INCOME FORMATTING ==========
+        const incomeInput = document.querySelector('input[name="annual_income"]');
+        if (incomeInput) {
+            incomeInput.addEventListener('blur', function (e) {
+                if (this.value && this.value < 0) {
+                    this.value = 0;
+                }
+            });
+        }
+
+        // ========== FORM SUBMISSION VALIDATION ==========
+        form.addEventListener('submit', function (e) {
+            // Aadhaar validation removed - field is optional now
+
+            // Check all mobile numbers
+            let invalidMobile = false;
+            mobileInputs.forEach(input => {
+                if (input.value && (input.value.length !== 10 || !/^[6-9]/.test(input.value))) {
+                    invalidMobile = true;
+                    input.classList.add('is-invalid');
+                }
+            });
+
+            if (invalidMobile) {
+                e.preventDefault();
+                alert('Please enter valid 10-digit mobile numbers starting with 6-9');
+                return false;
+            }
+
+            // All validations passed
+            // Clear draft on successful submission
+            localStorage.removeItem('admission_draft');
+            localStorage.removeItem('draft_timestamp');
+            return true;
+        });
+
+        // ========== PHASE 1: AUTO-SAVE DRAFT ==========
+        const DRAFT_KEY = 'admission_draft';
+        const TIMESTAMP_KEY = 'draft_timestamp';
+        let autoSaveTimer;
+        let hasUnsavedChanges = false;
+
+        // Function to save form data to localStorage
+        function saveDraft() {
+            const formData = {};
+            const inputs = form.querySelectorAll('input, select, textarea');
+
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    formData[input.name] = input.checked;
+                } else if (input.type !== 'file') { // Don't save files
+                    formData[input.name] = input.value;
+                }
+            });
+
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(formData));
+            localStorage.setItem(TIMESTAMP_KEY, new Date().toISOString());
+            updateSaveIndicator();
+        }
+
+        // Function to restore draft
+        function restoreDraft() {
+            const draftData = localStorage.getItem(DRAFT_KEY);
+            if (!draftData) return false;
+
+            const data = JSON.parse(draftData);
+            let restoredCount = 0;
+
+            Object.keys(data).forEach(name => {
+                const input = form.querySelector(`[name="${name}"]`);
+                if (input) {
+                    if (input.type === 'checkbox') {
+                        input.checked = data[name];
+                    } else if (input.type !== 'file') {
+                        input.value = data[name];
+                        restoredCount++;
+                    }
+                }
+            });
+
+            return restoredCount > 0;
+        }
+
+        // Update save indicator
+        function updateSaveIndicator() {
+            const timestamp = localStorage.getItem(TIMESTAMP_KEY);
+            if (!timestamp) return;
+
+            const saveTime = new Date(timestamp);
+            const now = new Date();
+            const diffMinutes = Math.floor((now - saveTime) / 60000);
+
+            let indicator = document.getElementById('saveIndicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'saveIndicator';
+                indicator.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                indicator.style.cssText = 'top: 70px; right: 20px; z-index: 1000; padding: 8px 15px; font-size: 12px;';
+                document.body.appendChild(indicator);
+            }
+
+            if (diffMinutes === 0) {
+                indicator.innerHTML = '<i class="fas fa-check-circle"></i> Draft saved just now <button type="button" class="close" data-dismiss="alert">&times;</button>';
+            } else if (diffMinutes < 60) {
+                indicator.innerHTML = `<i class="fas fa-check-circle"></i> Draft saved ${diffMinutes} min ago <button type="button" class="close" data-dismiss="alert">&times;</button>`;
+            } else {
+                indicator.innerHTML = '<i class="fas fa-clock"></i> Draft saved >1 hour ago <button type="button" class="close" data-dismiss="alert">&times;</button>';
+                indicator.className = indicator.className.replace('alert-success', 'alert-warning');
+            }
+
+            setTimeout(() => indicator.classList.add('show'), 100);
+        }
+
+        // Check for existing draft on page load
+        const draftExists = localStorage.getItem(DRAFT_KEY);
+        if (draftExists) {
+            const timestamp = localStorage.getItem(TIMESTAMP_KEY);
+            const saveTime = timestamp ? new Date(timestamp).toLocaleString() : 'Unknown';
+
+            if (confirm(`Found a saved draft from ${saveTime}. Would you like to restore it?`)) {
+                if (restoreDraft()) {
+                    updateSaveIndicator();
+                    alert('Draft restored successfully!');
+                }
+            } else if (confirm('Would you like to delete the saved draft?')) {
+                localStorage.removeItem(DRAFT_KEY);
+                localStorage.removeItem(TIMESTAMP_KEY);
+            }
+        }
+
+        // Auto-save every 30 seconds
+        form.addEventListener('input', function () {
+            hasUnsavedChanges = true;
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(saveDraft, 30000); // 30 seconds
+        });
+
+        // Manual save on blur (when leaving any field)
+        form.addEventListener('blur', function () {
+            if (hasUnsavedChanges) {
+                saveDraft();
+                hasUnsavedChanges = false;
+            }
+        }, true);
+
+        // Warn before leaving page with unsaved changes
+        window.addEventListener('beforeunload', function (e) {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // ========== PHASE 1: SMART DEFAULTS ==========
+        // Auto-fill Join Date with today's date
+        const joinDateField = document.querySelector('input[name="joined_date"]');
+        if (joinDateField && !joinDateField.value && !draftExists) {
+            const todayDate = new Date().toISOString().split('T')[0];
+            joinDateField.value = todayDate;
+        }
+
+        // Auto-capitalize First Name and Last Name
+        const firstNameInput = document.querySelector('input[name="first"]');
+        const lastNameInput = document.querySelector('input[name="last"]');
+
+        [firstNameInput, lastNameInput].forEach(input => {
+            if (input) {
+                input.addEventListener('blur', function () {
+                    this.value = this.value
+                        .toLowerCase()
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                });
+            }
+        });
+
+        // Format Aadhaar with dashes (1234-5678-9012)
+        const aadhaarInput = document.querySelector('input[name="aadhaar_number"]');
+        if (aadhaarInput) {
+            aadhaarInput.addEventListener('input', function (e) {
+                let value = this.value.replace(/\D/g, ''); // Remove non-digits
+                if (value.length > 12) value = value.slice(0, 12); // Max 12 digits
+
+                // Add dashes
+                if (value.length > 8) {
+                    this.value = value.slice(0, 4) + '-' + value.slice(4, 8) + '-' + value.slice(8);
+                } else if (value.length > 4) {
+                    this.value = value.slice(0, 4) + '-' + value.slice(4);
+                } else {
+                    this.value = value;
+                }
+            });
+        }
+
+        // Add character counters to textareas
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const maxLength = textarea.getAttribute('maxlength') || 500;
+            textarea.setAttribute('maxlength', maxLength);
+
+            const counter = document.createElement('small');
+            counter.className = 'form-text text-muted text-right';
+            counter.innerHTML = `<span id="${textarea.name}_count">0</span>/${maxLength} characters`;
+            textarea.parentElement.appendChild(counter);
+
+            textarea.addEventListener('input', function () {
+                document.getElementById(`${this.name}_count`).textContent = this.value.length;
+            });
+        });
+
+        // ========== PHASE 1: DUPLICATE ADMISSION CHECK ==========
+        const admissionNoInput = document.querySelector('input[name="admission_no"]');
+        if (admissionNoInput) {
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'invalid-feedback';
+            admissionNoInput.parentNode.appendChild(feedbackDiv);
+
+            admissionNoInput.addEventListener('blur', function () {
+                const value = this.value.trim();
+                if (!value) return;
+
+                fetch(`{% url 'check_admission_number' %}?admission_no=${encodeURIComponent(value)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            this.classList.add('is-invalid');
+                            this.setCustomValidity('Admission number already exists');
+                            feedbackDiv.textContent = `Duplicate: Assigned to ${data.student_name} (${data.class})`;
+                        } else {
+                            this.classList.remove('is-invalid');
+                            this.classList.add('is-valid');
+                            this.setCustomValidity('');
+                        }
+                    })
+                    .catch(console.error);
+            });
+
+            // Clear state on input
+            admissionNoInput.addEventListener('input', function () {
+                this.classList.remove('is-invalid', 'is-valid');
+                this.setCustomValidity('');
+            });
+        }
+
+        // Fix Aadhaar maxlength for dashes
+        if (aadhaarInput) {
+            aadhaarInput.setAttribute('maxlength', '14');
+        }
+
+        // Transport mode toggle - show route assign when School Bus
+        const transportMode = document.getElementById('id_transport_mode');
+        const transportAssignSection = document.getElementById('transport_assign_section');
+        const routeNoteSection = document.getElementById('route_note_section');
+        if (transportMode && transportAssignSection) {
+            function toggleTransportSection() {
+                if (transportMode.value === 'School Bus') {
+                    transportAssignSection.style.display = 'block';
+                    if (routeNoteSection) routeNoteSection.style.display = 'none';
+                } else {
+                    transportAssignSection.style.display = 'none';
+                    if (routeNoteSection) routeNoteSection.style.display = 'block';
+                }
+            }
+            transportMode.addEventListener('change', toggleTransportSection);
+            toggleTransportSection();
+        }
+    });</script>
 {% endblock %}

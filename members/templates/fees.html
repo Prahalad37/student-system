@@ -144,7 +144,7 @@
                             <a href="{% url 'receipt_pdf' t.id %}" target="_blank" class="btn btn-sm btn-circle btn-outline-primary">
                                 <i class="fas fa-print"></i>
                             </a>
-                            {% if user.is_superuser %}
+                            {% if can_delete_fee %}
                             <a href="{% url 'delete_fee' t.id %}" class="btn btn-sm btn-circle btn-outline-danger ml-1" onclick="return confirm('Delete transaction?')">
                                 <i class="fas fa-trash"></i>
                             </a>
@@ -157,6 +157,7 @@
                 </tbody>
             </table>
         </div>
+        {% include "components/pagination.html" %}
     </div>
 </div>
 
