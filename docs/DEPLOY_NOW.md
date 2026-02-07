@@ -4,6 +4,20 @@ Ye guide aapko **Render.com** pe deploy karne me help karegi (free tier availabl
 
 ---
 
+## Blueprint Deploy (render.yaml) — Manual DATABASE_URL Required
+
+Agar aap **Blueprint** se deploy kar rahe ho (angcore, render.yaml):
+
+1. Blueprint sync karo — database aur web service ban jayenge
+2. **DATABASE_URL manually add karo:**
+   - Render Dashboard → **school-erp** → **Environment**
+   - **Add Environment Variable**: `DATABASE_URL`
+   - Value: **External** connection string from **school-erp-db** → **Connect**
+   - (Internal URL cross-region pe kaam nahi karta — web Oregon, DB Singapore)
+3. **Save Changes** → Manual Deploy trigger karo
+
+---
+
 ## Step 1: GitHub pe Code Push karo
 
 ```bash
@@ -65,7 +79,7 @@ git push origin main
 
 ---
 
-## Step 5: Migrations Run karo
+## Step 5: Migrations + Superuser + First School
 
 Deploy hone ke baad (2–3 min):
 
@@ -77,7 +91,8 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-Superuser banao — ye aapka admin login hoga.
+3. Superuser se `/admin/` pe login karo aur pehla **School** add karo
+4. Ab `/` pe jao — dashboard load hoga
 
 ---
 
@@ -97,7 +112,8 @@ Superuser banao — ye aapka admin login hoga.
 | 502 Bad Gateway | Wait 1–2 min, cold start |
 | Static files nahi dikh rahe | `collectstatic` build command me hai — verify karo |
 | CSRF error | Environment me add karo: `CSRF_TRUSTED_ORIGINS` = `https://school-erp-XXXX.onrender.com` (apna exact URL) |
-| DB connection error | `DATABASE_URL` sahi paste kiya? Internal URL use karo |
+| DB connection error | Use **External** connection string (web + DB different regions). `settings.py` converts internal host automatically. |
+| Sync "id is empty" | Blueprint me `DATABASE_URL` fromDatabase hata diya — manually add karo (Blueprint section dekho) |
 
 ---
 

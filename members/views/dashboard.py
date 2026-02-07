@@ -14,9 +14,11 @@ from ..utils.roles import get_user_role
 @login_required
 @require_roles("OWNER", "ADMIN", "ACCOUNTANT", "TEACHER", "STAFF", "STUDENT")
 def index(request):
+    school = getattr(request, "school", None)
+    if school is None:
+        return redirect("/admin/")
     if get_user_role(request) == "STUDENT":
         return redirect("student_portal")
-    school = get_current_school(request)
     total_students = Member.objects.filter(school=school).count()
     new_admissions = Member.objects.filter(
         school=school,
