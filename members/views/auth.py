@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 
 from ..utils import get_current_school
+from ..utils.domain import extract_subdomain
 
 
 def _get_login_redirect_url(user):
@@ -41,6 +42,7 @@ class TenantLoginView(LoginView):
     def form_valid(self, form):
         user = form.get_user()
         school = getattr(self.request, "school", None)
+        subdomain = extract_subdomain(self.request)
         if school is None:
             if user.is_superuser:
                 return super().form_valid(form)
@@ -48,9 +50,18 @@ class TenantLoginView(LoginView):
             return self.form_invalid(form)
         if not user.is_superuser:
             profile = getattr(user, "userprofile", None)
-            if not profile or profile.school_id != school.id:
-                form.add_error(None, "You do not belong to this school.")
+            if not profile:
+                form.add_error(None, "No user profile. Contact admin.")
                 return self.form_invalid(form)
+            # Single URL (no subdomain): allow if user has any school. After login middleware sets request.school from profile.
+            if subdomain is None:
+                if not profile.school_id:
+                    form.add_error(None, "Your account is not linked to any school. Contact admin.")
+                    return self.form_invalid(form)
+            else:
+                if profile.school_id != school.id:
+                    form.add_error(None, "You do not belong to this school.")
+                    return self.form_invalid(form)
         return super().form_valid(form)
 
     def get_success_url(self):
