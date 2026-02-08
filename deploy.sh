@@ -15,4 +15,6 @@ echo "✅ Pushed! Now deploy on Render:"
 echo "   https://render.com/deploy?repo=https://github.com/Prahalad37/student-system"
 echo ""
 echo "Or: New → Blueprint → Connect repo → Select branch"
-open "https://render.com/deploy?repo=https://github.com/Prahalad37/student-system" 2>/dev/null || true
+echo "Opening Render..."
+open "https://render.com/deploy?repo=https://github.com/Prahalad37/student-system&branch=2026-01-23-ikne" 2>/dev/null || \
+  xdg-open "https://render.com/deploy?repo=https://github.com/Prahalad37/student-system&branch=2026-01-23-ikne" 2>/dev/null || true

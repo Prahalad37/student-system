@@ -79,29 +79,63 @@ git push origin main
 
 ---
 
-## Step 5: Migrations + Superuser + First School
+## Step 5: Demo users / Login (Render pe)
 
-Deploy hone ke baad (2–3 min):
+**Blueprint (render.yaml) use kar rahe ho:**  
+Start command me `setup_login_users --run-if-empty` hai — **pehli deploy** pe jab DB empty hoti hai, tab automatically demo school + users (admin, teacher, staff, etc.) ban jate hain. Koi extra step nahi. Login: `/accounts/login/` — credentials plan me (admin / adminpass123, etc.).
 
-1. Web Service page → **Shell** tab (ya **Logs** ke paas)
-2. Shell open karo aur run karo:
+**Agar manual Web Service bana rahe ho** (render.yaml nahi use kar rahe):
+
+1. Web Service page → **Shell** tab
+2. Run karo:
 
 ```bash
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py setup_login_users
 ```
 
-3. Superuser se `/admin/` pe login karo aur pehla **School** add karo
-4. Ab `/` pe jao — dashboard load hoga
+Ya superuser se start karo: `python manage.py createsuperuser`, phir `/admin/` se School add karo.
+
+**Password reset / demo users dubara chahiye:**  
+Render Shell me run karo: `python manage.py setup_login_users` (bina `--run-if-empty` — sab passwords reset ho jayenge).
+
+**Render Shell access nahi hai — local CMD/script se run karo:**  
+Apne computer se Render DB pe command chalane ke liye:
+
+1. Render Dashboard → **school-erp-db** → **Connect** → **External** connection string copy karo (postgresql://...)
+2. Project root (mysite) pe terminal kholo aur run karo:
+
+```bash
+# Sab demo users create/reset (passwords reset)
+DATABASE_URL='postgresql://user:pass@host:5432/dbname' python manage.py setup_login_users
+```
+
+Ya script use karo (same DATABASE_URL chahiye):
+
+```bash
+DATABASE_URL='postgresql://...' ./scripts/setup_render_login_users.sh
+```
+
+Pehli baar sirf jab koi user na ho tab run karna ho to: `... setup_login_users --run-if-empty` ya script ke saath `./scripts/setup_render_login_users.sh --run-if-empty`
 
 ---
 
 ## Step 6: First School Setup
 
 1. Apna URL open karo: `https://school-erp-xxxx.onrender.com`
-2. Admin se login: `/admin/` ya created superuser
-3. School add karo: `/schools/add/` (superuser only)
-4. UserProfile me school link karo
+2. Login: `/accounts/login/` — Blueprint deploy me demo users pehle se bane honge (admin / adminpass123, etc.)
+3. Agar chaho to `/admin/` se School edit karo ya nayi school add karo
+4. UserProfile me school link karo (demo users pehli school se already linked hote hain)
+
+---
+
+## Demo users on Render (summary)
+
+| Option | Kab use karein |
+|--------|-----------------|
+| **Option A — Render Shell** | Shell access ho to: Dashboard → school-erp → **Shell** → `python manage.py setup_login_users` |
+| **Option B — Auto (startCommand)** | Blueprint (render.yaml) se deploy — pehli deploy pe `setup_login_users --run-if-empty` automatically chal jata hai |
+| **Option C — Local CMD / script** | Shell access nahi ho to: Render se **External** DATABASE_URL copy karo, phir local terminal se `DATABASE_URL='...' python manage.py setup_login_users` ya `DATABASE_URL='...' ./scripts/setup_render_login_users.sh` |
 
 ---
 

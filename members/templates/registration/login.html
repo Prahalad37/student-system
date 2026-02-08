@@ -221,6 +221,30 @@
             gap: 8px;
             border: 1px solid #fecaca;
         }
+
+        /* --- DEMO LOGINS --- */
+        .demo-logins {
+            margin-top: 12px;
+            font-size: 11px;
+            color: #64748b;
+            text-align: left;
+        }
+        .demo-logins summary {
+            cursor: pointer;
+            color: #1e40af;
+            font-weight: 500;
+        }
+        .demo-logins table {
+            width: 100%;
+            margin-top: 8px;
+            border-collapse: collapse;
+            font-family: monospace;
+        }
+        .demo-logins td {
+            padding: 4px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .demo-logins td:first-child { color: #0f172a; }
     </style>
 </head>
 
@@ -267,6 +291,21 @@
         </form>
 
         <p class="footer-link" style="margin-top: 15px;">Forgot password? Run: <code style="font-size: 11px;">python manage.py setup_login_users</code></p>
+
+        <details class="demo-logins">
+            <summary>Demo logins (copy-paste)</summary>
+            <p style="margin: 6px 0 4px 0;">Superuser: <strong>admin</strong> / <strong>adminpass123</strong> (not admin123)</p>
+            <table>
+                <tr><td>admin</td><td>adminpass123</td></tr>
+                <tr><td>school_admin</td><td>admin123</td></tr>
+                <tr><td>teacher</td><td>teacher123</td></tr>
+                <tr><td>staff</td><td>staff123</td></tr>
+                <tr><td>accountant</td><td>accountant123</td></tr>
+                <tr><td>owner</td><td>owner123</td></tr>
+                <tr><td>student</td><td>student123</td></tr>
+            </table>
+            <p style="margin: 6px 0 0 0;">Reset all: <code>python manage.py setup_login_users</code></p>
+        </details>
 
         <div style="margin-top: 30px; font-size: 11px; color: #cbd5e1;">
             &copy; {% now "Y" %} {{ branding.SCHOOL_NAME }}. All Rights Reserved.

@@ -43,7 +43,18 @@ USERS_TO_CREATE = [
 class Command(BaseCommand):
     help = "Create/reset login credentials for admin, teacher, staff, etc. (all use same login page)"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--run-if-empty",
+            action="store_true",
+            help="Only run when no users exist (e.g. fresh deploy). Use in Render startCommand to auto-create demo users once.",
+        )
+
     def handle(self, *args, **options):
+        if options.get("run_if_empty") and User.objects.exists():
+            self.stdout.write("Users already exist; skipping (--run-if-empty).")
+            return
+
         # 1. Ensure a school exists (needed for localhost login)
         school = School.objects.first()
         if not school:
