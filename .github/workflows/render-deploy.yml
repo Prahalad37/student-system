@@ -1,0 +1,26 @@
+# Optional: Trigger a Render deploy on push to main via Render CLI.
+# If Render already has "Auto-Deploy" on Git push enabled, this can cause duplicate deploys — then disable this workflow or disable Auto-Deploy in Render.
+#
+# Repo secrets required: RENDER_API_KEY, RENDER_SERVICE_ID
+name: Render CLI Deploy
+run-name: Deploy via Render CLI
+on:
+  push:
+    branches:
+      - main
+jobs:
+  Deploy-Render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Render CLI
+        run: |
+          RENDER_VER=2.7.1
+          curl -sL "https://github.com/render-oss/cli/releases/download/v${RENDER_VER}/cli_${RENDER_VER}_linux_amd64.zip" -o render.zip
+          unzip -o render.zip
+          sudo install -m 755 "cli_${RENDER_VER}_linux_amd64/render" /usr/local/bin/render
+      - name: Trigger deploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          CI: true
+        run: |
+          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --wait --output json --confirm

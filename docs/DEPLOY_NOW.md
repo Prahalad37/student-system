@@ -151,6 +151,27 @@ Pehli baar sirf jab koi user na ho tab run karna ho to: `... setup_login_users -
 
 ---
 
+## Render CLI automatic workflow
+
+Workspace/service select karne ka prompt na aaye — scripts se seedha deploy trigger (aur optional login users reset).
+
+**One-time setup:**
+
+1. **API key:** Render Dashboard → Account Settings → API Keys → Create. Export: `RENDER_API_KEY=rnd_xxx`
+2. **Service ID:** school-erp ka ID chahiye. Get: `render services --output json --confirm` (after `render login`) ya Dashboard → school-erp → URL me `srv-xxxx`. Export: `RENDER_SERVICE_ID=srv-xxx`
+3. (Optional) Pehli baar `render login` aur `render workspace set` chala lo — local config me workspace save ho jayega; uske baad scripts API key + service ID use karke bina prompt chalengi.
+
+**Commands (project root = mysite):**
+
+| Goal | Command |
+|------|--------|
+| Deploy only | `export RENDER_API_KEY=... RENDER_SERVICE_ID=...` then `./scripts/render_deploy.sh` |
+| Deploy + reset demo users | Same env + `export DATABASE_URL=...` (Render External URL) then `./scripts/render_workflow.sh` |
+
+`.env` me bhi ye vars daal sakte ho; scripts env se read karti hain.
+
+---
+
 ## Custom Domain (Optional)
 
 1. Render Dashboard → Your Service → **Settings** → **Custom Domains**
