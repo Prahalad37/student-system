@@ -10,9 +10,11 @@
                 <h6 class="m-0 font-weight-bold">
                     <i class="fas fa-edit mr-2"></i>Upload Exam Marks
                 </h6>
-                <a href="{% url 'report_card' %}" class="btn btn-sm btn-light text-primary font-weight-bold shadow-sm">
+                <a href="{% url 'report_card' %}" class="btn btn-sm btn-light text-primary font-weight-bold shadow-sm mr-1">
                     <i class="fas fa-list mr-1"></i> View All Results
                 </a>
+                <a href="{% url 'subject_list' %}" class="btn btn-sm btn-outline-secondary">Subjects</a>
+                <a href="{% url 'exam_type_list' %}" class="btn btn-sm btn-outline-secondary">Exam types</a>
             </div>
 
             <div class="card-body p-5">
@@ -34,23 +36,35 @@
                             </div>
                             <div class="col-md-5">
                                 <label class="small font-weight-bold text-dark text-uppercase">Exam Name</label>
-                                <select name="exam_name" class="form-control bg-white text-dark" required>
-                                    <option value="Unit Test 1">Unit Test 1</option>
-                                    <option value="Mid-Term">Mid-Term Exam</option>
-                                    <option value="Unit Test 2">Unit Test 2</option>
-                                    <option value="Final Exam">Final Exam</option>
+                                <input type="text" name="exam_name" class="form-control bg-white text-dark" value="Unit Test 1" placeholder="e.g. Mid-Term" required>
+                            </div>
+                        </div>
+                        {% if exam_types %}
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <label class="small font-weight-bold text-dark text-uppercase">Exam Type</label>
+                                <select name="exam_type_id" class="form-control bg-white text-dark">
+                                    <option value="">— Select —</option>
+                                    {% for et in exam_types %}<option value="{{ et.id }}">{{ et.name }}</option>{% endfor %}
                                 </select>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
 
                     <h6 class="font-weight-bold text-primary mb-3">Subjects (Out of 100)</h6>
                     <div class="row">
-                        <div class="col-md-4 mb-3"><label>Mathematics</label><input type="number" name="maths" class="form-control" min="0" max="100" required></div>
-                        <div class="col-md-4 mb-3"><label>Physics</label><input type="number" name="physics" class="form-control" min="0" max="100" required></div>
-                        <div class="col-md-4 mb-3"><label>Chemistry</label><input type="number" name="chemistry" class="form-control" min="0" max="100" required></div>
-                        <div class="col-md-6 mb-3"><label>English</label><input type="number" name="english" class="form-control" min="0" max="100" required></div>
-                        <div class="col-md-6 mb-3"><label>Computer Science</label><input type="number" name="computer" class="form-control" min="0" max="100" required></div>
+                        {% if subjects %}
+                            {% for s in subjects %}
+                            <div class="col-md-4 mb-3"><label>{{ s.name }}</label><input type="number" name="subject_{{ s.id }}" class="form-control" min="0" max="100" value="0"></div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-md-4 mb-3"><label>Mathematics</label><input type="number" name="maths" class="form-control" min="0" max="100" value="0"></div>
+                            <div class="col-md-4 mb-3"><label>Physics</label><input type="number" name="physics" class="form-control" min="0" max="100" value="0"></div>
+                            <div class="col-md-4 mb-3"><label>Chemistry</label><input type="number" name="chemistry" class="form-control" min="0" max="100" value="0"></div>
+                            <div class="col-md-6 mb-3"><label>English</label><input type="number" name="english" class="form-control" min="0" max="100" value="0"></div>
+                            <div class="col-md-6 mb-3"><label>Computer Science</label><input type="number" name="computer" class="form-control" min="0" max="100" value="0"></div>
+                        {% endif %}
                     </div>
 
                     <div class="text-right mt-3">

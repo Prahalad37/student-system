@@ -1,0 +1,30 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}{% if enquiry %}Edit enquiry{% else %}Add enquiry{% endif %}{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{% if enquiry %}Edit enquiry{% else %}Add enquiry{% endif %}</h1>
+    <a href="{% url 'enquiry_list' %}" class="btn btn-secondary">Back</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group"><label>Name *</label><input type="text" name="name" class="form-control" value="{{ enquiry.name|default:'' }}" required></div>
+            <div class="form-group"><label>Phone *</label><input type="text" name="phone" class="form-control" value="{{ enquiry.phone|default:'' }}" required></div>
+            <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" value="{{ enquiry.email|default:'' }}"></div>
+            <div class="form-group"><label>Class applying for</label><input type="text" name="class_applying" class="form-control" value="{{ enquiry.class_applying|default:'' }}" placeholder="e.g. 5"></div>
+            <div class="form-group"><label>Source</label><input type="text" name="source" class="form-control" value="{{ enquiry.source|default:'' }}" placeholder="e.g. Website, Referral"></div>
+            {% if enquiry %}
+            <div class="form-group"><label>Status</label><select name="status" class="form-control">{% for val, label in status_choices %}<option value="{{ val }}" {% if enquiry.status == val %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+            {% endif %}
+            <div class="form-group"><label>Notes</label><textarea name="notes" class="form-control" rows="2">{{ enquiry.notes|default:'' }}</textarea></div>
+            <button type="submit" class="btn btn-primary">{% if enquiry %}Save{% else %}Add enquiry{% endif %}</button>
+            <a href="{% url 'enquiry_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

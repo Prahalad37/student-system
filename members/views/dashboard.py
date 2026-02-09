@@ -11,14 +11,23 @@ from ..utils.role_guards import require_roles
 from ..utils.roles import get_user_role
 
 
+def landing(request):
+    """Landing page for anonymous visitors. Logged-in users are redirected to dashboard."""
+    if request.user.is_authenticated:
+        return redirect("index")
+    return render(request, "landing.html")
+
+
 @login_required
-@require_roles("OWNER", "ADMIN", "ACCOUNTANT", "TEACHER", "STAFF", "STUDENT")
+@require_roles("OWNER", "ADMIN", "ACCOUNTANT", "TEACHER", "STAFF", "STUDENT", "PARENT")
 def index(request):
     school = getattr(request, "school", None)
     if school is None:
         return redirect("/admin/")
     if get_user_role(request) == "STUDENT":
         return redirect("student_portal")
+    if get_user_role(request) == "PARENT":
+        return redirect("parent_dashboard")
     total_students = Member.objects.filter(school=school).count()
     new_admissions = Member.objects.filter(
         school=school,
@@ -41,6 +50,19 @@ def index(request):
     female_count = Member.objects.filter(school=school, gender="Female").count()
     recent_admissions = Member.objects.filter(school=school).order_by("-joined_date", "-id")[:5]
 
+    profile = getattr(request.user, "userprofile", None)
+    show_getting_started = (
+        profile
+        and getattr(profile, "getting_started_dismissed", False) is False
+        and get_user_role(request) in ("OWNER", "ADMIN")
+    )
+    getting_started_items = [
+        {"url_name": "school_settings", "label": "School settings"},
+        {"url_name": "academic_year_list", "label": "Add academic year"},
+        {"url_name": "school_user_list", "label": "Manage users"},
+        {"url_name": "all_students", "label": "Add students"},
+    ]
+
     context = {
         "school": school,
         "total_students": total_students,
@@ -53,6 +75,8 @@ def index(request):
         "recent_admissions": recent_admissions,
         "students_on_bus": StudentTransport.objects.filter(school=school).count(),
         "books_issued": LibraryTransaction.objects.filter(school=school, status="Issued").count(),
+        "show_getting_started": show_getting_started,
+        "getting_started_items": getting_started_items,
     }
     return render(request, "index.html", context)
 

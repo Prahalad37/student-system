@@ -1,3 +1,4 @@
+{% comment %}Legacy: no view currently renders this template. The main student view uses student_profile.html. Remove or repurpose if unused.{% endcomment %}
 {% extends "master.html" %}
 
 {% block title %}
@@ -12,7 +13,7 @@
         <div class="card-body">
             <h3 class="card-title">{{ mymember.firstname }} {{ mymember.lastname }}</h3>
             <p>ID: {{ mymember.id }}</p>
-            <a href="/members/" class="btn btn-primary">Back to List</a>
+            <a href="{% url 'all_students' %}" class="btn btn-primary">Back to List</a>
         </div>
     </div>
 {% endblock %}

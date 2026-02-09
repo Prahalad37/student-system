@@ -23,6 +23,15 @@
     </div>
 </div>
 
+<div class="mb-3">
+    <a href="{% url 'fee_installments' %}" class="btn btn-sm btn-outline-primary mr-1">Installments</a>
+    <a href="{% url 'fee_discounts' %}" class="btn btn-sm btn-outline-primary mr-1">Discounts</a>
+    <a href="{% url 'fee_concessions' %}" class="btn btn-sm btn-outline-primary mr-1">Concessions</a>
+    <a href="{% url 'fee_late_fee_policy' %}" class="btn btn-sm btn-outline-primary mr-1">Late fee policy</a>
+    <a href="{% url 'fee_receipts' %}" class="btn btn-sm btn-outline-primary mr-1">Receipts</a>
+    <a href="{% url 'fee_refunds' %}" class="btn btn-sm btn-outline-primary">Refunds</a>
+</div>
+
 <div class="card shadow-sm mb-4 border-0 border-left-primary">
     <div class="card-body py-3">
         <form method="GET" class="row align-items-end">

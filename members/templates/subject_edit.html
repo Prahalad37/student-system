@@ -1,0 +1,21 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Edit subject{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Edit subject</h1>
+    <a href="{% url 'subject_list' %}" class="btn btn-secondary">Back</a>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group"><label>Name</label><input type="text" name="name" class="form-control" value="{{ subject.name }}" required></div>
+            <div class="form-group"><label>Code</label><input type="text" name="code" class="form-control" value="{{ subject.code|default:'' }}"></div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ def role_flags(request):
     """
     role = get_user_role(request)
     role_display = {"OWNER": "Owner", "ADMIN": "Admin", "ACCOUNTANT": "Accountant",
-                    "TEACHER": "Teacher", "STAFF": "Staff", "STUDENT": "Student"}.get(role, role or "User")
+                    "TEACHER": "Teacher", "STAFF": "Staff", "STUDENT": "Student", "PARENT": "Parent"}.get(role, role or "User")
 
     return {
         "user_role_display": role_display,
@@ -18,6 +18,7 @@ def role_flags(request):
         "is_teacher": role == "TEACHER",
         "is_staff": role == "STAFF",
         "is_student": role == "STUDENT",
+        "is_parent": role == "PARENT",
 
         # Composite helpers (UX-focused)
         "can_manage_staff": role in ("OWNER", "ADMIN"),

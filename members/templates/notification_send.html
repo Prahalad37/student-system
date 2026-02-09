@@ -1,0 +1,48 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Send notification{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-bell text-primary mr-2"></i>Send notification</h1>
+    <a href="{% url 'index' %}" class="btn btn-secondary">Back to dashboard</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Title *</label>
+                <input type="text" name="title" class="form-control" required placeholder="e.g. Fee reminder">
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea name="message" class="form-control" rows="3" placeholder="Optional message"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Send to</label>
+                <select name="target" class="form-control" id="id_target">
+                    <option value="all">All staff & parents</option>
+                    <option value="class">Parents of a class</option>
+                </select>
+            </div>
+            <div class="form-group" id="class_group" style="display:none;">
+                <label>Class</label>
+                <select name="class_id" class="form-control">
+                    <option value="">— Select —</option>
+                    {% for c in classes %}<option value="{{ c.id }}">{{ c.name }} - {{ c.section }}</option>{% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+            <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+<script>
+document.getElementById('id_target').addEventListener('change', function() {
+    document.getElementById('class_group').style.display = this.value === 'class' ? 'block' : 'none';
+});
+</script>
+{% endblock %}

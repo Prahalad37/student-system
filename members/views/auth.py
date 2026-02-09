@@ -1,19 +1,21 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from ..utils import get_current_school
 from ..utils.domain import extract_subdomain
 
 
 def _get_login_redirect_url(user):
-    """Redirect STUDENT to portal, others to index."""
+    """Redirect STUDENT to portal, others to dashboard (index)."""
     if getattr(user, "is_superuser", False):
-        return "/"
+        return reverse("index")
     profile = getattr(user, "userprofile", None)
     if profile and profile.role == "STUDENT":
         return "/student/"
-    return "/"
+    return reverse("index")
 
 
 @login_required
@@ -66,3 +68,8 @@ class TenantLoginView(LoginView):
 
     def get_success_url(self):
         return _get_login_redirect_url(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_demo_logins"] = getattr(settings, "DEBUG", False)
+        return context

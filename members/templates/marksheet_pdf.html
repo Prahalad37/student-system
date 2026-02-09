@@ -87,38 +87,20 @@
             </tr>
         </thead>
         <tbody>
-            {% with subjects="Mathematics,Physics,Chemistry,English,Computer Science" %}
+            {% for sub_name, marks_obtained in subject_marks_dict.items %}
             <tr>
-                <td>Mathematics</td>
+                <td>{{ sub_name }}</td>
                 <td class="text-center">100</td>
-                <td class="text-center">{{ score.maths }}</td>
-                <td class="text-center grade-cell">{% if score.maths >= 91 %}A1{% elif score.maths >= 81 %}A2{% elif score.maths >= 71 %}B1{% elif score.maths >= 61 %}B2{% elif score.maths >= 51 %}C1{% elif score.maths >= 41 %}C2{% elif score.maths >= 33 %}D{% else %}E{% endif %}</td>
+                <td class="text-center">{{ marks_obtained }}</td>
+                <td class="text-center grade-cell">{% if marks_obtained >= 91 %}A1{% elif marks_obtained >= 81 %}A2{% elif marks_obtained >= 71 %}B1{% elif marks_obtained >= 61 %}B2{% elif marks_obtained >= 51 %}C1{% elif marks_obtained >= 41 %}C2{% elif marks_obtained >= 33 %}D{% else %}E{% endif %}</td>
             </tr>
-            <tr>
-                <td>Physics</td>
-                <td class="text-center">100</td>
-                <td class="text-center">{{ score.physics }}</td>
-                <td class="text-center grade-cell">{% if score.physics >= 91 %}A1{% elif score.physics >= 81 %}A2{% elif score.physics >= 71 %}B1{% elif score.physics >= 61 %}B2{% elif score.physics >= 51 %}C1{% elif score.physics >= 41 %}C2{% elif score.physics >= 33 %}D{% else %}E{% endif %}</td>
-            </tr>
-            <tr>
-                <td>Chemistry</td>
-                <td class="text-center">100</td>
-                <td class="text-center">{{ score.chemistry }}</td>
-                <td class="text-center grade-cell">{% if score.chemistry >= 91 %}A1{% elif score.chemistry >= 81 %}A2{% elif score.chemistry >= 71 %}B1{% elif score.chemistry >= 61 %}B2{% elif score.chemistry >= 51 %}C1{% elif score.chemistry >= 41 %}C2{% elif score.chemistry >= 33 %}D{% else %}E{% endif %}</td>
-            </tr>
-            <tr>
-                <td>English</td>
-                <td class="text-center">100</td>
-                <td class="text-center">{{ score.english }}</td>
-                <td class="text-center grade-cell">{% if score.english >= 91 %}A1{% elif score.english >= 81 %}A2{% elif score.english >= 71 %}B1{% elif score.english >= 61 %}B2{% elif score.english >= 51 %}C1{% elif score.english >= 41 %}C2{% elif score.english >= 33 %}D{% else %}E{% endif %}</td>
-            </tr>
-            <tr>
-                <td>Computer Science</td>
-                <td class="text-center">100</td>
-                <td class="text-center">{{ score.computer }}</td>
-                <td class="text-center grade-cell">{% if score.computer >= 91 %}A1{% elif score.computer >= 81 %}A2{% elif score.computer >= 71 %}B1{% elif score.computer >= 61 %}B2{% elif score.computer >= 51 %}C1{% elif score.computer >= 41 %}C2{% elif score.computer >= 33 %}D{% else %}E{% endif %}</td>
-            </tr>
-            {% endwith %}
+            {% empty %}
+            <tr><td>Mathematics</td><td class="text-center">100</td><td class="text-center">{{ score.maths }}</td><td class="text-center grade-cell">—</td></tr>
+            <tr><td>Physics</td><td class="text-center">100</td><td class="text-center">{{ score.physics }}</td><td class="text-center grade-cell">—</td></tr>
+            <tr><td>Chemistry</td><td class="text-center">100</td><td class="text-center">{{ score.chemistry }}</td><td class="text-center grade-cell">—</td></tr>
+            <tr><td>English</td><td class="text-center">100</td><td class="text-center">{{ score.english }}</td><td class="text-center grade-cell">—</td></tr>
+            <tr><td>Computer Science</td><td class="text-center">100</td><td class="text-center">{{ score.computer }}</td><td class="text-center grade-cell">—</td></tr>
+            {% endfor %}
         </tbody>
     </table>
 

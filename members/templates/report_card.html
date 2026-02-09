@@ -41,11 +41,15 @@
                     <tr>
                         <th class="border-0 pl-4">Student & Class</th>
                         <th class="border-0">Examination</th>
+                        {% for s in subjects %}
+                        <th class="border-0 text-center">{{ s.name|truncatechars:8 }}</th>
+                        {% empty %}
                         <th class="border-0 text-center">Math</th>
                         <th class="border-0 text-center">Phy</th>
                         <th class="border-0 text-center">Che</th>
                         <th class="border-0 text-center">Eng</th>
                         <th class="border-0 text-center">Comp</th>
+                        {% endfor %}
                         <th class="border-0 text-center bg-gray-100">Total (%)</th>
                         <th class="border-0 text-center">Status</th>
                         <th class="border-0 text-center">Action</th>
@@ -61,28 +65,42 @@
                         <td class="align-middle">
                             <span class="text-primary font-weight-bold small">{{ score.exam_name }}</span>
                         </td>
-                        
+                        {% if subjects %}
+                            {% for name, mark in score.marks_list %}
+                            <td class="text-center align-middle">{{ mark }}</td>
+                            {% endfor %}
+                        {% else %}
                         <td class="text-center align-middle">{{ score.maths }}</td>
                         <td class="text-center align-middle">{{ score.physics }}</td>
                         <td class="text-center align-middle">{{ score.chemistry }}</td>
                         <td class="text-center align-middle">{{ score.english }}</td>
                         <td class="text-center align-middle">{{ score.computer }}</td>
-                        
+                        {% endif %}
                         <td class="text-center align-middle bg-gray-100 font-weight-bold">
-                            {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
+                            {% if subjects %}
+                                <div class="text-dark">{{ score.total_marks }} <span class="text-muted small">/{{ subjects|length }}00</span></div>
+                                <div class="text-info small mt-n1">{{ score.percentage }}%</div>
+                            {% else %}
+                                {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
                                 <div class="text-dark">{{ total }} <span class="text-muted small">/500</span></div>
                                 <div class="text-info small mt-n1">{{ total|floatformat:0 }}%</div>
-                            {% endwith %}
+                                {% endwith %}
+                            {% endif %}
                         </td>
 
                         <td class="text-center align-middle">
-                            {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
+                            {% if subjects %}
+                                {% if score.passed %}
+                                <span class="badge badge-success">PASS</span>{% else %}<span class="badge badge-danger">FAIL</span>{% endif %}
+                            {% else %}
+                                {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
                                 {% if total >= 165 %}
                                     <span class="badge badge-success px-3 py-1 shadow-sm"><i class="fas fa-check mr-1 small"></i>PASS</span>
                                 {% else %}
                                     <span class="badge badge-danger px-3 py-1 shadow-sm"><i class="fas fa-times mr-1 small"></i>FAIL</span>
                                 {% endif %}
-                            {% endwith %}
+                                {% endwith %}
+                            {% endif %}
                         </td>
 
                         <td class="text-center align-middle">

@@ -1,0 +1,49 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Student concessions{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-hand-holding-heart text-primary mr-2"></i>Student concessions</h1>
+    <a href="{% url 'fee_discounts' %}" class="btn btn-secondary">Back to Discounts</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Assign discount to student</h6></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add">
+            <select name="student_id" class="form-control d-inline-block w-auto mr-2" required>
+                <option value="">Select student</option>
+                {% for s in students %}<option value="{{ s.id }}">{{ s.firstname }} {{ s.lastname }} ({{ s.student_class|default:"—" }})</option>{% endfor %}
+            </select>
+            <select name="discount_id" class="form-control d-inline-block w-auto mr-2" required>
+                <option value="">Select discount</option>
+                {% for d in discounts %}<option value="{{ d.id }}">{{ d.name }} ({{ d.discount_type }} {{ d.value }})</option>{% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Assign</button>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light"><tr><th>Student</th><th>Discount</th><th>Active</th></tr></thead>
+            <tbody>
+                {% for c in concessions %}
+                <tr>
+                    <td>{{ c.student.firstname }} {{ c.student.lastname }}</td>
+                    <td>{{ c.discount.name }}</td>
+                    <td>{% if c.is_active %}<span class="badge badge-success">Yes</span>{% else %}No{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="text-center py-4 text-muted">No concessions assigned.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

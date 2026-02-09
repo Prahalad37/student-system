@@ -1,0 +1,48 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Edit discount{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Edit discount: {{ discount.name }}</h1>
+    <a href="{% url 'fee_discounts' %}" class="btn btn-secondary">Back</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" class="form-control" value="{{ discount.name }}" required>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select name="discount_type" class="form-control">
+                    <option value="Fixed" {% if discount.discount_type == 'Fixed' %}selected{% endif %}>Fixed</option>
+                    <option value="Percent" {% if discount.discount_type == 'Percent' %}selected{% endif %}>Percent</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Value</label>
+                <input type="number" name="value" class="form-control" value="{{ discount.value }}" step="0.01" min="0">
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="is_concession" id="id_concession" value="1" {% if discount.is_concession %}checked{% endif %}>
+                    <label class="custom-control-label" for="id_concession">Concession</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="is_active" id="id_active" value="1" {% if discount.is_active %}checked{% endif %}>
+                    <label class="custom-control-label" for="id_active">Active</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'fee_discounts' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

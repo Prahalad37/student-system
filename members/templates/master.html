@@ -88,7 +88,7 @@
         <ul class="navbar-nav bg-gradient-{{ branding.THEME_COLOR|default:'primary' }} sidebar sidebar-dark accordion"
             id="accordionSidebar">
 
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% if is_student %}{% url 'student_portal' %}{% else %}{% url 'index' %}{% endif %}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% if is_student %}{% url 'student_portal' %}{% elif is_parent %}{% url 'parent_dashboard' %}{% else %}{% url 'index' %}{% endif %}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     {% if branding.SCHOOL_LOGO %}
                     <img src="{{ branding.SCHOOL_LOGO }}" alt="Logo" style="width: 40px; height: 40px;">
@@ -103,11 +103,11 @@
 
             {% block sidebar_nav %}
             <li class="nav-item active">
-                <a class="nav-link" href="{% url 'index' %}">
+                <a class="nav-link" href="{% if is_parent %}{% url 'parent_dashboard' %}{% else %}{% url 'index' %}{% endif %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Command Center</span></a>
+                    <span>{% if is_parent %}Parent{% else %}Command Center{% endif %}</span></a>
             </li>
-
+            {% if not is_parent %}
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Academic Operations</div>
 
@@ -121,6 +121,7 @@
                         <h6 class="collapse-header">Directory:</h6>
                         <a class="collapse-item" href="{% url 'all_students' %}">View All Students</a>
                         <a class="collapse-item" href="{% url 'add' %}">New Admission</a>
+                        <a class="collapse-item" href="{% url 'enquiry_list' %}">Enquiries</a>
                     </div>
                 </div>
             </li>
@@ -132,7 +133,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="/report_card/">
+                <a class="nav-link" href="{% url 'report_card' %}">
                     <i class="fas fa-file-alt menu-icon"></i>
                     <span class="menu-title">Exams & Reports</span>
                 </a>
@@ -142,6 +143,13 @@
                 <a class="nav-link" href="{% url 'learning_hub' %}">
                     <i class="fas fa-fw fa-graduation-cap"></i>
                     <span>Learning Hub</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'timetable_view' %}">
+                    <i class="fas fa-fw fa-calendar-alt"></i>
+                    <span>Timetable</span>
                 </a>
             </li>
 
@@ -181,6 +189,7 @@
             </li>
             {% endif %}
 
+            {% endif %}
             {% if request.user.is_superuser %}
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Platform Admin</div>
@@ -215,6 +224,27 @@
                     </button>
 
                     <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow mr-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-toggle="dropdown">
+                                <i class="fas fa-bell fa-fw"></i>
+                                {% if unread_notification_count %}<span class="badge badge-danger badge-counter">{{ unread_notification_count }}</span>{% endif %}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="notificationDropdown">
+                                <h6 class="dropdown-header">Notifications</h6>
+                                {% for n in recent_notifications %}
+                                <a class="dropdown-item d-flex align-items-center {% if not n.read %}bg-light{% endif %}" href="{% url 'notification_mark_read' n.id %}?next={{ request.path }}">
+                                    <div class="mr-2"><i class="fas fa-info-circle text-primary"></i></div>
+                                    <div><span class="small font-weight-bold">{{ n.title }}</span><br><span class="text-muted small">{{ n.message|truncatewords:10 }}</span></div>
+                                </a>
+                                {% empty %}
+                                <span class="dropdown-item text-muted small">No notifications</span>
+                                {% endfor %}
+                                {% if recent_notifications %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item small text-center" href="{% url 'notification_mark_all_read' %}?next={{ request.path }}">Mark all read</a>
+                                {% endif %}
+                            </div>
+                        </li>
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

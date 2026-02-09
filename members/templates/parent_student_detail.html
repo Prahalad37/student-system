@@ -1,0 +1,82 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}{{ student.firstname }} {{ student.lastname }}{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{{ student.firstname }} {{ student.lastname }}</h1>
+    <a href="{% url 'parent_dashboard' %}" class="btn btn-secondary">Back to dashboard</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-2"><h6 class="m-0 font-weight-bold">Attendance (last 30 days)</h6></div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-hover mb-0">
+                    <thead><tr><th>Date</th><th>Status</th></tr></thead>
+                    <tbody>
+                        {% for r in attendance_records %}
+                        <tr><td>{{ r.date }}</td><td><span class="badge badge-{% if r.status == 'Present' %}success{% else %}danger{% endif %}">{{ r.status }}</span></td></tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-center text-muted py-3">No records</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-2"><h6 class="m-0 font-weight-bold">Fee</h6></div>
+            <div class="card-body">
+                <p class="mb-2">Balance due: <strong class="text-danger">₹{{ fee_balance }}</strong></p>
+                <table class="table table-sm table-hover mb-0">
+                    <thead><tr><th>Date</th><th>Amount</th><th>Mode</th></tr></thead>
+                    <tbody>
+                        {% for t in fee_transactions %}
+                        <tr><td>{{ t.payment_date }}</td><td>₹{{ t.amount_paid }}</td><td>{{ t.payment_mode }}</td></tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-center text-muted py-3">No payments</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-2"><h6 class="m-0 font-weight-bold">Report cards</h6></div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light"><tr><th>Exam</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody>
+                {% for sc in scores %}
+                <tr>
+                    <td>{{ sc.exam_name }}</td>
+                    <td>{{ sc.created_at|date:"d M Y" }}</td>
+                    <td><a href="{% url 'marksheet_pdf' sc.id %}" class="btn btn-sm btn-outline-danger">PDF</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="text-center text-muted py-3">No exams yet</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if materials %}
+<div class="card shadow mb-4">
+    <div class="card-header py-2"><h6 class="m-0 font-weight-bold">Study materials</h6></div>
+    <div class="card-body">
+        <ul class="list-unstyled mb-0">
+            {% for m in materials %}
+            <li class="mb-2"><a href="{{ m.pdf_file.url|default:m.video_link|default:'#' }}" target="_blank">{{ m.title }}</a> <span class="text-muted small">({{ m.subject }})</span></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -157,6 +157,7 @@ ROLE_CHOICES = [
     ("TEACHER", "TEACHER"),
     ("STAFF", "STAFF"),
     ("STUDENT", "STUDENT"),
+    ("PARENT", "PARENT"),
 ]
 
 
@@ -166,6 +167,8 @@ class UserProfile(models.Model):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="OWNER")
     member = models.ForeignKey("Member", on_delete=models.SET_NULL, null=True, blank=True,
                                related_name="user_profiles", help_text="Linked student when role=STUDENT")
+    guardian_of = models.ManyToManyField("Member", related_name="guardians", blank=True, help_text="Linked students when role=PARENT")
+    getting_started_dismissed = models.BooleanField(default=False, help_text="Dismiss 'getting started' banner on dashboard")
 
 
 @receiver(post_save, sender=User)
@@ -275,17 +278,122 @@ class Staff(models.Model):
     join_date = models.DateField()
     is_active = models.BooleanField(default=True)
 
+class Subject(models.Model):
+    """Configurable subject per school (e.g. Maths, Physics)."""
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=20, blank=True)
+
+    class Meta:
+        unique_together = ('school', 'name')
+
+    def __str__(self):
+        return f"{self.name} ({self.code or '-'})"
+
+
+class ExamType(models.Model):
+    """Exam type per school (e.g. Mid-term, Final)."""
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+# --- Notifications (Phase 2.4) ---
+
+
+class Notification(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="school_notifications")
+    title = models.CharField(max_length=200)
+    message = models.TextField(blank=True)
+    read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.title} ({self.user.username})"
+
+
+# --- Admission Enquiry / CRM (Phase 2.2) ---
+
+
+class AdmissionEnquiry(models.Model):
+    STATUS_CHOICES = [
+        ("New", "New"),
+        ("Contacted", "Contacted"),
+        ("Visited", "Visited"),
+        ("Admitted", "Admitted"),
+        ("Lost", "Lost"),
+    ]
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField(blank=True, null=True)
+    class_applying = models.CharField(max_length=50, blank=True, help_text="Class applying for")
+    source = models.CharField(max_length=100, blank=True, help_text="e.g. Website, Referral")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="New")
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name_plural = "Admission enquiries"
+
+    def __str__(self):
+        return f"{self.name} ({self.status})"
+
+
+# --- Timetable (Phase 2.1) ---
+
+
+class TimeSlot(models.Model):
+    """Period/slot per school (e.g. 9:00-9:45)."""
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    order = models.PositiveSmallIntegerField(default=0, help_text="Display order")
+
+    class Meta:
+        ordering = ('order', 'start_time')
+
+    def __str__(self):
+        return f"{self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}"
+
+
+class TimetableEntry(models.Model):
+    """One cell: class + subject + teacher + day + slot."""
+    DAYS = [(i, name) for i, name in enumerate(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], 1)]
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    class_room = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    staff = models.ForeignKey('Staff', on_delete=models.SET_NULL, null=True, blank=True, help_text="Teacher")
+    day_of_week = models.PositiveSmallIntegerField(choices=DAYS)
+    time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('school', 'class_room', 'day_of_week', 'time_slot')
+        verbose_name_plural = 'Timetable entries'
+
+    def __str__(self):
+        return f"{self.class_room} {self.get_day_of_week_display()} {self.time_slot} - {self.subject}"
+
+
 class ExamScore(models.Model):
     student = models.ForeignKey(Member, on_delete=models.CASCADE)
     exam_name = models.CharField(max_length=100)
+    exam_type = models.ForeignKey(ExamType, on_delete=models.SET_NULL, null=True, blank=True)
     maths = models.IntegerField(default=0)
     physics = models.IntegerField(default=0)
     chemistry = models.IntegerField(default=0)
     english = models.IntegerField(default=0)
     computer = models.IntegerField(default=0)
+    subject_marks = models.JSONField(null=True, blank=True, help_text='e.g. {"Maths": 85, "Physics": 90}')
     created_at = models.DateTimeField(auto_now_add=True)
     generated_report = models.FileField(upload_to='reports/', null=True, blank=True)
-    # Aap naye subjects bhi add kar sakte hain yahan
 
 class Attendance(models.Model):
     student = models.ForeignKey(Member, on_delete=models.CASCADE)

@@ -1,0 +1,59 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Refund requests{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-undo text-warning mr-2"></i>Refund requests</h1>
+    <a href="{% url 'fee_receipts' %}" class="btn btn-secondary">Back to Receipts</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th>Created</th>
+                    <th>Student</th>
+                    <th>Amount</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    {% if is_owner or is_admin %}
+                    <th class="text-right">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for ref in refunds %}
+                <tr>
+                    <td>{{ ref.created_at|date:"d M Y H:i" }}</td>
+                    <td>{{ ref.receipt.student.firstname }} {{ ref.receipt.student.lastname }}</td>
+                    <td>₹{{ ref.amount }}</td>
+                    <td>{{ ref.reason|default:"—" }}</td>
+                    <td><span class="badge badge-{% if ref.status == 'Processed' %}success{% elif ref.status == 'Rejected' %}danger{% else %}warning{% endif %}">{{ ref.status }}</span></td>
+                    {% if is_owner or is_admin %}
+                    <td class="text-right">
+                        {% if ref.status == 'Initiated' %}
+                        <form method="post" action="{% url 'fee_refund_process' ref.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="Processed">
+                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                        </form>
+                        <form method="post" action="{% url 'fee_refund_process' ref.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="Rejected">
+                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center py-4 text-muted">No refund requests.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

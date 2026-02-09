@@ -48,6 +48,20 @@
                 </form>
             </div>
         </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Admin</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><a href="{% url 'school_user_list' %}"><i class="fas fa-users-cog mr-2"></i>Manage users</a></li>
+                    <li class="mb-2"><a href="{% url 'academic_year_list' %}"><i class="fas fa-calendar-alt mr-2"></i>Academic years</a></li>
+                    {% if is_owner %}
+                    <li><a href="{% url 'school_backup_json' %}"><i class="fas fa-download mr-2"></i>Download JSON backup</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

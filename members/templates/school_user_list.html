@@ -1,0 +1,67 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Manage users{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb bg-transparent py-2 mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'school_settings' %}">School Settings</a></li>
+        <li class="breadcrumb-item active">Manage users</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800 font-weight-bold"><i class="fas fa-users-cog text-primary mr-2"></i>Manage users</h1>
+    <a href="{% url 'school_user_add' %}" class="btn btn-primary shadow-sm"><i class="fas fa-user-plus mr-2"></i>Add user</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">School users</h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="pl-4">Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Active</th>
+                        <th>Last login</th>
+                        <th class="text-right pr-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in profiles %}
+                    <tr>
+                        <td class="pl-4 font-weight-bold">{{ p.user.username }}</td>
+                        <td>{{ p.user.email|default:"—" }}</td>
+                        <td><span class="badge badge-info">{{ p.role }}</span></td>
+                        <td>{% if p.user.is_active %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</td>
+                        <td>{{ p.user.last_login|date:"Y-m-d H:i"|default:"—" }}</td>
+                        <td class="text-right pr-4">
+                            <a href="{% url 'school_user_edit' p.user.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <form method="post" action="{% url 'school_user_deactivate' p.user.id %}" class="d-inline" onsubmit="return confirm('{% if p.user.is_active %}Deactivate this user?{% else %}Activate this user?{% endif %}');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-{% if p.user.is_active %}warning{% else %}success{% endif %}">
+                                    {% if p.user.is_active %}Deactivate{% else %}Activate{% endif %}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No users yet. <a href="{% url 'school_user_add' %}">Add a user</a>.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

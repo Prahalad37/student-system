@@ -153,10 +153,37 @@
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Dashboard</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm rounded-pill px-3">
-        <i class="fas fa-download fa-sm text-white-50 mr-2"></i> Report
-    </a>
+    <div>
+        {% if is_owner or is_admin %}
+        <a href="{% url 'notification_send' %}" class="d-none d-sm-inline-block btn btn-sm btn-outline-primary shadow-sm rounded-pill px-3 mr-2">
+            <i class="fas fa-bell fa-sm mr-2"></i> Send notification
+        </a>
+        {% endif %}
+        <a href="{% url 'report_card' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm rounded-pill px-3">
+            <i class="fas fa-file-alt fa-sm text-white-50 mr-2"></i> Report
+        </a>
+    </div>
 </div>
+
+{% if show_getting_started and getting_started_items %}
+<div class="card border-left-primary shadow mb-4">
+    <div class="card-header py-2 d-flex align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-rocket mr-2"></i>Getting started</h6>
+        <form method="post" action="{% url 'dismiss_getting_started' %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Dismiss</button>
+        </form>
+    </div>
+    <div class="card-body py-3">
+        <p class="text-muted small mb-2">Set up your school in a few steps:</p>
+        <ul class="mb-0 pl-3">
+            {% for item in getting_started_items %}
+            <li class="mb-1"><a href="{% url item.url_name %}">{{ item.label }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
 
 <div class="row">
 
@@ -367,7 +394,7 @@
 <div class="modal fade" id="addNoticeModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content border-0">
-            <div class="modal-header bg-danger text-white">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Post Notice</h5><button class="close text-white"
                     data-dismiss="modal">&times;</button>
             </div>
@@ -377,7 +404,7 @@
                     <input type="text" name="title" class="form-control mb-2" placeholder="Title" required>
                     <textarea name="message" class="form-control" rows="3" placeholder="Message" required></textarea>
                 </div>
-                <div class="modal-footer"><button type="submit" class="btn btn-danger btn-block">Post</button></div>
+                <div class="modal-footer"><button type="submit" class="btn btn-primary btn-block">Post</button></div>
             </form>
         </div>
     </div>

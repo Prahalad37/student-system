@@ -93,6 +93,7 @@ TEMPLATES = [
 TEMPLATES[0]["OPTIONS"]["context_processors"] += [
     "members.context_processors.roles.role_flags",
     "members.context_processors.branding.school_branding",
+    "members.context_processors.notifications.notifications",
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
@@ -166,7 +167,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = "/accounts/login/"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"    
 
 # SaaS: Set CSRF_TRUSTED_ORIGINS for your domain, e.g. https://schoolsoft.in,https://*.schoolsoft.in

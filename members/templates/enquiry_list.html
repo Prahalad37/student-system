@@ -1,0 +1,62 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}Admission enquiries{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-inbox text-primary mr-2"></i>Admission enquiries</h1>
+    <a href="{% url 'enquiry_add' %}" class="btn btn-primary">Add enquiry</a>
+</div>
+
+<div class="mb-3">
+    <a href="{% url 'enquiry_list' %}" class="btn btn-sm {% if not status_filter %}btn-primary{% else %}btn-outline-primary{% endif %} mr-1">All</a>
+    {% for s, count in status_counts %}
+    <a href="?status={{ s }}" class="btn btn-sm {% if status_filter == s %}btn-primary{% else %}btn-outline-primary{% endif %} mr-1">{{ s }} ({{ count }})</a>
+    {% endfor %}
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Class applying</th>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in enquiries %}
+                <tr>
+                    <td>{{ e.name }}</td>
+                    <td>{{ e.phone }}</td>
+                    <td>{{ e.email|default:"—" }}</td>
+                    <td>{{ e.class_applying|default:"—" }}</td>
+                    <td>{{ e.source|default:"—" }}</td>
+                    <td><span class="badge badge-{% if e.status == 'New' %}info{% elif e.status == 'Admitted' %}success{% elif e.status == 'Lost' %}secondary{% else %}warning{% endif %}">{{ e.status }}</span></td>
+                    <td>{{ e.created_at|date:"d M Y" }}</td>
+                    <td class="text-right">
+                        <a href="{% url 'enquiry_edit' e.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'enquiry_convert' e.id %}" class="btn btn-sm btn-success">Convert to admission</a>
+                        <form method="post" action="{% url 'enquiry_change_status' e.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <select name="status" class="form-control form-control-sm d-inline-block w-auto" onchange="this.form.submit()">
+                                {% for val, label in status_choices %}<option value="{{ val }}" {% if e.status == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center py-4 text-muted">No enquiries yet. <a href="{% url 'enquiry_add' %}">Add one</a>.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
