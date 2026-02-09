@@ -333,6 +333,21 @@
         </details>
         {% endif %}
 
+        <details class="demo-logins">
+            <summary>Demo logins (copy-paste)</summary>
+            <p style="margin: 6px 0 4px 0;">Superuser: <strong>admin</strong> / <strong>adminpass123</strong> (not admin123)</p>
+            <table>
+                <tr><td>admin</td><td>adminpass123</td></tr>
+                <tr><td>school_admin</td><td>admin123</td></tr>
+                <tr><td>teacher</td><td>teacher123</td></tr>
+                <tr><td>staff</td><td>staff123</td></tr>
+                <tr><td>accountant</td><td>accountant123</td></tr>
+                <tr><td>owner</td><td>owner123</td></tr>
+                <tr><td>student</td><td>student123</td></tr>
+            </table>
+            <p style="margin: 6px 0 0 0;">Reset all: <code>python manage.py setup_login_users</code></p>
+        </details>
+
         <div style="margin-top: 30px; font-size: 11px; color: #cbd5e1;">
             &copy; {% now "Y" %} {{ branding.SCHOOL_NAME }}. All Rights Reserved.
         </div>
