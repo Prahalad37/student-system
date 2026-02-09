@@ -18,7 +18,11 @@ from ..services.library import LibraryService  # Service Layer Import
 def library(request):
     school = get_current_school(request)
     books = Book.objects.filter(school=school).order_by('-id')
-    transactions_qs = LibraryTransaction.objects.filter(school=school, status='Issued').select_related('student', 'book')
+    transactions_qs = (
+        LibraryTransaction.objects.filter(school=school, status='Issued')
+        .select_related('student', 'book')
+        .order_by('-id')
+    )
     paginator = Paginator(transactions_qs, 25)
     page_obj = paginator.get_page(request.GET.get('page', 1))
     all_students = Member.objects.filter(school=school).order_by('firstname')

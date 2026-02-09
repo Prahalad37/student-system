@@ -25,9 +25,10 @@ def notification_list(request):
 
 
 @login_required
-@require_POST
 def notification_mark_read(request, pk):
-    """Mark one notification as read."""
+    """Mark one notification as read. Accepts GET (e.g. link click) and POST."""
+    if request.method not in ("GET", "POST"):
+        return JsonResponse({"error": "Method not allowed"}, status=405)
     school = get_current_school(request)
     if not school:
         return JsonResponse({"ok": False}, status=403)
