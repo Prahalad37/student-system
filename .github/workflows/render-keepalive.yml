@@ -1,0 +1,14 @@
+# Keep Render free instance warm by pinging /health/ every 14 minutes.
+# Update RENDER_APP_URL below if your service URL changes.
+name: Render Keep-Alive
+on:
+  schedule:
+    - cron: "*/14 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          curl -sf --max-time 60 "https://school-erp-51hd.onrender.com/health/" || true

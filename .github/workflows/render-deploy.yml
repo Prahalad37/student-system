@@ -1,13 +1,12 @@
-# Optional: Trigger a Render deploy on push to main via Render CLI.
-# If Render already has "Auto-Deploy" on Git push enabled, this can cause duplicate deploys — then disable this workflow or disable Auto-Deploy in Render.
+# Optional: Trigger a Render deploy manually via Render CLI.
+# Render Auto-Deploy (Option A) handles push-to-deploy; this workflow is for manual/CLI deploys only.
+# To run: GitHub Actions tab -> Render CLI Deploy -> Run workflow
 #
 # Repo secrets required: RENDER_API_KEY, RENDER_SERVICE_ID
 name: Render CLI Deploy
 run-name: Deploy via Render CLI
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 jobs:
   Deploy-Render:
     runs-on: ubuntu-latest
