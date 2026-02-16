@@ -1,0 +1,37 @@
+# Optional: Deploy to Render ONLY when tests pass.
+# Use this if you DISABLE Render's native Auto-Deploy (Settings → Auto-Deploy = No).
+#
+# Required: GitHub repo Secrets → RENDER_API_KEY, RENDER_SERVICE_ID
+name: Test and Deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          python manage.py test members.tests
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          CI: true
+        run: |
+          RENDER_VER=2.7.1
+          curl -sL "https://github.com/render-oss/cli/releases/download/v${RENDER_VER}/cli_${RENDER_VER}_linux_amd64.zip" -o render.zip
+          unzip -o render.zip
+          sudo install -m 755 "cli_${RENDER_VER}_linux_amd64/render" /usr/local/bin/render
+          render deploys create $RENDER_SERVICE_ID --wait --output json --confirm
