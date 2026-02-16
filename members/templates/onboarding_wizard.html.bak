@@ -44,7 +44,8 @@
                 {% else %}Review & create
                 {% endif %}
             </h1>
-            {% if step == 1 %}<p class="guidance-text">Next you'll create the owner login for this school.</p>{% endif %}
+            {% if step == 1 %}<p class="guidance-text">Next you'll create the owner login for this school.</p>{% endif
+            %}
             {% if step == 2 %}<p class="guidance-text">Next you'll review and create the school. You'll then log in with
                 this account.</p>{% endif %}
             {% if step == 3 %}<p class="guidance-text">After this, you'll log in and add users from School Settings →

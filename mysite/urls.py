@@ -14,12 +14,12 @@ urlpatterns = [
     path('', include('members.urls')),
 ]
 
-# --- ADD THIS BLOCK FOR DEBUG TOOLBAR ---
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]
+# --- DEBUG TOOLBAR DISABLED FOR CLEANER UI ---
+# if settings.DEBUG:
+#     import debug_toolbar
+#     urlpatterns += [
+#         path('__debug__/', include(debug_toolbar.urls)),
+#     ]
 
 # Images/Media dikhane ke liye zaroori code
 if settings.DEBUG:

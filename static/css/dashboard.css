@@ -1,0 +1,162 @@
+/**
+ * Premium dashboard - glassmorphism, gradients, 3-color palette, large radius.
+ * Load only on dashboard (index). Uses variables.css.
+ */
+
+/* ---- Stat cards: gradient + glass + 20–24px radius ---- */
+.dashboard-page .stat-card {
+  border-radius: var(--radius-3xl);
+  border: none;
+  overflow: hidden;
+  position: relative;
+  min-height: 140px;
+  transition: transform var(--transition-duration) var(--transition-ease),
+              box-shadow var(--transition-duration) var(--transition-ease);
+}
+.dashboard-page .stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 0;
+}
+.dashboard-page .stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+.dashboard-page .stat-card--primary {
+  background: linear-gradient(135deg, rgba(78, 115, 223, 0.18) 0%, rgba(78, 115, 223, 0.06) 50%, transparent 100%);
+  box-shadow: 0 4px 20px rgba(78, 115, 223, 0.12);
+}
+.dashboard-page .stat-card--primary .stat-value,
+.dashboard-page .stat-card--primary .stat-label { color: var(--text-primary); }
+.dashboard-page .stat-card--primary .icon-box {
+  background: rgba(78, 115, 223, 0.2);
+  color: var(--color-primary);
+}
+.dashboard-page .stat-card--secondary {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.18) 0%, rgba(5, 150, 105, 0.06) 50%, transparent 100%);
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.12);
+}
+.dashboard-page .stat-card--secondary .stat-value,
+.dashboard-page .stat-card--secondary .stat-label { color: var(--text-primary); }
+.dashboard-page .stat-card--secondary .icon-box {
+  background: rgba(5, 150, 105, 0.2);
+  color: var(--color-secondary);
+}
+.dashboard-page .stat-card--accent {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.18) 0%, rgba(109, 40, 217, 0.06) 50%, transparent 100%);
+  box-shadow: 0 4px 20px rgba(109, 40, 217, 0.12);
+}
+.dashboard-page .stat-card--accent .stat-value,
+.dashboard-page .stat-card--accent .stat-label { color: var(--text-primary); }
+.dashboard-page .stat-card--accent .icon-box {
+  background: rgba(109, 40, 217, 0.2);
+  color: var(--color-accent);
+}
+.dashboard-page .stat-card .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
+.dashboard-page .stat-card .stat-label { color: var(--text-secondary); font-weight: 600; }
+.dashboard-page .stat-card .stat-meta { color: var(--text-muted); }
+.dashboard-page .stat-card .text-up { color: var(--color-secondary); }
+.dashboard-page .stat-card .text-down { color: var(--color-danger); }
+
+/* ---- Quick Actions card ---- */
+.dashboard-page .card {
+  border: none;
+  border-radius: var(--radius-3xl);
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  transition: transform var(--transition-duration) var(--transition-ease),
+              box-shadow var(--transition-duration) var(--transition-ease);
+}
+.dashboard-page .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+  z-index: 0;
+}
+.dashboard-page .card .card-header,
+.dashboard-page .card .card-body {
+  position: relative;
+  z-index: 1;
+}
+.dashboard-page .card .card-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.dashboard-page .card .card-body {
+  background: transparent !important;
+}
+
+/* ---- Quick Action tiles (.btn-quick) ---- */
+.dashboard-page .btn-quick {
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: transform var(--transition-duration) var(--transition-ease),
+              box-shadow var(--transition-duration) var(--transition-ease),
+              border-color var(--transition-duration) var(--transition-ease),
+              background var(--transition-duration) var(--transition-ease);
+}
+.dashboard-page .btn-quick:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(78, 115, 223, 0.15);
+  border-color: var(--color-primary);
+  background: linear-gradient(180deg, #fff 0%, var(--color-primary-light) 100%);
+}
+.dashboard-page .btn-quick span { color: var(--text-secondary); font-weight: 600; }
+.dashboard-page .btn-quick .text-primary { color: var(--color-primary) !important; }
+.dashboard-page .btn-quick .text-success { color: var(--color-secondary) !important; }
+.dashboard-page .btn-quick .text-info { color: var(--color-accent) !important; }
+.dashboard-page .btn-quick .text-warning { color: var(--color-primary) !important; }
+.dashboard-page .btn-quick .text-purple { color: var(--color-accent) !important; }
+
+/* ---- Getting started card ---- */
+.dashboard-page .card.border-left-primary {
+  border: none;
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(135deg, rgba(78, 115, 223, 0.08) 0%, rgba(255,255,255,0.9) 100%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+.dashboard-page .card.border-left-primary .card-header {
+  background: transparent !important;
+  color: var(--color-primary);
+}
+
+/* ---- List & table cards (high contrast) ---- */
+.dashboard-page .list-group-item {
+  background: var(--color-surface);
+  color: var(--text-primary);
+  border-color: var(--color-border);
+}
+.dashboard-page .list-group-item .font-weight-bold,
+.dashboard-page .list-group-item .text-dark { color: var(--text-primary) !important; }
+.dashboard-page .list-group-item .text-muted { color: var(--text-secondary) !important; }
+.dashboard-page .table thead th {
+  background: var(--color-gray-100) !important;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.dashboard-page .table-clean th { color: var(--text-primary); font-weight: 700; }
+.dashboard-page .table tbody td,
+.dashboard-page .table .text-dark { color: var(--text-primary) !important; }
+.dashboard-page .table .text-muted { color: var(--text-secondary) !important; }
+.dashboard-page .table .font-weight-bold { color: var(--text-primary) !important; }
+.dashboard-page .badge-success,
+.dashboard-page .bg-success { background-color: var(--color-secondary) !important; }
+.dashboard-page .text-primary { color: var(--color-primary) !important; }
+
+/* Chart container - ensure contrast */
+.dashboard-page .card-body canvas { display: block; }

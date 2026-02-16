@@ -53,8 +53,9 @@ INSTALLED_APPS = [
     # Custom Apps
     'members',
 ]
-if DEBUG:
-    INSTALLED_APPS += ['debug_toolbar']
+# DJDT disabled for cleaner UI
+# if DEBUG:
+#     INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -205,9 +206,10 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # --- DEBUG TOOLBAR (only when DEBUG) ---
-if DEBUG:
-    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
-    INTERNAL_IPS = ['127.0.0.1']
+# DJDT disabled for cleaner UI
+# if DEBUG:
+#     MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+#     INTERNAL_IPS = ['127.0.0.1']
 
 # --- LOGGING ---
 LOGS_DIR = BASE_DIR / "logs"

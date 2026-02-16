@@ -6,274 +6,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - {{ branding.SCHOOL_NAME }}</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-    <style>
-        /* Screen-reader only (accessibility) */
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
-        /* --- 1. GLOBAL SETTINGS --- */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
-            /* Deep Blue Theme */
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            color: #333;
-        }
-
-        /* --- 2. BACKGROUND ANIMATIONS (Floating Blobs) --- */
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            animation: float 20s infinite linear;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .shape:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: -50px;
-            left: -50px;
-            animation-duration: 25s;
-        }
-
-        .shape:nth-child(2) {
-            width: 300px;
-            height: 300px;
-            bottom: -80px;
-            right: -80px;
-            animation-duration: 30s;
-        }
-
-        .shape:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            top: 20%;
-            right: 20%;
-            animation-duration: 15s;
-            opacity: 0.5;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
-
-            100% {
-                transform: translateY(0) rotate(360deg);
-            }
-        }
-
-        /* --- 3. LOGIN CARD (Glass Effect) --- */
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: slideUp 0.8s forwards ease-out;
-        }
-
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* --- 4. BRANDING --- */
-        .logo-icon {
-            font-size: 48px;
-            color: #1e40af;
-            /* Primary Blue */
-            margin-bottom: 10px;
-            background: #e0e7ff;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.2);
-        }
-
-        .school-name {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1e3a8a;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .subtitle {
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 30px;
-            font-weight: 500;
-        }
-
-        /* --- 5. INPUT FIELDS --- */
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            transition: 0.3s;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px 12px 45px;
-            /* Space for Icon */
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 14px;
-            outline: none;
-            box-sizing: border-box;
-            transition: 0.3s;
-            background: #f8fafc;
-            color: #334155;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .form-control:focus {
-            border-color: #4f46e5;
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
-
-        .form-control:focus+i {
-            color: #4f46e5;
-        }
-
-        /* --- 6. BUTTON --- */
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-            margin-top: 10px;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        /* --- 7. FOOTER --- */
-        .footer-link {
-            display: block;
-            margin-top: 25px;
-            font-size: 12px;
-            color: #64748b;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .footer-link:hover {
-            color: #1e40af;
-            text-decoration: underline;
-        }
-
-        /* --- MESSAGES --- */
-        .alert-error {
-            background-color: #fee2e2;
-            color: #dc2626;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 13px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: 1px solid #fecaca;
-        }
-        .alert-success {
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 13px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: 1px solid #a7f3d0;
-        }
-
-        /* --- DEMO LOGINS --- */
-        .demo-logins {
-            margin-top: 12px;
-            font-size: 11px;
-            color: #64748b;
-            text-align: left;
-        }
-        .demo-logins summary {
-            cursor: pointer;
-            color: #1e40af;
-            font-weight: 500;
-        }
-        .demo-logins table {
-            width: 100%;
-            margin-top: 8px;
-            border-collapse: collapse;
-            font-family: monospace;
-        }
-        .demo-logins td {
-            padding: 4px 8px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .demo-logins td:first-child { color: #0f172a; }
-    </style>
+    <link href="{% static 'css/variables.css' %}" rel="stylesheet">
+    <link href="{% static 'css/public-pages.css' %}" rel="stylesheet">
 </head>
 
-<body>
+<body class="public-page public-page--center">
 
     <div class="shape"></div>
     <div class="shape"></div>
     <div class="shape"></div>
 
-    <div class="login-card">
+    <div class="card-public login-card">
         {% if branding.SCHOOL_LOGO %}
-        <img src="{{ branding.SCHOOL_LOGO }}" alt="Logo" class="logo-icon"
-            style="width: 80px; height: 80px; padding: 10px; object-fit: contain;">
+        <img src="{{ branding.SCHOOL_LOGO }}" alt="Logo" class="logo-icon" style="width: 80px; height: 80px; padding: 10px; object-fit: contain;">
         {% else %}
         <i class="fas fa-graduation-cap logo-icon"></i>
         {% endif %}
@@ -283,11 +30,11 @@
 
         {% if messages %}
         {% for message in messages %}
-        <div class="{% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}"><i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i> {{ message }}</div>
+        <div class="{% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %} alert"><i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i> {{ message }}</div>
         {% endfor %}
         {% endif %}
         {% if form.errors %}
-        <div class="alert-error">
+        <div class="alert-error alert">
             <i class="fas fa-exclamation-circle"></i>
             {% for err in form.non_field_errors %}{{ err }}{% empty %}Invalid Username or Password{% endfor %}
         </div>
@@ -348,7 +95,7 @@
             <p style="margin: 6px 0 0 0;">Reset all: <code>python manage.py setup_login_users</code></p>
         </details>
 
-        <div style="margin-top: 30px; font-size: 11px; color: #cbd5e1;">
+        <div style="margin-top: 30px; font-size: 11px; color: var(--text-muted);">
             &copy; {% now "Y" %} {{ branding.SCHOOL_NAME }}. All Rights Reserved.
         </div>
     </div>

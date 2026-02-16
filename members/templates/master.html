@@ -9,83 +9,19 @@
     <title>{% block title %}School Manager{% endblock %}</title>
 
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/variables.css' %}" rel="stylesheet">
-
-    <style>
-        /* Modern Card Styling */
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-        }
-
-        .topbar {
-            box-shadow: none !important;
-            border-bottom: 1px solid #e3e6f0;
-        }
-
-        /* --- SIDEBAR SUB-MENU POLISH --- */
-
-        /* 1. Remove the white box & borders */
-        .sidebar .collapse-inner {
-            background: transparent !important;
-            /* Make background see-through */
-            border-radius: 0 !important;
-            padding: 5px 0 15px 0 !important;
-            margin: 0 !important;
-            box-shadow: none !important;
-        }
-
-        /* 2. Style the links inside */
-        .sidebar .collapse-item {
-            color: rgba(255, 255, 255, 0.7) !important;
-            /* Light text */
-            font-size: 0.85rem;
-            padding: 8px 10px 8px 40px !important;
-            /* Indent them */
-            margin: 0 !important;
-            border-radius: 5px;
-            transition: all 0.2s ease-in-out;
-            display: block;
-            text-decoration: none;
-        }
-
-        /* 3. Hover Effect: Glowy White */
-        .sidebar .collapse-item:hover {
-            background-color: rgba(255, 255, 255, 0.15) !important;
-            color: #fff !important;
-            font-weight: 600;
-            transform: translateX(5px);
-            /* Slide right slightly */
-        }
-
-        /* 4. Active State (if needed) */
-        .sidebar .collapse-item.active {
-            color: #fff !important;
-            font-weight: 700;
-            background-color: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        /* 5. Hide the tiny header text like "Directory:" if you want cleaner look */
-        .sidebar .collapse-header {
-            color: rgba(255, 255, 255, 0.4) !important;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            margin-left: 20px;
-        }
-    </style>
+    <link href="{% static 'css/theme.css' %}" rel="stylesheet">
+    {% block extrastyle %}{% endblock %}
 </head>
 
 <body id="page-top">
 
     <div id="wrapper">
 
-        <ul class="navbar-nav bg-gradient-{{ branding.THEME_COLOR|default:'primary' }} sidebar sidebar-dark accordion"
+        <ul class="navbar-nav sidebar accordion"
             id="accordionSidebar">
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% if is_student %}{% url 'student_portal' %}{% elif is_parent %}{% url 'parent_dashboard' %}{% else %}{% url 'index' %}{% endif %}">
@@ -101,8 +37,21 @@
 
             <hr class="sidebar-divider my-0">
 
+            <div class="sidebar-profile d-flex align-items-center px-3 py-3">
+                <div class="mr-3">
+                    {% if branding.SCHOOL_LOGO %}
+                    <img src="{{ branding.SCHOOL_LOGO }}" class="avatar" alt="">
+                    {% else %}
+                    <img src="{% static 'img/undraw_profile.svg' %}" class="avatar" alt="">
+                    {% endif %}
+                </div>
+                <div class="user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+            </div>
+
+            <hr class="sidebar-divider my-0">
+
             {% block sidebar_nav %}
-            <li class="nav-item active">
+            <li class="nav-item {% if request.path == '/dashboard/' or request.path == '/members/' or request.path == '/' %}active{% endif %}">
                 <a class="nav-link" href="{% if is_parent %}{% url 'parent_dashboard' %}{% else %}{% url 'index' %}{% endif %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>{% if is_parent %}Parent{% else %}Command Center{% endif %}</span></a>
@@ -111,12 +60,12 @@
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Academic Operations</div>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/students/' in request.path or '/students/add' in request.path or request.path == '/students/addrecord/' or '/students/edit' in request.path or '/students/update' in request.path or '/admissions/enquiries' in request.path %}active{% endif %}">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStudents">
                     <i class="fas fa-fw fa-user-graduate"></i>
                     <span>Students</span>
                 </a>
-                <div id="collapseStudents" class="collapse" data-parent="#accordionSidebar">
+                <div id="collapseStudents" class="collapse {% if '/students/' in request.path or '/admissions/' in request.path %}show{% endif %}" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Directory:</h6>
                         <a class="collapse-item" href="{% url 'all_students' %}">View All Students</a>
@@ -126,27 +75,27 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/attendance' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'attendance' %}">
                     <i class="fas fa-fw fa-calendar-check"></i>
                     <span>Attendance</span></a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/report_card' in request.path or '/add_marks' in request.path or '/academic/' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'report_card' %}">
                     <i class="fas fa-file-alt menu-icon"></i>
                     <span class="menu-title">Exams & Reports</span>
                 </a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/learning' in request.path or '/student/' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'learning_hub' %}">
                     <i class="fas fa-fw fa-graduation-cap"></i>
                     <span>Learning Hub</span>
                 </a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/timetable' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'timetable_view' %}">
                     <i class="fas fa-fw fa-calendar-alt"></i>
                     <span>Timetable</span>
@@ -156,32 +105,47 @@
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Administration</div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'fee_home' %}">
+            <li class="nav-item {% if '/finance' in request.path %}active{% endif %}">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFinance">
                     <i class="fas fa-fw fa-wallet"></i>
-                    <span>Fees & Finance</span></a>
+                    <span>Fees & Finance</span>
+                </a>
+                <div id="collapseFinance" class="collapse {% if '/finance' in request.path %}show{% endif %}" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Finance:</h6>
+                        <a class="collapse-item" href="{% url 'fee_home' %}">Fee Home</a>
+                        <a class="collapse-item" href="{% url 'collect_fee' %}">Collect Fee</a>
+                        <a class="collapse-item" href="{% url 'fee_config' %}">Fee Config</a>
+                        <a class="collapse-item" href="{% url 'fee_receipts' %}">Receipts</a>
+                        <a class="collapse-item" href="{% url 'fee_installments' %}">Installments</a>
+                        <a class="collapse-item" href="{% url 'fee_discounts' %}">Discounts</a>
+                        <a class="collapse-item" href="{% url 'fee_concessions' %}">Concessions</a>
+                        <a class="collapse-item" href="{% url 'fee_late_fee_policy' %}">Late Fee Policy</a>
+                        <a class="collapse-item" href="{% url 'fee_refunds' %}">Refunds</a>
+                    </div>
+                </div>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/transport' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'transport_home' %}">
                     <i class="fas fa-fw fa-bus-alt"></i>
                     <span>Transport</span></a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/library' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'library_home' %}">
                     <i class="fas fa-fw fa-book"></i>
                     <span>Library</span></a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {% if '/hr' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'staff_list' %}">
                     <i class="fas fa-fw fa-briefcase"></i>
                     <span>HR & Payroll</span></a>
             </li>
 
             {% if is_owner or is_admin %}
-            <li class="nav-item">
+            <li class="nav-item {% if '/school/' in request.path %}active{% endif %}">
                 <a class="nav-link" href="{% url 'school_settings' %}">
                     <i class="fas fa-fw fa-school"></i>
                     <span>School Settings</span>
@@ -193,6 +157,12 @@
             {% if request.user.is_superuser %}
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Platform Admin</div>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin:index' %}">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Django Admin</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'school_list' %}">
                     <i class="fas fa-fw fa-building"></i>
@@ -211,6 +181,12 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+            <li class="nav-item sidebar-exit">
+                <a class="nav-link" href="{% url 'logout' %}">
+                    <i class="fas fa-fw fa-sign-out-alt"></i>
+                    <span>Exit</span>
+                </a>
+            </li>
             {% endblock sidebar_nav %}
 
         </ul>
@@ -222,8 +198,18 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
+                    <span class="topbar-greeting mr-3 d-none d-sm-inline">Hello, {{ request.user.get_full_name|default:request.user.username }}</span>
+                    <form class="d-none d-md-inline form-inline mr-auto" action="#" method="get">
+                        <input class="form-control topbar-search" type="search" placeholder="Search for anything" name="q" aria-label="Search">
+                    </form>
                     <ul class="navbar-nav ml-auto">
+                        {% if is_owner or is_admin %}
+                        <li class="nav-item no-arrow mr-2">
+                            <a class="nav-link" href="{% url 'notification_send' %}" title="Send notification">
+                                <i class="fas fa-bell fa-fw"></i>
+                            </a>
+                        </li>
+                        {% endif %}
                         <li class="nav-item dropdown no-arrow mr-2">
                             <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-toggle="dropdown">
                                 <i class="fas fa-bell fa-fw"></i>
@@ -266,7 +252,7 @@
                     </ul>
                 </nav>
 
-                <div class="container-fluid">
+                <div class="container-fluid main-content-enter">
                     {% block breadcrumbs %}{% endblock %}
                     {% if messages %}
                     {% for message in messages %}
@@ -295,6 +281,7 @@
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 
 </body>
 

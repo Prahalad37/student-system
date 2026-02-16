@@ -5,108 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ branding.SCHOOL_NAME|default:"School ERP" }} – Smart School Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #1e3a8a 100%);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem 1rem 3rem;
-        }
-        .container { max-width: 900px; width: 100%; text-align: center; }
-
-        /* Hero */
-        .logo {
-            font-size: 3.5rem;
-            color: #93c5fd;
-            margin-bottom: 0.5rem;
-        }
-        h1 {
-            font-size: clamp(1.75rem, 5vw, 2.5rem);
-            font-weight: 700;
-            margin: 0 0 0.75rem;
-            letter-spacing: -0.02em;
-        }
-        .tagline {
-            font-size: 1.05rem;
-            opacity: 0.92;
-            max-width: 520px;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
-        }
-
-        /* CTAs */
-        .ctas { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 3rem; }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-primary {
-            background: #3b82f6;
-            color: #fff;
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.35);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(59, 130, 246, 0.45); }
-        .btn-outline {
-            background: transparent;
-            color: #e0e7ff;
-            border: 2px solid rgba(255,255,255,0.4);
-        }
-        .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.6); transform: translateY(-2px); }
-
-        /* Features strip */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1.25rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-        .feature {
-            padding: 1rem;
-            background: rgba(255,255,255,0.06);
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-        .feature i { font-size: 1.75rem; color: #93c5fd; margin-bottom: 0.5rem; display: block; }
-        .feature span { font-size: 0.9rem; font-weight: 500; opacity: 0.95; }
-
-        .section-title { font-size: 1rem; font-weight: 600; opacity: 0.85; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
-
-        .footer { margin-top: auto; padding-top: 2rem; font-size: 0.85rem; opacity: 0.7; }
-        .footer a { color: #93c5fd; text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
-    </style>
+    <link href="{% static 'css/variables.css' %}" rel="stylesheet">
+    <link href="{% static 'css/public-pages.css' %}" rel="stylesheet">
 </head>
-<body>
+<body class="public-page">
     <div class="container">
         {% if branding.SCHOOL_LOGO %}
-        <img src="{{ branding.SCHOOL_LOGO }}" alt="" class="logo" style="width: 80px; height: 80px; object-fit: contain;">
+        <img src="{{ branding.SCHOOL_LOGO }}" alt="" class="logo-hero" style="width: 80px; height: 80px; object-fit: contain;">
         {% else %}
-        <i class="fas fa-graduation-cap logo" aria-hidden="true"></i>
+        <i class="fas fa-graduation-cap logo-hero" aria-hidden="true"></i>
         {% endif %}
         <h1>{{ branding.SCHOOL_NAME|default:"School ERP" }}</h1>
         <p class="tagline">One place for admissions, fees, attendance, exams, library, transport and more. Sign in or register your school to get started.</p>
 
         <div class="ctas">
-            <a href="{% url 'login' %}" class="btn btn-primary">
+            <a href="{% url 'login' %}" class="btn-public btn-public-primary">
                 <i class="fas fa-sign-in-alt"></i> Log in
             </a>
-            <a href="{% url 'onboarding' %}" class="btn btn-outline">
+            <a href="{% url 'onboarding' %}" class="btn-public btn-public-outline">
                 <i class="fas fa-school"></i> Register your school
             </a>
         </div>
@@ -125,7 +43,7 @@
 
         <footer class="footer">
             &copy; {% now "Y" %} {{ branding.SCHOOL_NAME|default:"School ERP" }}. <a href="{% url 'login' %}">Staff login</a>.
-            <br><span style="font-size: 0.8rem; opacity: 0.85;">Free hosting may have a short delay on first visit.</span>
+            <br><span style="font-size: var(--text-xs); opacity: 0.85;">Free hosting may have a short delay on first visit.</span>
         </footer>
     </div>
 </body>
