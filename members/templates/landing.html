@@ -1,50 +1,107 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ branding.SCHOOL_NAME|default:"School ERP" }} – Smart School Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{% static 'css/variables.css' %}" rel="stylesheet">
     <link href="{% static 'css/public-pages.css' %}" rel="stylesheet">
+    <link href="{% static 'css/landing.css' %}" rel="stylesheet">
 </head>
-<body class="public-page">
-    <div class="container">
-        {% if branding.SCHOOL_LOGO %}
-        <img src="{{ branding.SCHOOL_LOGO }}" alt="" class="logo-hero" style="width: 80px; height: 80px; object-fit: contain;">
-        {% else %}
-        <i class="fas fa-graduation-cap logo-hero" aria-hidden="true"></i>
-        {% endif %}
-        <h1>{{ branding.SCHOOL_NAME|default:"School ERP" }}</h1>
-        <p class="tagline">One place for admissions, fees, attendance, exams, library, transport and more. Sign in or register your school to get started.</p>
 
-        <div class="ctas">
-            <a href="{% url 'login' %}" class="btn-public btn-public-primary">
-                <i class="fas fa-sign-in-alt"></i> Log in
+<body class="public-page landing-page">
+    <!-- Header -->
+    <header class="landing-header">
+        <div class="landing-header-inner">
+            <a href="{% url 'landing' %}" class="brand">
+                <i class="fas fa-graduation-cap brand-icon"></i>
+                <span class="brand-name">{{ branding.SCHOOL_NAME|default:"School ERP" }}</span>
             </a>
-            <a href="{% url 'onboarding' %}" class="btn-public btn-public-outline">
-                <i class="fas fa-school"></i> Register your school
-            </a>
+            <nav class="landing-nav">
+                <a href="{% url 'login' %}" class="nav-link">Log in</a>
+                <a href="{% url 'onboarding' %}" class="nav-link nav-link--cta">Register School</a>
+            </nav>
         </div>
+    </header>
 
-        <p class="section-title">Everything your school needs</p>
-        <div class="features">
-            <div class="feature"><i class="fas fa-user-graduate"></i><span>Students</span></div>
-            <div class="feature"><i class="fas fa-wallet"></i><span>Fees</span></div>
-            <div class="feature"><i class="fas fa-calendar-check"></i><span>Attendance</span></div>
-            <div class="feature"><i class="fas fa-file-alt"></i><span>Exams</span></div>
-            <div class="feature"><i class="fas fa-book"></i><span>Library</span></div>
-            <div class="feature"><i class="fas fa-bus-alt"></i><span>Transport</span></div>
-            <div class="feature"><i class="fas fa-users"></i><span>HR</span></div>
-            <div class="feature"><i class="fas fa-cog"></i><span>Settings</span></div>
+    <!-- Hero -->
+    <main class="landing-main">
+        <section class="landing-hero">
+            <div class="hero-badge">School ERP</div>
+            {% if branding.SCHOOL_LOGO %}
+            <img src="{{ branding.SCHOOL_LOGO }}" alt="" class="hero-logo">
+            {% else %}
+            <div class="hero-logo-wrap">
+                <i class="fas fa-graduation-cap hero-icon"></i>
+            </div>
+            {% endif %}
+            <h1 class="hero-title">{{ branding.SCHOOL_NAME|default:"School ERP" }}</h1>
+            <p class="hero-tagline">One place for admissions, fees, attendance, exams, library, transport and more. Sign
+                in or register your school to get started.</p>
+            <div class="hero-ctas">
+                <a href="{% url 'login' %}" class="btn-hero btn-hero-primary">
+                    <i class="fas fa-sign-in-alt"></i> Log in
+                </a>
+                <a href="{% url 'onboarding' %}" class="btn-hero btn-hero-outline">
+                    <i class="fas fa-school"></i> Register your school
+                </a>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="landing-features">
+            <h2 class="features-title">Everything your school needs</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-user-graduate feature-icon"></i>
+                    <span class="feature-label">Students</span>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-wallet feature-icon"></i>
+                    <span class="feature-label">Fees</span>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-calendar-check feature-icon"></i>
+                    <span class="feature-label">Attendance</span>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-alt feature-icon"></i>
+                    <span class="feature-label">Exams</span>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-book feature-icon"></i>
+                    <span class="feature-label">Library</span>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bus-alt feature-icon"></i>
+                    <span class="feature-label">Transport</span>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users feature-icon"></i>
+                    <span class="feature-label">HR</span>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-cog feature-icon"></i>
+                    <span class="feature-label">Settings</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="landing-footer-inner">
+            <p>&copy; {% now "Y" %} {{ branding.SCHOOL_NAME|default:"School ERP" }}</p>
+            <p>
+                <a href="{% url 'login' %}">Staff login</a>
+                <span class="footer-note">Free hosting may have a short delay on first visit.</span>
+            </p>
         </div>
-
-        <footer class="footer">
-            &copy; {% now "Y" %} {{ branding.SCHOOL_NAME|default:"School ERP" }}. <a href="{% url 'login' %}">Staff login</a>.
-            <br><span style="font-size: var(--text-xs); opacity: 0.85;">Free hosting may have a short delay on first visit.</span>
-        </footer>
-    </div>
+    </footer>
 </body>
+
 </html>

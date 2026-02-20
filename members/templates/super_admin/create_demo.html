@@ -1,0 +1,60 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %}Create Demo School{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-flask mr-2"></i>Create Demo School (30 Seconds)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Create a fully functional demo school with pre-populated sample data including
+                        students, staff, fees, attendance records, and more!
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="school_name">School Name</label>
+                            <input type="text" class="form-control" id="school_name" name="school_name"
+                                placeholder="e.g., Sunrise Public School" required>
+                            <small class="form-text text-muted">
+                                If left blank, a random demo name will be generated
+                            </small>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading"><i class="fas fa-info-circle mr-2"></i>What will be created:</h6>
+                            <ul class="mb-0">
+                                <li>School profile with branding</li>
+                                <li>50 sample students (realistic data)</li>
+                                <li>10 staff members</li>
+                                <li> 200+ fee records</li>
+                                <li>30 days of attendance data</li>
+                                <li>Default admin credentials</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'super_admin:dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left mr-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-magic mr-2"></i>Create Demo School
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

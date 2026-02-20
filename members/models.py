@@ -12,14 +12,41 @@ from django.conf import settings
 # ==========================================
 
 class School(models.Model):
+    # Basic Info
     name = models.CharField(max_length=200)
     address = models.TextField()
     school_code = models.CharField(max_length=50, unique=True)
     code = models.SlugField(max_length=64, unique=True, help_text="Lower, slug-friendly subdomain (e.g. acme)")
+    
+    # Multi-Tenant Branding (NEW)
+    logo = models.ImageField(upload_to='schools/logos/', null=True, blank=True)
+    primary_color = models.CharField(max_length=7, default='#4e73df', help_text="Hex color code for branding")
+    secondary_color = models.CharField(max_length=7, default='#858796', null=True, blank=True)
+    
+    # Multi-Tenant Management (NEW)
+    is_active = models.BooleanField(default=True, help_text="School is active and can be accessed")
+    is_demo = models.BooleanField(default=False, help_text="Demo school with sample data")
+    super_admin = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='owned_schools',
+        help_text="Super admin who owns this school"
+    )
+    
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "School"
+        verbose_name_plural = "Schools"
+
 
 class AcademicYear(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
@@ -34,7 +61,8 @@ class ClassRoom(models.Model):
     section = models.CharField(max_length=10, default='A')
 
     class Meta:
-        unique_together = ('name', 'section') 
+        unique_together = ('school', 'name', 'section')
+ 
 
     def __str__(self):
         return f"{self.name} - {self.section}"

@@ -11,6 +11,7 @@ urlpatterns = [
     path('', include('pwa.urls')),
     path('accounts/login/', TenantLoginView.as_view(), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('super-admin/', include('members.urls_super_admin')),  # NEW: Super Admin Portal
     path('', include('members.urls')),
 ]
 
@@ -21,7 +22,7 @@ urlpatterns = [
 #         path('__debug__/', include(debug_toolbar.urls)),
 #     ]
 
-# Images/Media dikhane ke liye zaroori code
+# Images/Media dikhane ke liye zaroori code  
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

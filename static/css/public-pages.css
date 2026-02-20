@@ -717,7 +717,21 @@ body.public-page.public-page--center {
 }
 
 .public-page .input-group .form-control {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
   padding-left: 48px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.public-page .input-group .form-control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
 }
 
 .public-page .input-group i {

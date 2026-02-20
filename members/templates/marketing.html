@@ -1,22 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prahlad Academy ERP</title>
+    <title>{{ branding.SCHOOL_NAME|default:"School ERP" }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{% static 'css/variables.css' %}" rel="stylesheet">
     <link href="{% static 'css/public-pages.css' %}" rel="stylesheet">
 </head>
+
 <body class="public-page">
     <i class="fas fa-graduation-cap logo-hero"></i>
-    <h1>Prahlad Academy ERP</h1>
-    <p class="tagline">Smart School Management. Use your school subdomain to sign in, or log in here if you have an account.</p>
+    <h1>{{ branding.SCHOOL_NAME|default:"School ERP" }}</h1>
+    <p class="tagline">Smart School Management. Use your school subdomain to sign in, or log in here if you have an
+        account.</p>
     <div class="ctas">
         <a href="{% url 'login' %}" class="btn-public btn-public-primary">Log in</a>
     </div>
-    <div class="footer">&copy; {% now "Y" %} Prahlad Academy</div>
+    <div class="footer">&copy; {% now "Y" %} {{ branding.SCHOOL_NAME|default:"School ERP" }}</div>
 </body>
+
 </html>

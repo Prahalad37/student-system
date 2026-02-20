@@ -1,0 +1,186 @@
+/* Sidebar enhanced branding with gradient + geometric patterns */
+.sidebar {
+    background: linear-gradient(180deg, #1a2332 0%, #0d1117 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Modern geometric pattern overlay */
+.sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background:
+        linear-gradient(135deg, rgba(78, 115, 223, 0.1) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(78, 115, 223, 0.1) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(78, 115, 223, 0.1) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(78, 115, 223, 0.1) 25%, transparent 25%);
+    background-position: 10px 0, 10px 0, 0 0, 0 0;
+    background-size: 20px 20px;
+    background-repeat: repeat;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Sidebar content needs higher z-index */
+.sidebar-inner {
+    position: relative;
+    z-index: 1;
+}
+
+/* Enhanced school logo area with vibrant accent */
+.sidebar .nav-item:first-child .nav-link {
+    background: linear-gradient(135deg, rgba(78, 115, 223, 0.2) 0%, rgba(124, 58, 237, 0.15) 100%) !important;
+    margin: 0.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #4E73DF !important;
+    padding: 1rem !important;
+    box-shadow: 0 2px 8px rgba(78, 115, 223, 0.15);
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-item:first-child .nav-link:hover {
+    transform: translateX(4px);
+    background: linear-gradient(135deg, rgba(78, 115, 223, 0.3) 0%, rgba(124, 58, 237, 0.25) 100%) !important;
+    box-shadow: 0 4px 12px rgba(78, 115, 223, 0.25);
+}
+
+/* Strong vibrant colors for active items */
+.sidebar .nav-item.active .nav-link {
+    background: linear-gradient(135deg, #4E73DF 0%, #5a67d8 100%) !important;
+    border-left: 4px solid #36b9cc !important;
+    box-shadow: 0 4px 12px rgba(78, 115, 223, 0.4);
+    margin: 0 0.5rem;
+    border-radius: 8px;
+}
+
+/* Hover effects with strong colors */
+.sidebar .nav-item .nav-link:hover {
+    background: rgba(78, 115, 223, 0.15) !important;
+    border-left: 3px solid rgba(78, 115, 223, 0.5);
+    margin-left: 0.5rem;
+    border-radius: 8px;
+    transform: translateX(2px);
+}
+
+/* Section headers with vibrant accent line */
+.sidebar .nav-item span.text-gray-400 {
+    position: relative;
+    padding-left: 0.5rem;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.sidebar .nav-item span.text-gray-400::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 16px;
+    background: linear-gradient(180deg, #4E73DF 0%, #36b9cc 100%);
+    border-radius: 2px;
+}
+
+/* Submenu styling with pattern */
+.sidebar .multi-level {
+    background: rgba(78, 115, 223, 0.05);
+    border-left: 2px solid rgba(78, 115, 223, 0.3);
+    margin-left: 1rem;
+    padding: 0.5rem 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.sidebar .multi-level .nav-link {
+    font-size: 0.85rem;
+    padding-left: 2.5rem !important;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sidebar .multi-level .nav-link:hover {
+    background: rgba(78, 115, 223, 0.12) !important;
+    color: #fff;
+    padding-left: 2.7rem !important;
+}
+
+/* Icon styling with vibrant glow effect on hover */
+.sidebar .sidebar-icon svg {
+    filter: drop-shadow(0 0 2px rgba(78, 115, 223, 0.3));
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover .sidebar-icon svg {
+    filter: drop-shadow(0 0 6px rgba(78, 115, 223, 0.6));
+    transform: scale(1.1);
+}
+
+/* Animated gradient border for school name */
+.sidebar .sidebar-text {
+    position: relative;
+    display: inline-block;
+}
+
+/* Add subtle pulse animation to active nav items */
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 12px rgba(78, 115, 223, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 4px 16px rgba(78, 115, 223, 0.6);
+    }
+}
+
+.sidebar .nav-item.active .nav-link {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Stronger scrollbar styling */
+.sidebar::-webkit scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #4E73DF 0%, #36b9cc 100%);
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #5a67d8 0%, #4fd1c5 100%);
+}
+
+/* Bottom gradient fade effect */
+.sidebar::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 224px;
+    height: 60px;
+    background: linear-gradient(0deg, #0d1117 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Mobile collapse button styling */
+.sidebar .collapse-close {
+    background: rgba(78, 115, 223, 0.2);
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+.sidebar .collapse-close:hover {
+    background: rgba(78, 115, 223, 0.3);
+}

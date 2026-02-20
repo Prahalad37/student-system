@@ -20,7 +20,8 @@
 
     <div class="card-public login-card">
         {% if branding.SCHOOL_LOGO %}
-        <img src="{{ branding.SCHOOL_LOGO }}" alt="Logo" class="logo-icon" style="width: 80px; height: 80px; padding: 10px; object-fit: contain;">
+        <img src="{{ branding.SCHOOL_LOGO }}" alt="Logo" class="logo-icon"
+            style="width: 80px; height: 80px; padding: 10px; object-fit: contain;">
         {% else %}
         <i class="fas fa-graduation-cap logo-icon"></i>
         {% endif %}
@@ -30,7 +31,9 @@
 
         {% if messages %}
         {% for message in messages %}
-        <div class="{% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %} alert"><i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i> {{ message }}</div>
+        <div class="{% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %} alert"><i
+                class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+            {{ message }}</div>
         {% endfor %}
         {% endif %}
         {% if form.errors %}
@@ -45,13 +48,15 @@
 
             <div class="input-group">
                 <label for="id_username" class="sr-only">Username</label>
-                <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter Username" required autocomplete="username">
+                <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter Username"
+                    required autocomplete="username">
                 <i class="fas fa-user"></i>
             </div>
 
             <div class="input-group">
                 <label for="id_password" class="sr-only">Password</label>
-                <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter Password" required autocomplete="current-password">
+                <input type="password" name="password" id="id_password" class="form-control"
+                    placeholder="Enter Password" required autocomplete="current-password">
                 <i class="fas fa-lock"></i>
             </div>
 
@@ -60,40 +65,46 @@
             </button>
         </form>
 
-        <p class="footer-link" style="margin-top: 15px;">New school? <a href="{% url 'onboarding' %}">Register your school</a></p>
-        <p class="footer-link">Forgot password? Run: <code style="font-size: 11px;">python manage.py setup_login_users</code></p>
+        <p class="footer-link" style="margin-top: 15px;">New school? <a href="{% url 'onboarding' %}">Register your
+                school</a></p>
+        <p class="footer-link">Forgot password? Contact your school administrator</p>
 
         {% if show_demo_logins %}
         <details class="demo-logins">
             <summary>Demo logins (copy-paste)</summary>
-            <p style="margin: 6px 0 4px 0;">Superuser: <strong>admin</strong> / <strong>adminpass123</strong> (not admin123)</p>
+            <p style="margin: 6px 0 4px 0;">Superuser: <strong>admin</strong> / <strong>adminpass123</strong></p>
             <table>
-                <tr><td>admin</td><td>adminpass123</td></tr>
-                <tr><td>school_admin</td><td>admin123</td></tr>
-                <tr><td>teacher</td><td>teacher123</td></tr>
-                <tr><td>staff</td><td>staff123</td></tr>
-                <tr><td>accountant</td><td>accountant123</td></tr>
-                <tr><td>owner</td><td>owner123</td></tr>
-                <tr><td>student</td><td>student123</td></tr>
+                <tr>
+                    <td>admin</td>
+                    <td>adminpass123</td>
+                </tr>
+                <tr>
+                    <td>school_admin</td>
+                    <td>admin123</td>
+                </tr>
+                <tr>
+                    <td>teacher</td>
+                    <td>teacher123</td>
+                </tr>
+                <tr>
+                    <td>staff</td>
+                    <td>staff123</td>
+                </tr>
+                <tr>
+                    <td>accountant</td>
+                    <td>accountant123</td>
+                </tr>
+                <tr>
+                    <td>owner</td>
+                    <td>owner123</td>
+                </tr>
+                <tr>
+                    <td>student</td>
+                    <td>student123</td>
+                </tr>
             </table>
-            <p style="margin: 6px 0 0 0;">Reset all: <code>python manage.py setup_login_users</code></p>
         </details>
         {% endif %}
-
-        <details class="demo-logins">
-            <summary>Demo logins (copy-paste)</summary>
-            <p style="margin: 6px 0 4px 0;">Superuser: <strong>admin</strong> / <strong>adminpass123</strong> (not admin123)</p>
-            <table>
-                <tr><td>admin</td><td>adminpass123</td></tr>
-                <tr><td>school_admin</td><td>admin123</td></tr>
-                <tr><td>teacher</td><td>teacher123</td></tr>
-                <tr><td>staff</td><td>staff123</td></tr>
-                <tr><td>accountant</td><td>accountant123</td></tr>
-                <tr><td>owner</td><td>owner123</td></tr>
-                <tr><td>student</td><td>student123</td></tr>
-            </table>
-            <p style="margin: 6px 0 0 0;">Reset all: <code>python manage.py setup_login_users</code></p>
-        </details>
 
         <div style="margin-top: 30px; font-size: 11px; color: var(--text-muted);">
             &copy; {% now "Y" %} {{ branding.SCHOOL_NAME }}. All Rights Reserved.

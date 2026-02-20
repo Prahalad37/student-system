@@ -31,6 +31,8 @@ DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 'yes')
 _default_hosts = [
     '127.0.0.1', 'localhost', '.localhost',
     'prahalad.pythonanywhere.com', 'prahaladpal.pythonanywhere.com',
+    '.schoolerp.local',  # Allow all subdomains for local development
+    '.onrender.com',     # Production
 ]
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOST', '').split(',') if h.strip()] or _default_hosts
 
@@ -59,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # 'members.middleware.subdomain.SubdomainMiddleware',  # TODO: Fix branding import before enabling
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     
@@ -172,7 +175,11 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"    
 
 # SaaS: Set CSRF_TRUSTED_ORIGINS for your domain, e.g. https://schoolsoft.in,https://*.schoolsoft.in
-_csrf_default = ['https://prahalad.pythonanywhere.com', 'https://prahaladpal.pythonanywhere.com']
+_csrf_default = [
+    'https://prahalad.pythonanywhere.com',
+    'https://prahaladpal.pythonanywhere.com',
+    'https://school-erp-51hd.onrender.com',
+]
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()] or _csrf_default
 
 # --- PWA CONFIGURATION (Mobile App Settings) ---
@@ -203,6 +210,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://prahaladpal.pythonanywhere.com",
     "http://127.0.0.1:8000",
     "http://localhost:8000",
+    "https://school-erp-51hd.onrender.com",
 ]
 
 # --- DEBUG TOOLBAR (only when DEBUG) ---
