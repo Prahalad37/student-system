@@ -10,8 +10,9 @@ services:
     name: school-erp
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py setup_login_users --run-if-empty && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    preDeployCommand: python manage.py migrate --noinput && python manage.py setup_login_users --run-if-empty
+    startCommand: gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
     healthCheckPath: /health/
     envVars:
       - key: PYTHON_VERSION
