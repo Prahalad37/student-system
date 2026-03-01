@@ -1,7 +1,7 @@
-# Deploy to Render on push to main (via Render CLI).
+# Deploy to Render on push to main (via Deploy Hook).
 # If Render Dashboard has Auto-Deploy enabled, disable it to avoid double deploys.
 #
-# Required secrets: RENDER_API_KEY, RENDER_SERVICE_ID
+# Required secret: RENDER_DEPLOY_HOOK_URL
 name: Render Deploy on Push
 on:
   push:
@@ -10,15 +10,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Render CLI
+      - name: Trigger deploy
         run: |
-          RENDER_VER=2.7.1
-          curl -sL "https://github.com/render-oss/cli/releases/download/v${RENDER_VER}/cli_${RENDER_VER}_linux_amd64.zip" -o render.zip
-          unzip -o render.zip
-          sudo install -m 755 "cli_${RENDER_VER}_linux_amd64/render" /usr/local/bin/render
-      - name: Deploy to Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          CI: true
-        run: |
-          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --wait --output json --confirm
+          curl -sf -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

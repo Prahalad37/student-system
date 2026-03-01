@@ -1,25 +1,18 @@
-# Optional: Trigger a Render deploy manually via Render CLI.
-# Render Auto-Deploy (Option A) handles push-to-deploy; this workflow is for manual/CLI deploys only.
-# To run: GitHub Actions tab -> Render CLI Deploy -> Run workflow
+# Trigger a Render deploy manually via Deploy Hook (no CLI, no workspace needed).
+# To run: GitHub Actions tab -> Render Deploy -> Run workflow
 #
-# Repo secrets required: RENDER_API_KEY, RENDER_SERVICE_ID
-name: Render CLI Deploy
-run-name: Deploy via Render CLI
+# Secret required: RENDER_DEPLOY_HOOK_URL
+# Get it: Render Dashboard -> school-erp -> Settings -> Deploy Hook -> Copy URL
+name: Render Deploy
+run-name: Deploy via Render Hook
 on:
   workflow_dispatch:
 jobs:
   Deploy-Render:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Render CLI
-        run: |
-          RENDER_VER=2.7.1
-          curl -sL "https://github.com/render-oss/cli/releases/download/v${RENDER_VER}/cli_${RENDER_VER}_linux_amd64.zip" -o render.zip
-          unzip -o render.zip
-          sudo install -m 755 "cli_${RENDER_VER}_linux_amd64/render" /usr/local/bin/render
       - name: Trigger deploy
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          CI: true
         run: |
-          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --wait --output json --confirm
+          curl -sf -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          echo ""
+          echo "Deploy triggered. Check: https://school-erp-51hd.onrender.com"

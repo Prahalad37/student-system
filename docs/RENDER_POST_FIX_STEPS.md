@@ -145,12 +145,16 @@ export RENDER_SERVICE_ID=srv-d63h5o7gi27c739g79f0
 
 | Workflow | Trigger | Use |
 |----------|---------|-----|
-| **Render CLI Deploy** | Manual (Run workflow) | One-click deploy |
+| **Render Deploy** | Manual (Run workflow) | One-click deploy |
 | **Render Deploy on Push** | Push to `main` | Auto-deploy on every push |
 
-**Secrets required:** `RENDER_API_KEY`, `RENDER_SERVICE_ID`
+**Secret required:** `RENDER_DEPLOY_HOOK_URL`
 
-Agar Render Dashboard me Auto-Deploy already on hai, to **Render Deploy on Push** disable karo (ya Render Auto-Deploy off karo) — dono chalne se double deploy hoga.
+**Kaise milega:** Render Dashboard → school-erp → **Settings** → **Deploy Hook** → Copy URL (format: `https://api.render.com/deploy/srv-xxx?key=yyy`)
+
+GitHub → Settings → Secrets → **New repository secret** → Name: `RENDER_DEPLOY_HOOK_URL`, Value: (paste URL)
+
+Agar Render Dashboard me Auto-Deploy already on hai, to **Render Deploy on Push** disable karo — dono chalne se double deploy hoga.
 
 ### Auto seed (demo data)
 
