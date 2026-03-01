@@ -38,6 +38,18 @@ If your repo structure has `mysite` as a subfolder, push from the repo root and 
 
 ---
 
+## Step 3b: Render CLI – Workspace Set (if using CLI)
+
+Agar `render services` ya `render deploys create` pe "no workspace set" error aaye:
+
+```bash
+render workspace set
+```
+
+Phir interactive menu se apna workspace (e.g. "My Workspace") select karo – Enter dabao.
+
+---
+
 ## Step 4: Trigger Manual Deploy
 
 1. **school-erp** → **Manual Deploy** → **Deploy latest commit**

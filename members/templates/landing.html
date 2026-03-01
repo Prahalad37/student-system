@@ -5,103 +5,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ branding.SCHOOL_NAME|default:"School ERP" }} – Smart School Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>{{ branding.SCHOOL_NAME|default:"Semora" }} – School ERP for Schools & Institutions</title>
+    <link rel="icon" href="{% static 'assets/img/brand/semora-logo.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{% static 'css/variables.css' %}" rel="stylesheet">
-    <link href="{% static 'css/public-pages.css' %}" rel="stylesheet">
-    <link href="{% static 'css/landing.css' %}" rel="stylesheet">
+    <link href="{% static 'css/landing.css' %}?v=20260224c" rel="stylesheet">
 </head>
 
-<body class="public-page landing-page">
-    <!-- Header -->
+<body class="landing-page landing-page--light">
+    <!-- Header: Semora logo + tagline, nav links + two buttons -->
     <header class="landing-header">
         <div class="landing-header-inner">
             <a href="{% url 'landing' %}" class="brand">
-                <i class="fas fa-graduation-cap brand-icon"></i>
-                <span class="brand-name">{{ branding.SCHOOL_NAME|default:"School ERP" }}</span>
+                <img src="{% static 'assets/img/brand/semora-logo.png' %}" alt="Semora" class="brand-logo-img">
+                <span class="brand-tagline">OPTIMIZE OPERATIONS, ELEVATE EDUCATION</span>
             </a>
-            <nav class="landing-nav">
-                <a href="{% url 'login' %}" class="nav-link">Log in</a>
-                <a href="{% url 'onboarding' %}" class="nav-link nav-link--cta">Register School</a>
+            <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+            <nav class="landing-nav" id="landing-nav">
+                <a href="{% url 'landing' %}" class="nav-link">HOME</a>
+                <a href="#our-plan" class="nav-link">OUR PLAN</a>
+                <a href="#features" class="nav-link">FEATURES</a>
+                <a href="#blog" class="nav-link">BLOG</a>
+                <a href="#about" class="nav-link">ABOUT US</a>
+                <a href="#pricing" class="nav-link">PRICING</a>
+                <a href="#contact" class="nav-link nav-btn nav-btn--contact">CONTACT US</a>
+                <a href="{% url 'login' %}" class="nav-link nav-btn nav-btn--login">LOGIN</a>
             </nav>
         </div>
     </header>
 
-    <!-- Hero -->
     <main class="landing-main">
+        <!-- Hero: split layout – left text, right illustration -->
         <section class="landing-hero">
-            <div class="hero-badge">School ERP</div>
-            {% if branding.SCHOOL_LOGO %}
-            <img src="{{ branding.SCHOOL_LOGO }}" alt="" class="hero-logo">
-            {% else %}
-            <div class="hero-logo-wrap">
-                <i class="fas fa-graduation-cap hero-icon"></i>
+            <div class="hero-content animate-on-scroll is-visible">
+                <p class="hero-badge animate-on-scroll is-visible delay-100">
+                    <img src="{% static 'assets/img/brand/verified-badge-semora.png' %}" alt="Verified"
+                        class="hero-verified-badge-img" width="28" height="28" aria-label="Verified">
+                    <span style="color:#4e73df;font-weight:600;">Effortless School Management</span>
+                </p>
+                <h1 class="hero-title animate-on-scroll is-visible delay-200">
+                    <span class="hero-title-line">Transform Your</span>
+                    <span class="hero-title-line">School With</span>
+                    <span class="hero-title-accent">Semora</span>
+                </h1>
+                <p class="hero-desc animate-on-scroll is-visible delay-300">Semora drives school operations with
+                    innovative, scalable solutions that increase collaboration and efficiency. Designed for schools and
+                    institutions, our tools integrate seamlessly to empower growth and success.</p>
+                <div class="hero-ctas animate-on-scroll is-visible delay-400">
+                    <a href="{% url 'login' %}" class="btn-hero btn-hero-primary">GET A DEMO NOW</a>
+                </div>
             </div>
-            {% endif %}
-            <h1 class="hero-title">{{ branding.SCHOOL_NAME|default:"School ERP" }}</h1>
-            <p class="hero-tagline">One place for admissions, fees, attendance, exams, library, transport and more. Sign
-                in or register your school to get started.</p>
-            <div class="hero-ctas">
-                <a href="{% url 'login' %}" class="btn-hero btn-hero-primary">
-                    <i class="fas fa-sign-in-alt"></i> Log in
-                </a>
-                <a href="{% url 'onboarding' %}" class="btn-hero btn-hero-outline">
-                    <i class="fas fa-school"></i> Register your school
-                </a>
+            <div class="hero-visual hero-sticker-carousel">
+                <div class="hero-sticker-slides">
+                    <div class="hero-sticker-slide active">
+                        <img src="{% static 'assets/img/illustrations/signin.svg' %}" alt="School management"
+                            class="hero-image" loading="eager">
+                    </div>
+                    <div class="hero-sticker-slide">
+                        <img src="{% static 'assets/img/illustrations/signin.svg' %}" alt="Student success"
+                            class="hero-image" loading="lazy">
+                    </div>
+                    <div class="hero-sticker-slide">
+                        <img src="{% static 'assets/img/illustrations/signin.svg' %}" alt="Learning" class="hero-image"
+                            loading="lazy">
+                    </div>
+                    <div class="hero-sticker-slide">
+                        <img src="{% static 'assets/img/illustrations/signin.svg' %}" alt="School" class="hero-image"
+                            loading="lazy">
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Features -->
-        <section class="landing-features">
-            <h2 class="features-title">Everything your school needs</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-user-graduate feature-icon"></i>
-                    <span class="feature-label">Students</span>
+        <!-- Our Plan: Roadmap carousel -->
+        <section class="landing-roadmap animate-on-scroll" id="our-plan">
+            <h2 class="section-title">Our Plan to Improve</h2>
+            <p class="section-subtitle">Phase-wise roadmap for Edu-Connect.</p>
+            <div class="roadmap-carousel">
+                <div class="roadmap-slides">
+                    <div class="roadmap-slide active" data-slide="0">
+                        <div class="roadmap-slide-content">
+                            <h3 class="roadmap-slide-headline">The Learning Hub</h3>
+                            <p class="roadmap-slide-tagline">Coaching ko "Content Store" banana.</p>
+                            <ul class="roadmap-slide-features">
+                                <li>Study Material Module: Upload PDF Notes & Assignments</li>
+                                <li>Video Library: Organize YouTube links subject-wise</li>
+                                <li>Student Panel: Restricted login for students to view content</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-slide-visual">
+                            <img src="{% static 'assets/img/illustrations/roadmap/slide-1-learning-hub.png' %}"
+                                alt="Learning Hub" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="roadmap-slide" data-slide="1">
+                        <div class="roadmap-slide-content">
+                            <h3 class="roadmap-slide-headline">Business & Operations</h3>
+                            <p class="roadmap-slide-tagline">Revenue & Attendance Management.</p>
+                            <ul class="roadmap-slide-features">
+                                <li>Attendance System: One-click Present/Absent marking</li>
+                                <li>WhatsApp Integration: Direct "Send Notice" button</li>
+                                <li>Fees Management: Track pending fees & generate receipts</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-slide-visual">
+                            <img src="{% static 'assets/img/illustrations/roadmap/slide-2-business-ops.png' %}"
+                                alt="Business & Operations" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="roadmap-slide" data-slide="2">
+                        <div class="roadmap-slide-content">
+                            <h3 class="roadmap-slide-headline">Society Features</h3>
+                            <p class="roadmap-slide-tagline">Community Building.</p>
+                            <ul class="roadmap-slide-features">
+                                <li>Old Book Exchange: Marketplace for donating/selling used books</li>
+                                <li>Unified ID Card: Single ID for Coaching + Library access</li>
+                                <li>Talent Spotting: Analytics to find poor but merit students</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-slide-visual">
+                            <img src="{% static 'assets/img/illustrations/roadmap/slide-3-society.png' %}"
+                                alt="Society Features" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="roadmap-slide" data-slide="3">
+                        <div class="roadmap-slide-content">
+                            <h3 class="roadmap-slide-headline">AI & Future Tech</h3>
+                            <p class="roadmap-slide-tagline">Smart Automation.</p>
+                            <ul class="roadmap-slide-features">
+                                <li>AI Notice Writer: Auto-generate polite/strict notices</li>
+                                <li>Smart Search: Voice-command search ("Show absent students")</li>
+                                <li>Offline Mode (PWA): Works without internet in rural areas</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-slide-visual">
+                            <img src="{% static 'assets/img/illustrations/roadmap/slide-4-ai-future.png' %}"
+                                alt="AI & Future Tech" loading="lazy">
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-wallet feature-icon"></i>
-                    <span class="feature-label">Fees</span>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-calendar-check feature-icon"></i>
-                    <span class="feature-label">Attendance</span>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-file-alt feature-icon"></i>
-                    <span class="feature-label">Exams</span>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-book feature-icon"></i>
-                    <span class="feature-label">Library</span>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-bus-alt feature-icon"></i>
-                    <span class="feature-label">Transport</span>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-users feature-icon"></i>
-                    <span class="feature-label">HR</span>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-cog feature-icon"></i>
-                    <span class="feature-label">Settings</span>
+                <div class="roadmap-pagination">
+                    <button type="button" class="roadmap-dot active" data-slide="0" aria-label="Slide 1"></button>
+                    <button type="button" class="roadmap-dot" data-slide="1" aria-label="Slide 2"></button>
+                    <button type="button" class="roadmap-dot" data-slide="2" aria-label="Slide 3"></button>
+                    <button type="button" class="roadmap-dot" data-slide="3" aria-label="Slide 4"></button>
                 </div>
             </div>
+        </section>
+
+        <!-- Features: Chapter1-style sticker cards -->
+        <section class="landing-features-stickers" id="features">
+            <h2 class="section-title animate-on-scroll">Building the Future Starts Now</h2>
+            <p class="section-subtitle animate-on-scroll">Semora offers innovative features designed to simplify school
+                management for institutions of all sizes.</p>
+            <div class="features-stickers-grid">
+                <div class="feature-sticker-card animate-on-scroll">
+                    <div class="feature-sticker-visual">
+                        <img src="{% static 'assets/img/illustrations/features/card-1-all-in-one.png' %}"
+                            alt="All-in-One" loading="lazy">
+                    </div>
+                    <h3 class="feature-sticker-title">All-in-One</h3>
+                    <p class="feature-sticker-desc">Student management, admissions, fees, attendance, exams—all in one
+                        platform.</p>
+                    <a href="{% url 'login' %}" class="feature-sticker-btn">VIEW MORE</a>
+                </div>
+                <div class="feature-sticker-card animate-on-scroll delay-100">
+                    <div class="feature-sticker-visual">
+                        <img src="{% static 'assets/img/illustrations/features/card-2-parent-connect.png' %}"
+                            alt="Parent Connect" loading="lazy">
+                    </div>
+                    <h3 class="feature-sticker-title">Parent Connect</h3>
+                    <p class="feature-sticker-desc">WhatsApp integration, notices, parent portal. Seamless communication
+                        between school and home.</p>
+                    <a href="{% url 'login' %}" class="feature-sticker-btn">VIEW MORE</a>
+                </div>
+                <div class="feature-sticker-card animate-on-scroll delay-200">
+                    <div class="feature-sticker-visual">
+                        <img src="{% static 'assets/img/illustrations/features/card-3-learning-hub.png' %}"
+                            alt="Learning Hub" loading="lazy">
+                    </div>
+                    <h3 class="feature-sticker-title">Learning Hub</h3>
+                    <p class="feature-sticker-desc">Study material, video library, student portal. LMS-lite for coaching
+                        content.</p>
+                    <a href="{% url 'login' %}" class="feature-sticker-btn">VIEW MORE</a>
+                </div>
+                <div class="feature-sticker-card animate-on-scroll">
+                    <div class="feature-sticker-visual">
+                        <img src="{% static 'assets/img/illustrations/features/card-4-fees-finance.png' %}"
+                            alt="Fees & Finance" loading="lazy">
+                    </div>
+                    <h3 class="feature-sticker-title">Fees & Finance</h3>
+                    <p class="feature-sticker-desc">Fees collection, receipts, concessions, pending tracking. Built for
+                        school finance.</p>
+                    <a href="{% url 'login' %}" class="feature-sticker-btn">VIEW MORE</a>
+                </div>
+                <div class="feature-sticker-card animate-on-scroll delay-100">
+                    <div class="feature-sticker-visual">
+                        <img src="{% static 'assets/img/illustrations/features/card-5-attendance-reports.png' %}"
+                            alt="Attendance & Reports" loading="lazy">
+                    </div>
+                    <h3 class="feature-sticker-title">Attendance & Reports</h3>
+                    <p class="feature-sticker-desc">One-click attendance, reports, analytics. Data-driven insights for
+                        teachers.</p>
+                    <a href="{% url 'login' %}" class="feature-sticker-btn">VIEW MORE</a>
+                </div>
+                <div class="feature-sticker-card animate-on-scroll delay-200">
+                    <div class="feature-sticker-visual">
+                        <img src="{% static 'assets/img/illustrations/features/card-6-library-society.png' %}"
+                            alt="Library & Society" loading="lazy">
+                    </div>
+                    <h3 class="feature-sticker-title">Library & Society</h3>
+                    <p class="feature-sticker-desc">Library management, book exchange, unified ID. Community-first
+                        features.</p>
+                    <a href="{% url 'login' %}" class="feature-sticker-btn">VIEW MORE</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="landing-cta animate-on-scroll">
+            <h2 class="cta-title">Ready to streamline your school?</h2>
+            <a href="{% url 'login' %}" class="btn-hero btn-hero-primary">Log in</a>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="landing-footer">
         <div class="landing-footer-inner">
-            <p>&copy; {% now "Y" %} {{ branding.SCHOOL_NAME|default:"School ERP" }}</p>
-            <p>
-                <a href="{% url 'login' %}">Staff login</a>
-                <span class="footer-note">Free hosting may have a short delay on first visit.</span>
-            </p>
+            <p>&copy; {% now "Y" %} {{ branding.SCHOOL_NAME|default:"Semora" }}</p>
+            <a href="{% url 'login' %}">Staff login</a>
         </div>
     </footer>
+    <script src="{% static 'js/landing-carousel.js' %}"></script>
+    <script>
+        (function () {
+            var toggle = document.querySelector('.nav-toggle');
+            var nav = document.getElementById('landing-nav');
+            if (toggle && nav) {
+                toggle.addEventListener('click', function () {
+                    var expanded = nav.classList.toggle('nav-open');
+                    toggle.setAttribute('aria-expanded', expanded);
+                });
+            }
+
+            // Intersection Observer for scroll animations
+            var observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            var observer = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-on-scroll').forEach(function (el) {
+                observer.observe(el);
+            });
+        })();
+    </script>
 </body>
 
 </html>

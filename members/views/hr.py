@@ -13,7 +13,7 @@ from ..utils.role_guards import require_roles
 @require_roles("OWNER", "ADMIN", "ACCOUNTANT", "TEACHER", "STAFF")
 def staff_list(request):
     school = get_current_school(request)
-    staff_qs = Staff.objects.filter(school=school, is_active=True)
+    staff_qs = Staff.objects.filter(school=school, is_active=True).order_by('first_name', 'last_name')
     paginator = Paginator(staff_qs, 25)
     page_obj = paginator.get_page(request.GET.get('page', 1))
     salary_history = SalaryTransaction.objects.select_related('staff').filter(school=school).order_by('-payment_date')[:50]

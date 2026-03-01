@@ -2,42 +2,53 @@
 
 {% block title %}Exam Results Directory{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="index" back_label="Back to Dashboard" %}
+{% endblock %}
+
 {% block content %}
 
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">
+<div class="d-sm-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <h1 class="h3 mb-2 mb-sm-0 text-gray-800 w-100 w-sm-auto">
         <i class="fas fa-chart-line text-primary mr-2"></i>Academic Performance
     </h1>
-    <a href="{% url 'add_marks' %}" class="btn btn-primary shadow-sm">
+    <a href="{% url 'add_marks' %}" class="btn btn-primary shadow-sm mt-2 mt-sm-0">
         <i class="fas fa-plus-circle mr-2"></i> Upload New Marks
     </a>
 </div>
 
-<div class="card shadow mb-4 border-0">
-    <div class="card-header py-3 bg-white">
-        <form method="get" class="form-inline flex-wrap gap-2">
-            <select name="class_id" class="form-control form-control-sm mr-2 mb-2" style="max-width: 180px;">
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header border-0 py-3 bg-white">
+        <form method="get" class="form-inline d-flex flex-wrap gap-2 w-100">
+            <select name="class_id" class="form-control form-control-sm mr-2 mb-2 flex-grow-1"
+                style="min-width: 150px; max-width: 250px;">
                 <option value="">All Classes</option>
                 {% for c in classes %}
-                <option value="{{ c.id }}" {% if class_filter == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }} {{ c.section }}</option>
+                <option value="{{ c.id }}" {% if class_filter == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}
+                    {{ c.section }}</option>
                 {% endfor %}
             </select>
-            <input type="text" name="exam" class="form-control form-control-sm mr-2 mb-2" placeholder="Exam name" value="{{ exam_filter }}" style="max-width: 150px;">
-            <input type="text" name="student" class="form-control form-control-sm mr-2 mb-2" placeholder="Student name/ID" value="{{ student_filter }}" style="max-width: 160px;">
-            <button type="submit" class="btn btn-sm btn-outline-primary mb-2"><i class="fas fa-filter"></i> Filter</button>
-            <a href="{% url 'report_card' %}" class="btn btn-sm btn-outline-secondary mb-2">Clear</a>
+            <input type="text" name="exam" class="form-control form-control-sm mr-2 mb-2 flex-grow-1"
+                placeholder="Exam name" value="{{ exam_filter }}" style="min-width: 120px; max-width: 200px;">
+            <input type="text" name="student" class="form-control form-control-sm mr-2 mb-2 flex-grow-1"
+                placeholder="Student name/ID" value="{{ student_filter }}" style="min-width: 150px; max-width: 250px;">
+            <div class="d-flex gap-2 mb-2">
+                <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fas fa-filter"></i>
+                    Filter</button>
+                <a href="{% url 'report_card' %}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            </div>
         </form>
     </div>
 </div>
 
-<div class="card shadow mb-4 border-0">
-    <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-secondary">Student Marksheet Records</h6>
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header border-0 py-3 bg-white d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-dark">Student Marksheet Records</h6>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0" id="resultsTable">
-                <thead class="thead-light text-uppercase small font-weight-bold">
+            <table class="table table-clean mb-0 align-middle" id="resultsTable">
+                <thead class="bg-light text-uppercase small font-weight-bold">
                     <tr>
                         <th class="border-0 pl-4">Student & Class</th>
                         <th class="border-0">Examination</th>
@@ -66,9 +77,9 @@
                             <span class="text-primary font-weight-bold small">{{ score.exam_name }}</span>
                         </td>
                         {% if subjects %}
-                            {% for name, mark in score.marks_list %}
-                            <td class="text-center align-middle">{{ mark }}</td>
-                            {% endfor %}
+                        {% for name, mark in score.marks_list %}
+                        <td class="text-center align-middle">{{ mark }}</td>
+                        {% endfor %}
                         {% else %}
                         <td class="text-center align-middle">{{ score.maths }}</td>
                         <td class="text-center align-middle">{{ score.physics }}</td>
@@ -78,28 +89,27 @@
                         {% endif %}
                         <td class="text-center align-middle bg-gray-100 font-weight-bold">
                             {% if subjects %}
-                                <div class="text-dark">{{ score.total_marks }} <span class="text-muted small">/{{ subjects|length }}00</span></div>
-                                <div class="text-info small mt-n1">{{ score.percentage }}%</div>
+                            <div class="text-dark">{{ score.total_marks }} <span class="text-muted small">/{{ subjects|length }}00</span></div>
+                            <div class="text-info small mt-n1">{{ score.percentage }}%</div>
                             {% else %}
-                                {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
-                                <div class="text-dark">{{ total }} <span class="text-muted small">/500</span></div>
-                                <div class="text-info small mt-n1">{{ total|floatformat:0 }}%</div>
-                                {% endwith %}
+                            <div class="text-dark">{{ score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer }} <span class="text-muted small">/500</span></div>
+                            <div class="text-info small mt-n1">—</div>
                             {% endif %}
                         </td>
 
                         <td class="text-center align-middle">
                             {% if subjects %}
-                                {% if score.passed %}
-                                <span class="badge badge-success">PASS</span>{% else %}<span class="badge badge-danger">FAIL</span>{% endif %}
+                            {% if score.passed %}
+                            <span class="badge badge-success">PASS</span>{% else %}<span
+                                class="badge badge-danger">FAIL</span>{% endif %}
                             {% else %}
-                                {% with total=score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer %}
-                                {% if total >= 165 %}
-                                    <span class="badge badge-success px-3 py-1 shadow-sm"><i class="fas fa-check mr-1 small"></i>PASS</span>
-                                {% else %}
-                                    <span class="badge badge-danger px-3 py-1 shadow-sm"><i class="fas fa-times mr-1 small"></i>FAIL</span>
-                                {% endif %}
-                                {% endwith %}
+                            {% if score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer >= 165 %}
+                            <span class="badge badge-success px-3 py-1 shadow-sm"><i
+                                    class="fas fa-check mr-1 small"></i>PASS</span>
+                            {% else %}
+                            <span class="badge badge-danger px-3 py-1 shadow-sm"><i
+                                    class="fas fa-times mr-1 small"></i>FAIL</span>
+                            {% endif %}
                             {% endif %}
                         </td>
 
