@@ -2,32 +2,36 @@
 
 {% block title %}{{ student.firstname }}'s Profile{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="all_students" back_label="Back to Students" %}
+{% endblock %}
+
 {% block content %}
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">
-        <i class="fas fa-id-badge mr-2"></i>Student Profile
+    <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+        <i class="fas fa-id-badge mr-2 text-primary"></i>Student Profile
     </h1>
-    <div>
-        <a href="{% url 'index' %}" class="btn btn-secondary btn-sm shadow-sm mr-1">
+    <div class="d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+        <a href="{% url 'index' %}" class="btn btn-light btn-sm shadow-sm border mr-1 mb-2">
             <i class="fas fa-arrow-left"></i> Back
         </a>
-        <a href="{% url 'update' student.id %}" class="btn btn-warning btn-sm shadow-sm mr-1">
+        <a href="{% url 'update' student.id %}" class="btn btn-warning btn-sm shadow-sm mr-1 mb-2 text-dark">
             <i class="fas fa-pen"></i> Edit
         </a>
         <a href="{% url 'admission_receipt_pdf' student.id %}" target="_blank"
-            class="btn btn-success btn-sm shadow-sm mr-1">
+            class="btn btn-success btn-sm shadow-sm mr-1 mb-2">
             <i class="fas fa-file-pdf"></i> Admission Receipt
         </a>
         <a href="{% url 'student_receipt_pdf' student.id %}" target="_blank"
-            class="btn btn-primary btn-sm shadow-sm mr-1">
+            class="btn btn-primary btn-sm shadow-sm mr-1 mb-2">
             <i class="fas fa-file-invoice-dollar"></i> Fee Receipt
         </a>
-        <a href="{% url 'id_card' student.id %}" target="_blank" class="btn btn-info btn-sm shadow-sm">
+        <a href="{% url 'id_card' student.id %}" target="_blank" class="btn btn-info btn-sm shadow-sm mb-2">
             <i class="fas fa-id-card"></i> ID Card
         </a>
         {% if not has_login %}{% if is_owner or is_admin %}
-        <a href="{% url 'create_student_login' student.id %}" class="btn btn-success btn-sm shadow-sm ml-1">
+        <a href="{% url 'create_student_login' student.id %}" class="btn btn-success btn-sm shadow-sm ml-1 mb-2">
             <i class="fas fa-user-plus"></i> Create Student Login
         </a>
         {% endif %}{% endif %}
@@ -37,8 +41,8 @@
 <div class="row">
 
     <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <div class="card-body text-center">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body text-center pt-5">
                 {% if student.profile_pic %}
                 <img class="img-profile rounded-circle mb-3 shadow" src="{{ student.profile_pic.url }}"
                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
@@ -89,13 +93,13 @@
             </div>
         </div>
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">📊 Attendance</h6>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-0">
+                <h6 class="m-0 font-weight-bold text-dark">📊 Attendance</h6>
             </div>
-            <div class="card-body text-center">
-                <h2 class="display-4 font-weight-bold text-dark mb-0">{{ attendance_percent }}%</h2>
-                <div class="progress mb-3 mt-2" style="height: 10px;">
+            <div class="card-body text-center p-4">
+                <h2 class="display-4 font-weight-bold text-primary mb-0">{{ attendance_percent }}%</h2>
+                <div class="progress mb-4 mt-3" style="height: 10px; border-radius: 10px;">
                     <div class="progress-bar {% if attendance_percent >= 75 %}bg-success{% elif attendance_percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                         role="progressbar" style="width: {{ attendance_percent }}%"></div>
                 </div>
@@ -113,13 +117,14 @@
 
     <div class="col-xl-8 col-lg-7">
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-gradient-primary text-white">
-                <h6 class="m-0 font-weight-bold"><i class="fas fa-user-graduate mr-2"></i>Academic & Personal Info</h6>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-dark"><i
+                        class="fas fa-user-graduate mr-2 text-primary"></i>Academic & Personal Info</h6>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-6 mb-4">
                         <small class="text-uppercase text-secondary font-weight-bold">Father's Name</small>
                         <h6 class="font-weight-bold text-dark">{{ student.father_name|default:"-" }}</h6>
                     </div>
@@ -154,19 +159,19 @@
                     </div>
                     <div class="col-12">
                         <small class="text-uppercase text-secondary font-weight-bold">Address</small>
-                        <p class="text-dark bg-light p-2 rounded small">{{ student.address|default:"No Address Provided"
-                            }}</p>
+                        <p class="text-dark bg-light p-2 rounded small">{{ student.address|default:"No Address Provided" }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-white border-bottom-primary">
-                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bus-alt mr-2"></i>Transport & Medical
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-dark"><i class="fas fa-bus-alt mr-2 text-warning"></i>Transport &
+                    Medical
                 </h6>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <div class="row">
                     <div class="col-md-6 border-right">
                         <h6 class="text-primary font-weight-bold mb-3 small text-uppercase">🚌 Transport</h6>
@@ -184,13 +189,14 @@
             </div>
         </div>
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-info">📝 Exam History</h6>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-dark"><i class="fas fa-file-alt mr-2 text-info"></i>Exam History
+                </h6>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped mb-0">
+                    <table class="table table-clean mb-0">
                         <thead class="bg-light">
                             <tr>
                                 <th>Exam Name</th>
@@ -211,11 +217,7 @@
                                 <td>{{ score.chemistry }}</td>
                                 <td>{{ score.english }}</td>
                                 <td>{{ score.computer }}</td>
-                                <td class="font-weight-bold text-primary">
-                                    {{
-                                    score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer
-                                    }}
-                                </td>
+                                <td class="font-weight-bold text-primary">{{ score.maths|add:score.physics|add:score.chemistry|add:score.english|add:score.computer }}</td>
                             </tr>
                             {% empty %}
                             <tr>

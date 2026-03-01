@@ -3,6 +3,10 @@
 
 {% block title %}Edit discount{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="fee_discounts" back_label="Back to Discounts" %}
+{% endblock %}
+
 {% block content %}
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Edit discount: {{ discount.name }}</h1>

@@ -18,245 +18,245 @@
 {% block content %}
 
 <div class="dashboard-page">
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Dashboard</h1>
-    <div>
-        {% if is_owner or is_admin %}
-        <a href="{% url 'notification_send' %}" class="d-none d-sm-inline-block btn btn-sm btn-outline-primary shadow-sm rounded-pill px-3 mr-2">
-            <i class="fas fa-bell fa-sm mr-2"></i> Send notification
-        </a>
-        {% endif %}
-        <a href="{% url 'report_card' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm rounded-pill px-3">
-            <i class="fas fa-file-alt fa-sm text-white-50 mr-2"></i> Report
-        </a>
-    </div>
-</div>
-
-{% if show_getting_started and getting_started_items %}
-<div class="card border-left-primary shadow mb-4">
-    <div class="card-header py-2 d-flex align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-rocket mr-2"></i>Getting started</h6>
-        <form method="post" action="{% url 'dismiss_getting_started' %}" class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-outline-secondary">Dismiss</button>
-        </form>
-    </div>
-    <div class="card-body py-3">
-        <p class="text-muted small mb-2">Set up your school in a few steps:</p>
-        <ul class="mb-0 pl-3">
-            {% for item in getting_started_items %}
-            <li class="mb-1"><a href="{% url item.url_name %}">{{ item.label }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-{% endif %}
-
-<div class="row">
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card stat-card--primary shadow-sm">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-label">Total Students</div>
-                    <div class="stat-value">{{ total_students }}</div>
-                    <div class="stat-meta">
-                        <span class="mr-2"><i class="fas fa-male text-primary"></i> {{ male_count }}</span>
-                        <span class="mr-2"><i class="fas fa-female text-danger"></i> {{ female_count }}</span>
-                        <span class="text-up"><i class="fas fa-arrow-up"></i> {{ new_admissions }} new</span>
-                    </div>
-                </div>
-                <div class="icon-box icon-blue"><i class="fas fa-user-graduate"></i></div>
-            </div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Dashboard</h1>
+        <div class="d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+            {% if is_owner or is_admin %}
+            <a href="{% url 'notification_send' %}"
+                class="btn btn-sm btn-outline-primary shadow-sm rounded-pill px-3 mr-2 mb-2">
+                <i class="fas fa-bell fa-sm mr-2"></i> Send notification
+            </a>
+            {% endif %}
+            <a href="{% url 'report_card' %}" class="btn btn-sm btn-primary shadow-sm rounded-pill px-3 mb-2">
+                <i class="fas fa-file-alt fa-sm text-white-50 mr-2"></i> Report
+            </a>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card stat-card--secondary shadow-sm">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-label">Fees Collected</div>
-                    <div class="stat-value">₹{{ total_revenue }}</div>
-                    <div class="stat-meta">Pending: <span class="text-down">₹{{ pending_dues }}</span></div>
-                </div>
-                <div class="icon-box icon-green"><i class="fas fa-wallet"></i></div>
-            </div>
+    {% if show_getting_started and getting_started_items %}
+    <div class="card border-left-primary shadow mb-4">
+        <div class="card-header py-2 d-flex align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-rocket mr-2"></i>Getting started</h6>
+            <form method="post" action="{% url 'dismiss_getting_started' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Dismiss</button>
+            </form>
+        </div>
+        <div class="card-body py-3">
+            <p class="text-muted small mb-2">Set up your school in a few steps:</p>
+            <ul class="mb-0 pl-3">
+                {% for item in getting_started_items %}
+                <li class="mb-1"><a href="{% url item.url_name %}">{{ item.label }}</a></li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
+    {% endif %}
 
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card stat-card--primary shadow-sm">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-label">Transport</div>
-                    <div class="stat-value">{{ students_on_bus }}</div>
-                    <div class="stat-meta">Active Routes Used</div>
-                </div>
-                <div class="icon-box icon-orange"><i class="fas fa-bus"></i></div>
-            </div>
-        </div>
-    </div>
+    <div class="row">
 
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card stat-card--accent shadow-sm">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-label">Library</div>
-                    <div class="stat-value">{{ books_issued }}</div>
-                    <div class="stat-meta">Books Currently Issued</div>
-                </div>
-                <div class="icon-box icon-purple"><i class="fas fa-book-reader"></i></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-
-    <div class="col-lg-5 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-dark">🚀 Quick Actions</h6>
-                <span class="badge badge-primary">{{ total_students }} students</span>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-6 mb-3">
-                        <a href="{% url 'add' %}" class="btn-quick">
-                            <i class="fas fa-user-plus text-primary"></i>
-                            <span>New Admission</span>
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="{% url 'fee_home' %}" class="btn-quick">
-                            <i class="fas fa-rupee-sign text-success"></i>
-                            <span>Collect Fee</span>
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="{% url 'attendance' %}" class="btn-quick">
-                            <i class="fas fa-calendar-check text-info"></i>
-                            <span>Mark Attendance</span>
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="{% url 'transport_home' %}" class="btn-quick">
-                            <i class="fas fa-bus text-warning"></i>
-                            <span>Transport</span>
-                        </a>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <a href="{% url 'learning_hub' %}" class="btn-quick">
-                            <i class="fas fa-graduation-cap text-info"></i>
-                            <span>Learning Hub</span>
-                        </a>
-                    </div>
-                    <div class="col-6">
-                        <a href="{% url 'library_home' %}" class="btn-quick">
-                            <i class="fas fa-book-reader text-purple"></i>
-                            <span>Library</span>
-                        </a>
-                    </div>
-                    <div class="col-6">
-                        <a href="{% url 'staff_list' %}" class="btn-quick">
-                            <i class="fas fa-users text-secondary"></i>
-                            <span>Staff / HR</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Gender Distribution Chart -->
-        <div class="card shadow-sm mt-4">
-            <div class="card-header bg-white py-3 border-0">
-                <h6 class="m-0 font-weight-bold text-dark">Students by Gender</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="genderChart" height="120"></canvas>
-            </div>
-        </div>
-
-        <!-- Recent Admissions Widget -->
-        <div class="card shadow-sm mt-4">
-            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-dark">🎓 New Admissions</h6>
-                <a href="{% url 'all_students' %}" class="small font-weight-bold text-primary">View All</a>
-            </div>
-            <div class="card-body p-0">
-                <ul class="list-group list-group-flush">
-                    {% for s in recent_admissions %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
-                        <div class="d-flex align-items-center">
-                            <div class="rounded-circle bg-light text-success d-flex align-items-center justify-content-center mr-3 font-weight-bold"
-                                style="width:35px; height:35px;">
-                                {{ s.firstname|slice:":1" }}
-                            </div>
-                            <div>
-                                <div class="font-weight-bold text-dark">{{ s.firstname }} {{ s.lastname }}</div>
-                                <div class="small text-muted">{{ s.student_class|default:"No Class" }}</div>
-                            </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card--primary shadow-sm">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value">{{ total_students }}</div>
+                        <div class="stat-meta">
+                            <span class="mr-2"><i class="fas fa-male text-primary"></i> {{ male_count }}</span>
+                            <span class="mr-2"><i class="fas fa-female text-danger"></i> {{ female_count }}</span>
+                            <span class="text-up"><i class="fas fa-arrow-up"></i> {{ new_admissions }} new</span>
                         </div>
-                        <span class="small text-muted">{{ s.joined_date|date:"d M" }}</span>
-                    </li>
-                    {% empty %}
-                    <li class="list-group-item text-center py-4 text-muted">No new admissions.</li>
-                    {% endfor %}
-                </ul>
+                    </div>
+                    <div class="icon-box icon-blue"><i class="fas fa-user-graduate"></i></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-lg-7 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
-                <h6 class="m-0 font-weight-bold text-dark">Recent Transactions</h6>
-                <a href="{% url 'fee_home' %}" class="small font-weight-bold text-primary">View All</a>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card--secondary shadow-sm">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Fees Collected</div>
+                        <div class="stat-value">₹{{ total_revenue }}</div>
+                        <div class="stat-meta">Pending: <span class="text-down">₹{{ pending_dues }}</span></div>
+                    </div>
+                    <div class="icon-box icon-green"><i class="fas fa-wallet"></i></div>
+                </div>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-clean mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="pl-4">Student</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th class="text-right pr-4">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for t in recent_transactions %}
-                            <tr>
-                                <td class="pl-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center mr-2 font-weight-bold"
-                                            style="width:35px; height:35px;">
-                                            {{ t.student.firstname|slice:":1" }}
-                                        </div>
-                                        <div>
-                                            <div class="text-dark">{{ t.student.firstname }} {{ t.student.lastname }}
-                                            </div>
-                                            <div class="small text-muted">{{ t.student.student_class }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-muted small">{{ t.payment_date }}</td>
-                                <td><span class="badge badge-success bg-success text-white px-2 py-1"
-                                        style="opacity: 0.8;">Paid</span></td>
-                                <td class="text-right pr-4 font-weight-bold text-dark">+ ₹{{ t.amount_paid }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center py-5 text-muted">No recent activity.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card--primary shadow-sm">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Transport</div>
+                        <div class="stat-value">{{ students_on_bus }}</div>
+                        <div class="stat-meta">Active Routes Used</div>
+                    </div>
+                    <div class="icon-box icon-orange"><i class="fas fa-bus"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card--accent shadow-sm">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label">Library</div>
+                        <div class="stat-value">{{ books_issued }}</div>
+                        <div class="stat-meta">Books Currently Issued</div>
+                    </div>
+                    <div class="icon-box icon-purple"><i class="fas fa-book-reader"></i></div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <div class="row">
+
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-dark">🚀 Quick Actions</h6>
+                    <span class="badge badge-primary">{{ total_students }} students</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 mb-3">
+                            <a href="{% url 'add' %}" class="btn-quick">
+                                <i class="fas fa-user-plus text-primary mb-2"></i>
+                                <span>New Admission</span>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 mb-3">
+                            <a href="{% url 'fee_home' %}" class="btn-quick">
+                                <i class="fas fa-rupee-sign text-success mb-2"></i>
+                                <span>Collect Fee</span>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 mb-3">
+                            <a href="{% url 'attendance' %}" class="btn-quick">
+                                <i class="fas fa-calendar-check text-info mb-2"></i>
+                                <span>Mark Attendance</span>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 mb-3">
+                            <a href="{% url 'transport_home' %}" class="btn-quick">
+                                <i class="fas fa-bus text-warning mb-2"></i>
+                                <span>Transport</span>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 mb-3">
+                            <a href="{% url 'learning_hub' %}" class="btn-quick">
+                                <i class="fas fa-graduation-cap text-info mb-2"></i>
+                                <span>Learning Hub</span>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 mb-3">
+                            <a href="{% url 'library_home' %}" class="btn-quick">
+                                <i class="fas fa-book-reader text-purple mb-2"></i>
+                                <span>Library</span>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <a href="{% url 'staff_list' %}" class="btn-quick">
+                                <i class="fas fa-users text-secondary mb-2"></i>
+                                <span>Staff / HR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gender Distribution Chart -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-dark">Students by Gender</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="genderChart" height="120"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Admissions Widget -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-dark">🎓 New Admissions</h6>
+                    <a href="{% url 'all_students' %}" class="small font-weight-bold text-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for s in recent_admissions %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-light text-success d-flex align-items-center justify-content-center mr-3 font-weight-bold"
+                                    style="width:35px; height:35px;">
+                                    {{ s.firstname|slice:":1" }}
+                                </div>
+                                <div>
+                                    <div class="font-weight-bold text-dark">{{ s.firstname }} {{ s.lastname }}</div>
+                                    <div class="small text-muted">{{ s.student_class|default:"No Class" }}</div>
+                                </div>
+                            </div>
+                            <span class="small text-muted">{{ s.joined_date|date:"d M" }}</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-center py-4 text-muted">No new admissions.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
+                    <h6 class="m-0 font-weight-bold text-dark">Recent Transactions</h6>
+                    <a href="{% url 'fee_home' %}" class="small font-weight-bold text-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-clean mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="pl-4">Student</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th class="text-right pr-4">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in recent_transactions %}
+                                <tr>
+                                    <td class="pl-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center mr-2 font-weight-bold"
+                                                style="width:35px; height:35px;">
+                                                {{ t.student.firstname|slice:":1" }}
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold text-dark">{{ t.student.firstname }} {{ t.student.lastname }}</div>
+                                                <div class="small text-muted">{{ t.student.student_class }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small">{{ t.payment_date }}</td>
+                                    <td><span class="badge badge-success bg-success text-white px-2 py-1"
+                                            style="opacity: 0.8;">Paid</span></td>
+                                    <td class="text-right pr-4 font-weight-bold text-dark">+ ₹{{ t.amount_paid }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">No recent activity.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="addNoticeModal" tabindex="-1">
@@ -280,27 +280,27 @@
 
 <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var ctx = document.getElementById('genderChart');
-    if (ctx) {
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Male', 'Female'],
-                datasets: [{
-                    data: [{{ male_count }}, {{ female_count }}],
-                    backgroundColor: ['#2563EB', '#6D28D9'],
-                    hoverBackgroundColor: ['#1d4ed8', '#5b21b6']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                legend: { position: 'bottom' },
-                cutoutPercentage: 60
-            }
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('genderChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Male', 'Female'],
+                    datasets: [{
+                        data: [{{ male_count|default:"0" }}, {{ female_count|default:"0" }}],
+                        backgroundColor: ['#2563EB', '#6D28D9'],
+                        hoverBackgroundColor: ['#1d4ed8', '#5b21b6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    legend: { position: 'bottom' },
+                    cutoutPercentage: 60
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}

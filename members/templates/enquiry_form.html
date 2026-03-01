@@ -3,6 +3,10 @@
 
 {% block title %}{% if enquiry %}Edit enquiry{% else %}Add enquiry{% endif %}{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="enquiry_list" back_label="Back to Enquiries" %}
+{% endblock %}
+
 {% block content %}
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">{% if enquiry %}Edit enquiry{% else %}Add enquiry{% endif %}</h1>

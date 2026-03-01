@@ -2,6 +2,10 @@
 
 {% block title %}New Admission{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="all_students" back_label="Back to Students" %}
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-xl-10 col-lg-12 col-md-12">

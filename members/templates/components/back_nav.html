@@ -1,0 +1,8 @@
+{% comment %}
+Reusable back navigation. Usage:
+{% include "components/back_nav.html" with back_url_name="fee_home" back_label="Back to Fees" %}
+For URLs with args: pass back_url directly in parent, e.g. in view add 'back_url': reverse('student_profile', args=[id])
+{% endcomment %}
+<a href="{% if back_url %}{{ back_url }}{% else %}{% url back_url_name %}{% endif %}" class="btn btn-sm btn-outline-secondary mb-3">
+    <i class="fas fa-arrow-left mr-1"></i>{{ back_label|default:"Back" }}
+</a>

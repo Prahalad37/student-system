@@ -3,6 +3,10 @@
 
 {% block title %}Exam types{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="report_card" back_label="Back to Exam Results" %}
+{% endblock %}
+
 {% block content %}
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-clipboard-list text-primary mr-2"></i>Exam types</h1>

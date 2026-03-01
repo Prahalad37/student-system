@@ -2,6 +2,10 @@
 
 {% block title %}Expense Manager{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="fee_home" back_label="Back to Fees" %}
+{% endblock %}
+
 {% block content %}
 
 <div class="row">

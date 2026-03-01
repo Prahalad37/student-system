@@ -26,7 +26,7 @@ def extract_subdomain(host_or_request):
         host = (str(host_or_request).strip()).split(":")[0].lower()
 
     labels = [p for p in host.split(".") if p]
-    root_like = {"localhost", "127.0.0.1"}
+    root_like = {"localhost", "127.0.0.1", "0.0.0.0"}
     if host in root_like or len(labels) <= 1:
         return None
 

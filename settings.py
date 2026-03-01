@@ -1,6 +1,6 @@
 """
 Django settings for mysite project.
-UPDATED FOR: Prahlad Academy ERP v2.0 (Phase 2 + PWA Fix)
+UPDATED FOR: Semora ERP (Optimize Operations, Elevate Education)
 """
 import environ
 import os
@@ -129,8 +129,8 @@ CSRF_TRUSTED_ORIGINS = ['https://prahalad.pythonanywhere.com', 'https://prahalad
 
 
 # --- ✅ PWA CONFIGURATION (FIXED PATH) ---
-PWA_APP_NAME = 'Prahlad Academy'
-PWA_APP_DESCRIPTION = "Smart School ERP System"
+PWA_APP_NAME = 'Semora'
+PWA_APP_DESCRIPTION = "Optimize Operations, Elevate Education"
 PWA_APP_THEME_COLOR = '#4e73df'
 PWA_APP_BACKGROUND_COLOR = '#ffffff'
 PWA_APP_DISPLAY = 'standalone'

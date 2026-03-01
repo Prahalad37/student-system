@@ -12,10 +12,20 @@ from ..utils.roles import get_user_role
 
 
 def landing(request):
-    """Landing page for anonymous visitors. Logged-in users are redirected to dashboard."""
+    """Landing page for anonymous visitors. Only Semora branding, no school name."""
     if request.user.is_authenticated:
         return redirect("index")
-    return render(request, "landing.html")
+    # Force Semora-only branding on landing (no school name)
+    branding = {
+        "SCHOOL_NAME": "Semora",
+        "SCHOOL_TAGLINE": "Optimize Operations, Elevate Education",
+        "SCHOOL_LOGO": None,
+    }
+    response = render(request, "landing.html", {"branding": branding})
+    response["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response["Pragma"] = "no-cache"
+    response["Expires"] = "0"
+    return response
 
 
 @login_required

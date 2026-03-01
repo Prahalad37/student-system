@@ -3,6 +3,10 @@
 
 {% block title %}Attendance History{% endblock %}
 
+{% block breadcrumbs %}
+{% include "components/back_nav.html" with back_url_name="attendance" back_label="Back to Attendance" %}
+{% endblock %}
+
 {% block content %}
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -12,27 +16,27 @@
     </a>
 </div>
 
-<div class="card shadow mb-4 border-left-info">
+<div class="card border-0 shadow-sm mb-4 border-left-info">
     <div class="card-body bg-light">
         <form method="GET" class="row align-items-end">
-            <div class="col-md-4">
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
                 <label class="font-weight-bold small text-muted text-uppercase">Filter by Class</label>
                 <select name="class_id" class="form-control">
                     <option value="">All Classes</option>
                     {% for c in classes %}
-                        <option value="{{ c.id }}" {% if c.id == selected_class %}selected{% endif %}>
-                            {{ c.name }} - {{ c.section }}
-                        </option>
+                    <option value="{{ c.id }}" {% if c.id == selected_class %}selected{% endif %}>
+                        {{ c.name }} - {{ c.section }}
+                    </option>
                     {% endfor %}
                 </select>
             </div>
-            
-            <div class="col-md-4">
+
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
                 <label class="font-weight-bold small text-muted text-uppercase">Filter by Date</label>
                 <input type="date" name="date" class="form-control" value="{{ selected_date }}">
             </div>
-            
-            <div class="col-md-4">
+
+            <div class="col-12 col-md-4">
                 <button type="submit" class="btn btn-info btn-block shadow-sm font-weight-bold">
                     <i class="fas fa-search mr-2"></i> Search Records
                 </button>
@@ -41,13 +45,13 @@
     </div>
 </div>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3 bg-white">
-        <h6 class="m-0 font-weight-bold text-info">Attendance History Data</h6>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header border-0 py-3 bg-white">
+        <h6 class="m-0 font-weight-bold text-dark">Attendance History Data</h6>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-clean mb-0 align-middle">
                 <thead class="bg-light">
                     <tr>
                         <th class="pl-4">Date</th>
@@ -66,16 +70,18 @@
                         <td><span class="badge badge-light border">{{ r.student.student_class }}</span></td>
                         <td class="text-center">
                             {% if r.status == 'Present' %}
-                                <span class="badge badge-success px-3 py-2 rounded-pill">Present</span>
+                            <span class="badge badge-success px-3 py-2 rounded-pill">Present</span>
                             {% elif r.status == 'Absent' %}
-                                <span class="badge badge-danger px-3 py-2 rounded-pill">Absent</span>
+                            <span class="badge badge-danger px-3 py-2 rounded-pill">Absent</span>
                             {% else %}
-                                <span class="badge badge-warning px-3 py-2 rounded-pill">{{ r.status }}</span>
+                            <span class="badge badge-warning px-3 py-2 rounded-pill">{{ r.status }}</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="4" class="text-center py-5 text-muted">No records found matching your filters.</td></tr>
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">No records found matching your filters.</td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>

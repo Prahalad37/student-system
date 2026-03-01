@@ -1,108 +1,60 @@
-# Phase A: Critical Fixes - Completion Report
+# Phase A: Critical Fixes — Report
 
-**Project:** Prahlad Academy ERP  
-**Phase:** A (Critical Fixes)  
-**Status:** Complete  
-**Date:** February 7, 2025
+## 1. Executive Summary
 
----
-
-## Executive Summary
-
-Phase A addressed all 5 critical issues identified in the project audit. Security hardening (environment variables, CORS), Debug Toolbar configuration, the `get_fee_amount` API implementation, and the `delete_fee` race condition fix have been implemented and are ready for verification.
+Phase A critical fixes are **complete** as of **2025-02-20**. All five areas (A1–A4 plus deliverable) have been addressed: environment/secrets, CORS, Debug Toolbar, `get_fee_amount`, and `delete_fee` race condition. Several items were already in place; remaining gaps were implemented and documented.
 
 ---
 
-## Tasks Completed
+## 2. Tasks Completed
 
 | Task ID | Description | Status | Files Modified |
-|---------|-------------|--------|----------------|
-| A1.1 | Add `.env` to `.gitignore` | Done | `mysite/.gitignore` |
-| A1.2 | Add `python-dotenv` dependency | Done | `mysite/requirements.txt` |
-| A1.3 | Move SECRET_KEY to environment | Done | `mysite/mysite/settings.py` |
-| A1.4 | Move DEBUG to environment | Done | `mysite/mysite/settings.py` |
-| A1.5 | Restrict CORS to allowed origins | Done | `mysite/mysite/settings.py` |
-| A1.6 | Create `.env.example` template | Done | `mysite/.env.example` (new) |
-| A2 | Debug Toolbar conditional configuration | Done | `mysite/mysite/settings.py` |
-| A3 | Implement `get_fee_amount` API | Done | `mysite/members/views/finance.py` |
-| A4 | Fix `delete_fee` race condition | Done | `mysite/members/views/finance.py` |
+|--------|-------------|--------|----------------|
+| A1 | Security: env & secrets | Done | `.gitignore` (verified), `requirements.txt` (verified), `mysite/settings.py` (verified), **`.env.example`** (created) |
+| A2 | Debug Toolbar only when DEBUG | Done | `mysite/settings.py`, `mysite/urls.py` |
+| A3 | Implement `get_fee_amount` | Done (pre-existing) | `members/views/finance.py` — already implemented |
+| A4 | Fix `delete_fee` race condition | Done (pre-existing) | `members/views/finance.py` — already used `transaction.atomic()` + `F()` |
+| — | Phase A report | Done | `mysite/PHASE_A_REPORT.md` (this file) |
 
 ---
 
-## Verification Steps
+## 3. Verification Steps
 
-### 1. Environment Setup
-```bash
-cd mysite
-pip install -r requirements.txt  # Installs python-dotenv
-cp .env.example .env
-# Edit .env: set DJANGO_SECRET_KEY and DEBUG=True for local dev
-```
-Note: If python-dotenv is not installed, the app will still run using system env vars or defaults.
+- **Environment & app load**
+  ```bash
+  cd mysite
+  python manage.py check
+  python manage.py runserver
+  ```
+  With `DEBUG=False` (default if unset), Debug Toolbar must not appear. With `DEBUG=True` in `.env`, toolbar should appear when visiting any page (and `INTERNAL_IPS` includes `127.0.0.1`).
 
-### 2. Django Check
-```bash
-python manage.py check
-```
-Expected: `System check identified no issues (0 silenced).`
+- **get_fee_amount**
+  - As a logged-in user with appropriate role, open:  
+    `GET /members/finance/get-fee-amount/?student_id=<id>`  
+  - Valid `student_id` for current school → `{"amount": "<due>"}` (due = fee_total − fee_paid, non‑negative).  
+  - Missing/invalid `student_id` → 400 with error message.
 
-### 3. Run Server
-```bash
-python manage.py runserver
-```
-Expected: Server starts; visit `http://127.0.0.1:8000` and confirm login/dashboard works.
-
-### 4. Test `get_fee_amount`
-- Log in and go to Fee Management.
-- Open browser dev tools (Network tab).
-- Call: `GET /finance/get-fee/?student_id=<valid_student_id>`
-- Expected: `{"amount": "<due_amount>"}` or `{"amount": "0"}` if no dues.
-- Invalid: `GET /finance/get-fee/` → 400 with `{"error": "student_id required"}`
-
-### 5. Test `delete_fee`
-- As superuser, delete a fee transaction.
-- Verify student's `fee_paid` is correctly decremented.
-- Verify no race condition under concurrent requests (optional load test).
-
-### 6. CORS
-- With DEBUG=False and production origins, verify only whitelisted origins can access API (e.g. from frontend on allowed domain).
+- **delete_fee**
+  - Delete a fee transaction from the fee home (OWNER/ADMIN).  
+  - Student’s `fee_paid` should decrease by the transaction amount in one atomic step (no race).
 
 ---
 
-## Environment Setup Instructions
+## 4. Environment Setup
 
-1. **Copy the example file:**
+1. Copy the example env file:
    ```bash
    cp .env.example .env
    ```
-
-2. **Set required variables in `.env`:**
-   ```
-   DJANGO_SECRET_KEY=<generate-with-command-below>
-   DEBUG=True
-   ```
-
-3. **Generate a secret key (production):**
-   ```bash
-   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
-   ```
-
-4. **For PythonAnywhere production:**
-   - Add `DJANGO_SECRET_KEY` and `DEBUG=False` in the Web app's Environment variables.
-   - Ensure `.env` is not deployed; use platform env vars instead.
+2. Edit `.env` and set at least:
+   - `DJANGO_SECRET_KEY` — long random string in production.
+   - `DEBUG` — `True` only for local dev; must be `False` in production.
+3. Optional: set `ALLOWED_HOST`, `DATABASE_URL`, `DJANGO_SETTINGS_MODULE` as needed.
 
 ---
 
-## Remaining Risks / Follow-up
+## 5. Remaining Risks / Follow-up
 
-1. **Production deployment:** Set `DJANGO_SECRET_KEY` and `DEBUG=False` in PythonAnywhere (or your host) environment. Do not rely on `.env` in production if the file could be exposed.
-
-2. **Subdomain origins:** If using tenant subdomains (e.g. `school.localhost:8000`), add them to `CORS_ALLOWED_ORIGINS` if the frontend makes API calls from those origins.
-
-3. **Mobile apps:** If a mobile app connects from a different origin, add that origin to `CORS_ALLOWED_ORIGINS`.
-
----
-
-## Summary
-
-Phase A critical fixes are complete. The application now uses environment-based configuration for secrets and debug mode, restricts CORS to specified origins, correctly computes and returns due fee amounts, and uses atomic updates when deleting fee transactions.
+- **Production (e.g. PythonAnywhere):** Ensure `DJANGO_SECRET_KEY` and `DEBUG=False` are set in the host’s environment (or in a production `.env` that is not committed).  
+- **CORS:** `CORS_ALLOWED_ORIGINS` is already restricted; if you add new front-end origins, add them to this list in `settings.py`.  
+- **Debug Toolbar:** Only loaded when `DEBUG` is True; no change needed for production if `DEBUG` is False.

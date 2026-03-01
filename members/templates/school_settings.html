@@ -4,12 +4,7 @@
 {% block title %}School Settings{% endblock %}
 
 {% block breadcrumbs %}
-<nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb bg-transparent py-2 mb-0">
-        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
-        <li class="breadcrumb-item active">School Settings</li>
-    </ol>
-</nav>
+{% include "components/back_nav.html" with back_url_name="index" back_label="Back to Dashboard" %}
 {% endblock %}
 
 {% block content %}

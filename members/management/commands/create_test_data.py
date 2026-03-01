@@ -15,7 +15,17 @@ from members.models import (
 class Command(BaseCommand):
     help = 'Creates comprehensive test data for Django ERP'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--run-if-empty',
+            action='store_true',
+            help='Only run when no students exist (e.g. fresh Render deploy). Use in preDeployCommand.',
+        )
+
     def handle(self, *args, **kwargs):
+        if kwargs.get('run_if_empty') and Member.objects.exists():
+            self.stdout.write(self.style.WARNING('Data already exists; skipping (--run-if-empty).'))
+            return
         self.stdout.write(self.style.SUCCESS('🚀 Creating test data...\n'))
         
         # Use first school (same one shown on localhost dashboard) or create one
@@ -23,7 +33,7 @@ class Command(BaseCommand):
         if not school1:
             self.stdout.write('Creating school...')
             school1 = School.objects.create(
-                name='Prahlad Academy',
+                name='Semora',
                 address='123 Main Street, City',
                 school_code='PTEST001',
                 code='prahlad'

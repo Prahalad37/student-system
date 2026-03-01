@@ -1,6 +1,6 @@
 """
 Django settings for mysite project.
-UPDATED FOR: Prahlad Academy ERP v2.0 (SaaS Phase 2)
+UPDATED FOR: Semora ERP (Optimize Operations, Elevate Education)
 """
 
 import os
@@ -29,7 +29,7 @@ DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 # SaaS: Add your domain + wildcard via env, e.g. ALLOWED_HOST=schoolsoft.in,.schoolsoft.in
 _default_hosts = [
-    '127.0.0.1', 'localhost', '.localhost',
+    '127.0.0.1', 'localhost', '.localhost', '0.0.0.0',
     'prahalad.pythonanywhere.com', 'prahaladpal.pythonanywhere.com',
     '.schoolerp.local',  # Allow all subdomains for local development
     '.onrender.com',     # Production
@@ -40,6 +40,7 @@ ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOST', '').split(','
 # --- APPLICATION DEFINITION ---
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,7 +56,7 @@ INSTALLED_APPS = [
     # Custom Apps
     'members',
 ]
-# DJDT disabled for cleaner UI
+# Debug toolbar disabled (enable in INSTALLED_APPS + MIDDLEWARE if needed for profiling)
 # if DEBUG:
 #     INSTALLED_APPS += ['debug_toolbar']
 
@@ -66,8 +67,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     
     # ✅ CORS Middleware must be before CommonMiddleware
-    'corsheaders.middleware.CorsMiddleware', 
-    
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -183,8 +183,8 @@ _csrf_default = [
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()] or _csrf_default
 
 # --- PWA CONFIGURATION (Mobile App Settings) ---
-PWA_APP_NAME = 'Prahlad Academy'
-PWA_APP_DESCRIPTION = "Smart School ERP System"
+PWA_APP_NAME = 'Semora'
+PWA_APP_DESCRIPTION = "Optimize Operations, Elevate Education"
 PWA_APP_THEME_COLOR = '#0f172a'
 PWA_APP_BACKGROUND_COLOR = '#ffffff'
 PWA_APP_DISPLAY = 'standalone'
@@ -214,10 +214,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # --- DEBUG TOOLBAR (only when DEBUG) ---
-# DJDT disabled for cleaner UI
-# if DEBUG:
-#     MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
-#     INTERNAL_IPS = ['127.0.0.1']
+if DEBUG:
+    INTERNAL_IPS = ['127.0.0.1']
 
 # --- LOGGING ---
 LOGS_DIR = BASE_DIR / "logs"
@@ -258,4 +256,49 @@ LOGGING = {
             'propagate': False,
         },
     },
+}
+
+
+# --- JAZZMIN (MODERN ADMIN PANEL) CONFIG ---
+JAZZMIN_SETTINGS = {
+    "site_title": "Semora Admin",
+    "site_header": "Semora ERP",
+    "site_brand": "Semora",
+    "welcome_sign": "Welcome to Semora Admin Dashboard",
+    "copyright": "Semora Education",
+    "search_model": ["auth.User", "members.Member", "members.School"],
+    "show_sidebar": True,
+    "navigation_expanded": False,
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "members.School": "fas fa-city",
+        "members.Member": "fas fa-user-graduate",
+        "members.Staff": "fas fa-chalkboard-teacher",
+        "members.FeeStructure": "fas fa-money-check-alt",
+        "members.FeeTransaction": "fas fa-rupee-sign",
+        "members.Attendance": "fas fa-calendar-check",
+        "members.LibraryTransaction": "fas fa-book-reader",
+        "members.Book": "fas fa-book",
+        "members.TransportRoute": "fas fa-bus",
+        "members.StudentTransport": "fas fa-shuttle-van",
+        "members.ClassRoom": "fas fa-chalkboard",
+        "members.ExamScore": "fas fa-spell-check",
+        "members.Expense": "fas fa-file-invoice-dollar",
+        "members.Notice": "fas fa-bullhorn",
+        "members.SalaryTransaction": "fas fa-money-bill-wave",
+        "members.StudyMaterial": "fas fa-file-pdf",
+        "members.UserProfile": "fas fa-id-badge",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "lumen", # Clean, modern theme
+    "dark_mode_theme": "darkly",
+    "navbar": "navbar-dark",
+    "sidebar": "sidebar-light-primary",
+    "accent": "accent-primary",
 }

@@ -120,7 +120,7 @@ class RootViewsNoSchoolTests(TestCase):
         r = index(req)
         self.assertEqual(r.status_code, 200)
         self.assertIsNone(getattr(req, "school", None))
-        self.assertIn(b"Prahlad Academy ERP", r.content)
+        self.assertIn(b"Semora", r.content)
         self.assertIn(b"Log in", r.content)
 
     def test_auth_view_does_not_use_get_current_school(self):

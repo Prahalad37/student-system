@@ -4,14 +4,7 @@
 {% block title %}Edit academic year{% endblock %}
 
 {% block breadcrumbs %}
-<nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb bg-transparent py-2 mb-0">
-        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'school_settings' %}">School Settings</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'academic_year_list' %}">Academic years</a></li>
-        <li class="breadcrumb-item active">Edit {{ year.name }}</li>
-    </ol>
-</nav>
+{% include "components/back_nav.html" with back_url_name="academic_year_list" back_label="Back to Academic Years" %}
 {% endblock %}
 
 {% block content %}

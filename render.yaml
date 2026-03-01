@@ -11,7 +11,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    preDeployCommand: python manage.py migrate --noinput && python manage.py setup_login_users --run-if-empty
+    preDeployCommand: python manage.py migrate --noinput && python manage.py setup_login_users --run-if-empty && python manage.py create_test_data --run-if-empty
     startCommand: gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
     healthCheckPath: /health/
     envVars:

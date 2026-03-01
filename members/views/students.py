@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from ..models import Member, ClassRoom, ExamScore, Attendance, UserProfile, TransportRoute, StudentTransport
 from ..utils import get_current_school
 from ..validators import validate_image_file, validate_document_file
@@ -338,7 +338,6 @@ def admission_receipt_pdf(request, id):
     from reportlab.lib.pagesizes import A4
     from reportlab.lib import colors
     from reportlab.lib.units import inch
-    from django.http import HttpResponse
 
     p = canvas.Canvas(response, pagesize=A4)
     width, height = A4
